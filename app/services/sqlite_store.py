@@ -122,6 +122,17 @@ def init_db() -> None:
             CREATE INDEX IF NOT EXISTS idx_video_expert_assignments_video_id
             ON video_expert_assignments (video_id);
 
+            CREATE TABLE IF NOT EXISTS quiz_attempts(
+
+                attempt_id INT AUTO_INCREMENT,
+                timestamp DATETIME,
+                total_questions INT,
+                correct INT,
+                incorrect INT,
+                percentage FLOAT,
+                FOREIGN KEY (video_id) REFERENCES video_assignments(video_id),
+                FOREIGN KEY (child_id) REFERENCES children(child_id)
+            );
             
             CREATE INDEX IF NOT EXISTS idx_video_expert_assignments_expert_id
                 ON video_expert_assignments (expert_id);
