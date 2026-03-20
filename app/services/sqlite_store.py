@@ -92,6 +92,16 @@ def init_db() -> None:
                 updated_at TEXT NOT NULL
             );
 
+            CREATE TABLE IF NOT EXISTS videos(
+                id TEXT PRIMARY KEY,
+                title TEXT NOT NULL,
+                thumbnail TEXT,
+                duration FLOAT DEFAULT 0
+            );
+
+            CREATE INDEX IF NOT EXISTS video_data_id
+                ON videos (id);
+
             CREATE TABLE IF NOT EXISTS video_assignments (
                 video_id TEXT PRIMARY KEY,
                 expert_id TEXT NULL,
@@ -122,18 +132,6 @@ def init_db() -> None:
             CREATE INDEX IF NOT EXISTS idx_video_expert_assignments_video_id
             ON video_expert_assignments (video_id);
 
-            CREATE TABLE IF NOT EXISTS quiz_attempts(
-
-                attempt_id INT AUTO_INCREMENT,
-                timestamp DATETIME,
-                total_questions INT,
-                correct INT,
-                incorrect INT,
-                percentage FLOAT,
-                FOREIGN KEY (video_id) REFERENCES video_assignments(video_id),
-                FOREIGN KEY (child_id) REFERENCES children(child_id)
-            );
-            
             CREATE INDEX IF NOT EXISTS idx_video_expert_assignments_expert_id
                 ON video_expert_assignments (expert_id);
 
@@ -148,7 +146,7 @@ def init_db() -> None:
                 updated_at
             FROM video_assignments
             WHERE expert_id IS NOT NULL;
-            
+
             CREATE TABLE IF NOT EXISTS children(
                 child_id TEXT PRIMARY KEY
                 CHECK(
@@ -174,12 +172,25 @@ def init_db() -> None:
                 ON children (expert_id, is_active);            
             
             CREATE UNIQUE INDEX IF NOT EXISTS idx_children_unique_profile_per_expert
-        ON children (
+                ON children (
                 expert_id,
                 lower(trim(first_name)),
                 lower(trim(last_name))
             );
 
+            CREATE TABLE IF NOT EXISTS quiz_attempts(
+
+                attempt_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                video_id TEXT NOT NULL,
+                child_id TEXT NOT NULL,
+                timestamp TEXT,
+                total_questions INT,
+                correct INT,
+                incorrect INT,
+                percentage FLOAT,
+                FOREIGN KEY (video_id) REFERENCES video_assignments(video_id),
+                FOREIGN KEY (child_id) REFERENCES children(child_id)
+            );
 
             """
 
