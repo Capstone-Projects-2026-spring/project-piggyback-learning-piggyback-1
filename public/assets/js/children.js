@@ -74,7 +74,7 @@
     
     function getRetryFeedback() {
       const isStrict = document.body.dataset.interactionMode === 'strict';
-      return isStrict ? "I think we missed it. Let's watch it again." : "That's okay! Let's keep going!";
+      return isStrict ? "I think we missed it. Let's watch it again." : "That's not quite the answer, but it's okay! Let's keep going!";
     }
     const wrongAttempted = new Set();
     const retryCountMap = new Map();
@@ -1821,6 +1821,11 @@
           }
         }
 
+        // Read back the learner's answer before any feedback
+        if (spoken && spoken.trim()) {
+          await speakFeedbackText(`You said: ${spoken.trim()}`);
+        }
+
         if (status === 'correct') {
           const celebrationMessage = pickRandomCelebration();
           asked.add(quesSec);
@@ -1866,7 +1871,10 @@
 // ALMOST CASE
 // ----------------------
         if (status === "almost") {
-          const almostMessage = getBorderlineFeedback();
+          const spokenTrimmed = (spoken || "").trim();
+          const almostMessage = spokenTrimmed
+            ? `${spokenTrimmed} is not quite the answer. Try again!`
+            : getBorderlineFeedback();
 
           await deliverFeedback({
             message: almostMessage,
@@ -1914,7 +1922,12 @@
   // allow question to trigger again
           asked.delete(quesSec);
         } else {
-  // FLEXIBLE MODE = continue video
+  // FLEXIBLE MODE = reveal the answer then continue
+          await deliverFeedback({
+            message: `The answer is ${q.answer}.`,
+            color: "#384b87",
+            minVisibleMs: MIN_FEEDBACK_DISPLAY_MS
+          });
           asked.add(quesSec);
         }
 

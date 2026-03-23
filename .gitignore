@@ -31,4 +31,4 @@ data/
 *.db
 report.html
 pytest_report.html
-assets/style.css
+assets/style.csspytest-cache-files-*/
