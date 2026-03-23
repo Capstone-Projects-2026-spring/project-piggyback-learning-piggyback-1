@@ -301,10 +301,6 @@ def get_final_questions(video_id: str, companion: str = None):
             "expert_ranking": expert_ranking,
         })
 
-    # Exclude the final segment so it never propagates to questions.json
-    if selected_segments:
-        selected_segments = selected_segments[:-1]
-
     return {"success": True, "segments": selected_segments}
 
 # ============================================================
@@ -821,4 +817,3 @@ def api_get_quiz_scores(child_id: str):
     """
     result = get_child_scores(child_id)
     return result
-
