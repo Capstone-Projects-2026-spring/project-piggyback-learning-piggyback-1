@@ -10,6 +10,7 @@ review workflows, and a kids-friendly playback/quiz interface.
 - English subtitles (auto + manual when available) and metadata capture
 - Frame extraction at 1 FPS with CSV/JSON manifests
 - AI question generation with WebSocket progress updates
+- Multi-provider question generation support (`openai`, `gemini`, `claude`)
 - Expert review and final question curation
 - Kids library and quiz player UI
 
@@ -87,9 +88,14 @@ Create a `.env` file in the project root:
 
 ```bash
 OPENAI_API_KEY="your_openai_key"
-# Defaults are admin123 / expert123 if not set
+GEMINI_API_KEY="your_gemini_key"
+ANTHROPIC_API_KEY="your_anthropic_key"
+# Defaults are admin123  if not set
 ADMIN_PASSWORD="admin123"
-EXPERT_PASSWORD="expert123"
+# Optional provider/model controls for question generation
+QUESTION_PROVIDER_DEFAULT="openai"     # openai | gemini | claude
+GEMINI_MODEL="gemini-1.5-flash"
+ANTHROPIC_MODEL="claude-haiku-4-5-20251001"
 # Optional: use a Netscape-format cookies file for restricted videos
 YTDLP_COOKIEFILE="C:\\path\\to\\cookies.txt"
 # Alternate env var name also supported
@@ -159,6 +165,9 @@ readme.md
     format selector in `main.py` inside `download_youtube()`.
 - FFmpeg not found:
   - Install FFmpeg and ensure it is on your PATH.
+- Gemini/Claude provider not working:
+  - Make sure `GEMINI_API_KEY` or `ANTHROPIC_API_KEY` is set.
+  - Check `QUESTION_PROVIDER_DEFAULT` is one of `openai`, `gemini`, or `claude`.
 
 ## License
 
@@ -169,6 +178,8 @@ Educational use only. Respect YouTube's Terms of Service and copyright laws.
 For issues related to:
 - **yt-dlp**: Check [yt-dlp documentation](https://github.com/yt-dlp/yt-dlp)
 - **OpenAI API**: Check [OpenAI documentation](https://platform.openai.com/docs)
+- **Anthropic API**: Check [Anthropic documentation](https://docs.anthropic.com/)
+- **Gemini API**: Check [Google AI documentation](https://ai.google.dev/)
 - **FastAPI**: Check [FastAPI documentation](https://fastapi.tiangolo.com)
 
 
@@ -177,4 +188,3 @@ For issues related to:
 <p align="center">
 Jerry Lin • Anujin Ikhbayar • Jayden Lupold • Irene Simtoco • Adriel Alquiros
 </p>
-
