@@ -89,7 +89,6 @@ Create a `.env` file in the project root:
 OPENAI_API_KEY="your_openai_key"
 # Defaults are admin123 / expert123 if not set
 ADMIN_PASSWORD="admin123"
-EXPERT_PASSWORD="expert123"
 # Optional: use a Netscape-format cookies file for restricted videos
 YTDLP_COOKIEFILE="C:\\path\\to\\cookies.txt"
 # Alternate env var name also supported
