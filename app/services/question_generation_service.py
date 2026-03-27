@@ -308,7 +308,7 @@ Return JSON only (no extra text) in this structure:
                                 "retryable": False,
                             }
                             return None
-                        gemini_model_name = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
+                        gemini_model_name = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
                         gemini_model = genai.GenerativeModel(gemini_model_name)
                     
                     #Keep provider output contrtact idential(JSON) , so downstream flow is
@@ -376,6 +376,7 @@ Return JSON only (no extra text) in this structure:
                         max_tokens=1024,
                         messages=[{"role": "user", "content": parts}]
                     )
+                    print(resp)
                     if resp.content:
                         result_content= resp.content[0].text
                     else:
