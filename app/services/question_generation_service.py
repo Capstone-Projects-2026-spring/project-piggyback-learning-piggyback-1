@@ -349,17 +349,15 @@ Return JSON only (no extra text) in this structure:
                     model_name = os.getenv("ANTHROPIC_MODEL", "claude-haiku-4-5-20251001")
 
                     # Load Claude prompt
-                    prompt_text = ""
+                    prompt_text = "\n\nIMPORTANT: Return only raw JSON with no markdown, no code fences, no explanation."
                     for item in content_with_prompt:
                         if isinstance(item, dict) and item.get("type")== "text":
                             prompt_text += str(item.get("text", "")) + "\n\n"  
-
-                    parts = [system_message + "\n\n" + prompt_text]
-
+                    image_parts = []
                     # Load frames
                     for frame in sampled_frames:
                         try:
-                            parts.append({
+                            image_parts.append({
                                     "type":"image",
                                     "source": {
                                         "type":"base64",
@@ -369,14 +367,24 @@ Return JSON only (no extra text) in this structure:
                                 })
                         except Exception:
                             continue
-                    
+
+                    parts = [
+                        {
+                            "role":"user",
+                            "content":[
+                                {"type":"text", "text": prompt_text.strip()},
+                                *image_parts
+                            ]
+                        }
+                    ]
+
                     # Get Claude response
                     resp = claude_client.messages.create(
                         model=model_name,
                         max_tokens=1024,
-                        messages=[{"role": "user", "content": parts}]
+                        system=system_message,
+                        messages=parts
                     )
-                    print(resp)
                     if resp.content:
                         result_content= resp.content[0].text
                     else:
@@ -392,13 +400,18 @@ Return JSON only (no extra text) in this structure:
 
                 if result_content:
                     try:
-                        json.loads(result_content)
-                        return result_content
-                    except Exception:
-                        last_error_payload= {
+                        parsed = _maybe_parse_json(result_content)
+                        if isinstance(parsed, (dict, list)):
+                            return json.dumps(parsed)  # normalize to clean JSON string
+                        last_error_payload = {
                             "reason": "invalid_json",
                             "retryable": True,
-                            #Keeps logs/debug payload small and readable for team/UI.
+                            "raw_preview": str(result_content)[:300],
+                        }
+                    except Exception:
+                        last_error_payload = {
+                            "reason": "invalid_json",
+                            "retryable": True,
                             "raw_preview": str(result_content)[:300],
                         }
                 else:
