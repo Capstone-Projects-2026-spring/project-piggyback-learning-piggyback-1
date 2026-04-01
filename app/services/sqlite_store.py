@@ -99,9 +99,6 @@ def init_db() -> None:
                 duration FLOAT DEFAULT 0
             );
 
-            CREATE INDEX IF NOT EXISTS video_data_id
-                ON videos (id);
-
             CREATE TABLE IF NOT EXISTS video_assignments (
                 video_id TEXT PRIMARY KEY,
                 expert_id TEXT NULL,
@@ -183,6 +180,7 @@ def init_db() -> None:
                 attempt_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 video_id TEXT NOT NULL,
                 child_id TEXT NOT NULL,
+                interaction_mode TEXT,
                 timestamp TEXT,
                 total_questions INT,
                 correct INT,
