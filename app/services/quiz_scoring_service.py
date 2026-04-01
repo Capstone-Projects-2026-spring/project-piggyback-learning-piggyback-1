@@ -12,29 +12,14 @@ def get_downloads_dir():
     return DOWNLOADS_DIR
 
 
-def save_quiz_result(child_id: str, video_id: str, score_data: dict) -> dict:
-    """
-    Save quiz results to a JSON file.
-    
-    Args:
-        child_id: unique identifier for child (ex., "user_12345")
-        video_id: the video they watched
-        score_data: dict containing score information
-        
-    Returns:
-        Dict with success status
-    """
+def save_quiz_result(child_id: str, video_id: str, score_data: dict, session_id: str = None) -> dict:
     DOWNLOADS_DIR = get_downloads_dir()
     child_id = re.sub(r'[^a-zA-Z0-9_-]', '', child_id)
-    
-    # Create quiz_results folder
+
     results_dir = DOWNLOADS_DIR / "quiz_results"
     results_dir.mkdir(exist_ok=True)
-    
-    # File for specific child's results
     results_file = results_dir / f"{child_id}_results.json"
-    
-    # Load existing results or create new
+
     if results_file.exists():
         try:
             data = json.loads(results_file.read_text(encoding="utf-8"))
@@ -42,9 +27,9 @@ def save_quiz_result(child_id: str, video_id: str, score_data: dict) -> dict:
             data = {"child_id": child_id, "attempts": []}
     else:
         data = {"child_id": child_id, "attempts": []}
-    
-    # Add this quiz attempt
+
     attempt = {
+        "session_id": session_id,
         "video_id": video_id,
         "timestamp": datetime.now().isoformat(),
         "total": score_data.get("total", 0),
@@ -54,27 +39,35 @@ def save_quiz_result(child_id: str, video_id: str, score_data: dict) -> dict:
         "percentage": score_data.get("percentage", 0),
         "total_retries": score_data.get("total_retries", 0),
         "avg_retries_per_question": score_data.get("avg_retries_per_question", 0.0),
+        "watch_minutes": score_data.get("watch_minutes", 0),
         "details": score_data.get("details", [])
-}
-    
-    data["attempts"].append(attempt)
-    
-    # Save to file
+    }
+
+    # If session_id provided, update existing attempt instead of appending
+    if session_id:
+        existing_index = next(
+            (i for i, a in enumerate(data["attempts"]) if a.get("session_id") == session_id),
+            None
+        )
+        if existing_index is not None:
+            # Accumulate watch_minutes, keep other fields updated
+            existing = data["attempts"][existing_index]
+            attempt["watch_minutes"] = existing.get("watch_minutes", 0) + score_data.get("watch_minutes", 0)
+            attempt["timestamp"] = existing.get("timestamp", attempt["timestamp"])
+            data["attempts"][existing_index] = attempt
+        else:
+            data["attempts"].append(attempt)
+    else:
+        data["attempts"].append(attempt)
+
     try:
         results_file.write_text(
             json.dumps(data, indent=2, ensure_ascii=False),
             encoding="utf-8"
         )
-        return {
-            "success": True,
-            "message": "Score saved!",
-            "file": str(results_file)
-        }
+        return {"success": True, "message": "Score saved!", "file": str(results_file)}
     except Exception as e:
-        return {
-            "success": False,
-            "message": f"Error saving: {str(e)}"
-        }
+        return {"success": False, "message": f"Error saving: {str(e)}"}
 
 
 def get_child_scores(child_id: str) -> dict:

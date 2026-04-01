@@ -466,6 +466,12 @@
         if (activeQuestion) {
           ytPlayer?.pauseVideo();
         }
+        // Start watch timer for passive users
+        if (document.body.dataset.interactionMode === 'passive' && typeof quizScore !== 'undefined') {
+            if (quizScore.watchStartTime === null) {
+                quizScore.watchStartTime = Date.now();
+            }
+        }
       }
       if (event.data === YT.PlayerState.PAUSED) {
         if (!activeQuestion) {
@@ -473,14 +479,30 @@
         } else {
           hidePauseBlocker();
         }
+        // Pause watch timer for passive users
+        if (document.body.dataset.interactionMode === 'passive' && typeof quizScore !== 'undefined') {
+            if (quizScore.watchStartTime !== null) {
+                quizScore.watchAccumulatedMs = (quizScore.watchAccumulatedMs || 0) + (Date.now() - quizScore.watchStartTime);
+                quizScore.watchStartTime = null;
+            }
+        }
       }
       if (event.data === YT.PlayerState.ENDED) {
         hidePauseBlocker();
         if (ytEndBlocker) {
-          ytEndBlocker.style.display = "flex";
+            ytEndBlocker.style.display = "flex";
         }
-        if (typeof showFinalScore === "function" && typeof quizScore !== "undefined" && quizScore.total > 0) {
-          showFinalScore();
+        if (document.body.dataset.interactionMode === 'passive') {
+            // Stop the timer before saving
+            if (typeof quizScore !== 'undefined' && quizScore.watchStartTime !== null) {
+                quizScore.watchAccumulatedMs = (quizScore.watchAccumulatedMs || 0) + (Date.now() - quizScore.watchStartTime);
+                quizScore.watchStartTime = null;
+            }
+            if (typeof savePassiveWatchSession === 'function') {
+                savePassiveWatchSession();
+            }
+        } else if (typeof showFinalScore === "function" && typeof quizScore !== "undefined" && quizScore.total > 0) {
+            showFinalScore();
         }
       }
     }
@@ -908,6 +930,12 @@
       backButton.style.display = "inline-flex";
       document.body.classList.add("watching-video");
       currentVideoMeta = video;
+      // Start watch tracking immediately for passive users
+      if (document.body.dataset.interactionMode === 'passive') {
+          if (typeof startQuizTracking === 'function') {
+              startQuizTracking(video.video_id, 0);
+          }
+      }
       hideEmbedFallback();
 
       // Load YouTube video
@@ -1016,6 +1044,13 @@
 
         // --- Question Triggers ---
         if (document.body.dataset.interactionMode === 'passive') {
+          // Autosave every 60 seconds of watch time
+          if (quizScore && quizScore.watchStartTime) {
+            const elapsed = Math.floor((Date.now() - quizScore.watchStartTime) / 1000);
+            if (elapsed > 0 && elapsed % 60 === 0 && typeof savePassiveWatchSession === 'function') {
+              savePassiveWatchSession();
+            }
+          }
           previousTime = currentTime;
           return;
         }
@@ -1979,6 +2014,11 @@
     // Back Button
     // ===============================
     backButton.onclick = () => {
+      if (document.body.dataset.interactionMode === 'passive') {
+        if (typeof savePassiveWatchSession === 'function') {
+          savePassiveWatchSession();
+        }
+      }
       pauseVideo();
       clearInterval(checkInterval);
       document.getElementById("player-container").style.display = "none";
