@@ -800,11 +800,12 @@ async def api_save_quiz_score(payload: dict = Body(...)):
     child_id = payload.get("child_id")
     video_id = payload.get("video_id")
     score_data = payload.get("score_data", {})
+    session_id = payload.get("session_id")
     
     if not child_id or not video_id:
         return {"success": False, "message": "Missing child_id or video_id"}
     
-    result = save_quiz_result(child_id, video_id, score_data)
+    result = save_quiz_result(child_id, video_id, score_data, session_id=session_id)
     return result
 
 

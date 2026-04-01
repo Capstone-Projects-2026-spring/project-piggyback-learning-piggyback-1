@@ -302,18 +302,7 @@
   <main class="kids-page" id="main-flow" style="display:none;">
   
     <!-- Score Tracker -->
-    <div id="scoreTracker" style="
-        position: fixed;
-        top: 110px;
-        right: 20px;
-        background: white;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        z-index: 1000;
-        min-width: 180px;
-        display: none;
-    ">
+    <div id="scoreTracker" style="display: none;">
         <h3 style="margin: 0 0 15px 0; color: #2c3e50; font-size: 18px;">📊 Your Score</h3>
         <div style="margin-bottom: 8px;">
             ✅ <strong>Correct:</strong> 
@@ -472,11 +461,15 @@
 <script>
 let quizScore = {
     videoId: null,
+    sessionId: null,
     correct: 0,
     wrong: 0,
     total: 0,
     totalRetries: 0,
     expectedQuestions: 2,
+    watchStartTime: null,
+    watchAccumulatedMs: 0,
+    watchMinutes: 0,
     details: []
 };
 
@@ -488,10 +481,16 @@ function startQuizTracking(videoId, expectedQuestions = 2) {
     quizScore.expectedQuestions = expectedQuestions;
     quizScore.details = [];
     quizScore.totalRetries = 0;
-    const isPassive = document.body.dataset.interactionMode === 'passive';
+    quizScore.watchStartTime = null;
+    quizScore.watchAccumulatedMs = 0;
+    quizScore.watchMinutes = 0;
+
+    quizScore.sessionId = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    // Score tracker hidden from users
+    /* const isPassive = document.body.dataset.interactionMode === 'passive';
     if (!isPassive) {
         document.getElementById('scoreTracker').style.display = 'block';
-    }
+    } */
     updateScoreDisplay();
     console.log('Quiz started:', videoId);
 }
@@ -576,6 +575,10 @@ function showFinalScore() {
 async function saveScoreAndClose() {
     const childId = getChildId();
     const percentage = Math.round((quizScore.correct / quizScore.total) * 100);
+    if (quizScore.watchStartTime) {
+        const elapsed = (Date.now() - quizScore.watchStartTime) / 1000 / 60;
+        quizScore.watchMinutes = Math.round(elapsed);
+    }
     try {
         const response = await fetch('/api/save-quiz-score', {
             method: 'POST',
@@ -590,6 +593,7 @@ async function saveScoreAndClose() {
                     percentage: percentage,
                     total_retries: quizScore.totalRetries || 0,
                     avg_retries_per_question: quizScore.total > 0 ? parseFloat((quizScore.totalRetries / quizScore.total).toFixed(2)) : 0,
+                    watch_minutes: quizScore.watchMinutes || 0,
                     details: quizScore.details
                 }
             })
@@ -608,6 +612,55 @@ async function saveScoreAndClose() {
     document.getElementById('scoreTracker').style.display = 'none';
 }
 
+async function savePassiveWatchSession() {
+    const isPassive = document.body.dataset.interactionMode === 'passive';
+    if (!isPassive || !quizScore.videoId) return;
+
+    if (quizScore.watchStartTime) {
+        const elapsed = (Date.now() - quizScore.watchStartTime) / 1000 / 60;
+        quizScore.watchMinutes = Math.round(elapsed);
+    }
+
+    // Flush any currently running play segment before saving
+    let totalMs = quizScore.watchAccumulatedMs || 0;
+    if (quizScore.watchStartTime !== null) {
+    totalMs += (Date.now() - quizScore.watchStartTime);
+    }
+    if (totalMs <= 0) return;
+
+    quizScore.watchMinutes = Math.round(totalMs / 1000 / 60);
+
+    const childId = getChildId();
+    try {
+        await fetch('/api/save-quiz-score', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                child_id: childId,
+                video_id: quizScore.videoId,
+                session_id: quizScore.sessionId,
+                score_data: {
+                    total: 0,
+                    correct: 0,
+                    wrong: 0,
+                    percentage: 0,
+                    total_retries: 0,
+                    avg_retries_per_question: 0,
+                    watch_minutes: quizScore.watchMinutes,
+                    details: []
+                }
+            })
+        });
+        console.log('✅ Passive watch session saved:', quizScore.watchMinutes, 'minutes');
+        // Reset start time so next periodic save only counts new time
+        quizScore.watchAccumulatedMs = 0;
+        quizScore.watchStartTime = quizScore.watchStartTime !== null ? Date.now() : null;
+        quizScore.watchMinutes = 0;
+    } catch (error) {
+        console.error('❌ Error saving passive session:', error);
+    }
+}
+
 function getChildId() {
     // Use the real child_id selected during the learner flow
     const state = loadState();
@@ -622,7 +675,23 @@ function getChildId() {
     }
     return id;
 }
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+        if (document.body.dataset.interactionMode === 'passive') {
+            if (typeof savePassiveWatchSession === 'function') {
+                savePassiveWatchSession();
+            }
+        }
+    }
+});
 
+window.addEventListener('pagehide', () => {
+    if (document.body.dataset.interactionMode === 'passive') {
+        if (typeof savePassiveWatchSession === 'function') {
+            savePassiveWatchSession();
+        }
+    }
+});
 console.log('✅ Quiz scoring ready!');
 </script>
 
@@ -657,6 +726,13 @@ async function openParentReport() {
     const res  = await fetch(`/api/learners/children/${encodeURIComponent(childId)}/report`);
     const data = await res.json();
     if (!data.success) throw new Error(data.message || 'Failed to load report');
+
+    // Inject current session score into the data object
+    data.session_correct = quizScore.correct || 0;
+    data.session_wrong = quizScore.wrong || 0;
+    data.session_total = quizScore.total || 0;
+    data.session_active = quizScore.videoId !== null;
+
     renderParentReport(content, childName, expertName, data);
   } catch (err) {
     content.innerHTML = `<div style="text-align:center;color:#dc3545;padding:40px;">Could not load report.<br><small>${err.message}</small></div>`;
@@ -682,12 +758,106 @@ window.closeParentReport = function(e) {
 };
 
 function renderParentReport(container, childName, expertName, data) {
+  const mode = (document.body.dataset.interactionMode || 'flexible').toLowerCase();
   const score = Math.round(data.overall_score || 0);
   const attempts = data.total_attempts || 0;
   const categories = data.top_categories || [];
   const recentVideos = data.recent_videos || [];
-
   const scoreColor = score >= 80 ? '#4caf50' : score >= 60 ? '#ff9800' : '#f44336';
+  const sessionActive = data.session_active || false;
+  const sessionCorrect = data.session_correct || 0;
+  const sessionWrong = data.session_wrong || 0;
+  const sessionTotal = data.session_total || 0;
+  const sessionPct = sessionTotal > 0 ? Math.round((sessionCorrect / sessionTotal) * 100) : 0;
+  const sessionColor = sessionPct >= 80 ? '#4caf50' : sessionPct >= 60 ? '#ff9800' : '#f44336';
+
+  // ── Child card (shared across all modes) ──
+  const childCardHtml = `
+    <div style="background:white;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:12px;display:flex;align-items:center;gap:14px;">
+      <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#9c27b0,#e91e8c);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <span style="font-size:24px;">👤</span>
+      </div>
+      <div>
+        <div style="font-size:17px;font-weight:700;color:#2c3e50;">${childName}</div>
+        <div style="font-size:13px;color:#6c757d;">Supervised by ${expertName}</div>
+      </div>
+    </div>`;
+
+  // ── PASSIVE MODE ──
+  if (mode === 'passive') {
+    const videosWatched = data.videos_watched || recentVideos.length || 0;
+    const totalWatchMinutes = data.total_watch_minutes || 0;
+    const watchHtml = totalWatchMinutes >= 60
+      ? `${Math.floor(totalWatchMinutes / 60)}h ${totalWatchMinutes % 60}m`
+      : `${totalWatchMinutes}m`;
+
+    let recentHtml = '';
+    if (recentVideos.length > 0) {
+      recentHtml = `
+        <div style="background:white;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:12px;">
+          <h3 style="margin:0 0 12px;font-size:15px;font-weight:700;color:#2c3e50;">Recent Videos</h3>
+          ${recentVideos.map(v => `
+            <div style="display:flex;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0f0;">
+              <span style="font-size:13px;color:#2c3e50;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${v.video_title || v.video_id}</span>
+            </div>`).join('')}
+        </div>`;
+    }
+
+    container.innerHTML = `
+      ${childCardHtml}
+      <div style="background:white;border-radius:12px;padding:16px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:15px;font-weight:700;color:#2c3e50;">Videos Watched</div>
+          <div style="font-size:13px;color:#6c757d;">Total viewed</div>
+        </div>
+        <div style="font-size:36px;font-weight:800;color:#6a1b9a;">${videosWatched}</div>
+      </div>
+      <div style="background:white;border-radius:12px;padding:16px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:15px;font-weight:700;color:#2c3e50;">Total Watch Time</div>
+          <div style="font-size:13px;color:#6c757d;">Across all videos</div>
+        </div>
+        <div style="font-size:36px;font-weight:800;color:#6a1b9a;">${watchHtml}</div>
+      </div>
+      ${recentHtml}
+    `;
+    return;
+  }
+
+  // ── Shared: score + attempts + categories + recent videos ──
+  const scoreHtml = `
+    <div style="background:${scoreColor};border-radius:12px;padding:24px;text-align:center;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.12);">
+      <div style="font-size:52px;font-weight:800;color:white;line-height:1;">${score}%</div>
+      <div style="font-size:15px;color:rgba(255,255,255,0.9);margin-top:4px;">Overall Score</div>
+    </div>`;
+
+  const attemptsHtml = sessionActive ? `
+    <div style="background:white;border-radius:12px;padding:16px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:12px;">
+      <h3 style="margin:0 0 12px;font-size:15px;font-weight:700;color:#2c3e50;">Current Quiz</h3>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0f0;">
+        <span style="font-size:14px;color:#2c3e50;">Correct</span>
+        <span style="font-size:16px;font-weight:700;color:#4caf50;">${sessionCorrect}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0f0;">
+        <span style="font-size:14px;color:#2c3e50;">Wrong</span>
+        <span style="font-size:16px;font-weight:700;color:#f44336;">${sessionWrong}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0f0;">
+        <span style="font-size:14px;color:#2c3e50;">Total</span>
+        <span style="font-size:16px;font-weight:700;color:#007bff;">${sessionCorrect}/${sessionTotal}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;">
+        <span style="font-size:14px;color:#2c3e50;">Score</span>
+        <span style="font-size:16px;font-weight:700;color:${sessionColor};">${sessionPct}%</span>
+      </div>
+    </div>` : `
+    <div style="background:white;border-radius:12px;padding:16px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="font-size:15px;font-weight:700;color:#2c3e50;">Quiz Attempts</div>
+        <div style="font-size:13px;color:#6c757d;">Total viewed</div>
+      </div>
+      <div style="font-size:36px;font-weight:800;color:#6a1b9a;">${attempts}</div>
+    </div>`;
 
   let categoriesHtml = '';
   if (categories.length === 0) {
@@ -709,12 +879,44 @@ function renderParentReport(container, childName, expertName, data) {
     }).join('');
   }
 
-const totalRetries = data.total_retries || 0;
-const avgRetries = data.avg_retries_per_question != null ? Number(data.avg_retries_per_question).toFixed(1) : '0.0';
-const totalQuizzes = data.total_attempts || 0;
-const avgRetriesPerQuiz = totalQuizzes > 0 ? (totalRetries / totalQuizzes).toFixed(1) : '0.0';
+  const categoryCardHtml = `
+    <div style="background:white;border-radius:12px;padding:16px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:12px;">
+      <h3 style="margin:0 0 16px;font-size:15px;font-weight:700;color:#2c3e50;">Category Scores</h3>
+      ${categoriesHtml}
+    </div>`;
 
-const retryHtml = `
+  let recentHtml = '';
+  if (recentVideos.length > 0) {
+    recentHtml = `
+      <div style="background:white;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:12px;">
+        <h3 style="margin:0 0 12px;font-size:15px;font-weight:700;color:#2c3e50;">Recent Videos</h3>
+        ${recentVideos.map(v => `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0f0;">
+            <span style="font-size:13px;color:#2c3e50;flex:1;margin-right:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${v.video_title || v.video_id}</span>
+            <span style="font-size:13px;font-weight:700;color:${v.percentage>=80?'#4caf50':v.percentage>=60?'#ff9800':'#f44336'};flex-shrink:0;">${v.percentage}%</span>
+          </div>`).join('')}
+      </div>`;
+  }
+
+  // ── FLEXIBLE MODE — no engagement metrics ──
+  if (mode === 'flexible') {
+    container.innerHTML = `
+      ${childCardHtml}
+      ${scoreHtml}
+      ${attemptsHtml}
+      ${categoryCardHtml}
+      ${recentHtml}
+    `;
+    return;
+  }
+
+  // ── STRICT MODE — include engagement metrics ──
+  const totalRetries = data.total_retries || 0;
+  const avgRetries = data.avg_retries_per_question != null ? Number(data.avg_retries_per_question).toFixed(1) : '0.0';
+  const totalQuizzes = data.total_attempts || 0;
+  const avgRetriesPerQuiz = totalQuizzes > 0 ? (totalRetries / totalQuizzes).toFixed(1) : '0.0';
+
+  const retryHtml = `
     <div style="background:white;border-radius:12px;padding:16px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:12px;">
       <h3 style="margin:0 0 12px;font-size:15px;font-weight:700;color:#2c3e50;">Engagement</h3>
       <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0f0;">
@@ -731,54 +933,12 @@ const retryHtml = `
       </div>
     </div>`;
 
-  let recentHtml = '';
-  if (recentVideos.length > 0) {
-    recentHtml = `
-      <div style="background:white;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:12px;">
-        <h3 style="margin:0 0 12px;font-size:15px;font-weight:700;color:#2c3e50;">Recent Videos</h3>
-        ${recentVideos.map(v => `
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0f0;">
-            <span style="font-size:13px;color:#2c3e50;flex:1;margin-right:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${v.video_title || v.video_id}</span>
-            <span style="font-size:13px;font-weight:700;color:${v.percentage>=80?'#4caf50':v.percentage>=60?'#ff9800':'#f44336'};flex-shrink:0;">${v.percentage}%</span>
-          </div>`).join('')}
-      </div>`;
-  }
-
   container.innerHTML = `
-    <!-- Child card -->
-    <div style="background:white;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:12px;display:flex;align-items:center;gap:14px;">
-      <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#9c27b0,#e91e8c);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-        <span style="font-size:24px;">👤</span>
-      </div>
-      <div>
-        <div style="font-size:17px;font-weight:700;color:#2c3e50;">${childName}</div>
-        <div style="font-size:13px;color:#6c757d;">Supervised by ${expertName}</div>
-      </div>
-    </div>
-
-    <!-- Overall score -->
-    <div style="background:${scoreColor};border-radius:12px;padding:24px;text-align:center;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.12);">
-      <div style="font-size:52px;font-weight:800;color:white;line-height:1;">${score}%</div>
-      <div style="font-size:15px;color:rgba(255,255,255,0.9);margin-top:4px;">Overall Score</div>
-    </div>
-
-    <!-- Quiz attempts -->
-    <div style="background:white;border-radius:12px;padding:16px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
-      <div>
-        <div style="font-size:15px;font-weight:700;color:#2c3e50;">Quiz Attempts</div>
-        <div style="font-size:13px;color:#6c757d;">Total completed</div>
-      </div>
-      <div style="font-size:36px;font-weight:800;color:#6a1b9a;">${attempts}</div>
-    </div>
-
+    ${childCardHtml}
+    ${scoreHtml}
+    ${attemptsHtml}
     ${retryHtml}
-
-    <!-- Category scores -->
-    <div style="background:white;border-radius:12px;padding:16px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:12px;">
-      <h3 style="margin:0 0 16px;font-size:15px;font-weight:700;color:#2c3e50;">Category Scores</h3>
-      ${categoriesHtml}
-    </div>
-
+    ${categoryCardHtml}
     ${recentHtml}
   `;
 }
@@ -972,9 +1132,14 @@ function showLibrary() {
 
     // Back button stops any playing video then returns to companion screen
     document.getElementById('back-button').onclick = () => {
-        if (window.__stopVideo) window.__stopVideo();
-        document.getElementById('main-flow').style.display = 'none';
-        showCompanions();
+        if (document.body.dataset.interactionMode === 'passive') {
+            if (typeof savePassiveWatchSession === 'function') {
+                savePassiveWatchSession();
+        }
+    }
+    if (window.__stopVideo) window.__stopVideo();
+    document.getElementById('main-flow').style.display = 'none';
+    showCompanions();
     };
 
     // Load only this child's assigned videos
