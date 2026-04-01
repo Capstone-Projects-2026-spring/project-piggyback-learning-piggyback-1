@@ -40,6 +40,14 @@ def _migrate_add_interaction_mode(conn: sqlite3.Connection) -> None:
             "ALTER TABLE children ADD COLUMN interaction_mode TEXT NOT NULL DEFAULT 'flexible'"
         )
         conn.commit()
+        
+def _migrate_add_parent_id(conn: sqlite3.Connection) -> None:
+    cols = {row["name"] for row in conn.execute("PRAGMA table_info(children)").fetchall()}
+    if "parent_id" not in cols:
+        conn.execute(
+            "ALTER TABLE children ADD COLUMN parent_id TEXT NULL REFERENCES parents(parent_id) ON UPDATE CASCADE ON DELETE SET NULL"
+        )
+        conn.commit()
 
 
 def _migrate_children_for_unlink(conn: sqlite3.Connection) -> None:
@@ -173,6 +181,17 @@ def init_db() -> None:
             CREATE INDEX IF NOT EXISTS idx_children_active_expert
                 ON children (expert_id, is_active);            
             
+            CREATE TABLE IF NOT EXISTS parents(
+                parent_id TEXT PRIMARY KEY,
+                display_name TEXT NOT NULL,
+                login_code_hash TEXT NOT NULL,
+                is_active INTEGER NOT NULL DEFAULT 1 CHECK (is_active IN(0,1)),
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            );
+            
+            CREATE INDEX IF NOT EXISTS idx_parents_active
+                ON parents (is_active);
 
 
             """
@@ -183,4 +202,5 @@ def init_db() -> None:
         _migrate_children_for_unlink(conn)
         _migrate_add_interaction_mode(conn)
         _migrate_drop_unique_name_index(conn)
+        _migrate_add_parent_id(conn)
         conn.commit()

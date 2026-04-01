@@ -1,4 +1,5 @@
-// ===============================
+    
+    // ===============================
     // CONFIGURATION
     // ===============================
     const DEV_MODE = false; // set false to hide sidebar & toggle in production
@@ -72,7 +73,7 @@
       return isStrict ? "Almost! Let's watch it again." : "Almost! Let's keep going!";
     }
     
-    function getRetryFeedback() {
+    function getRetryFeedback() { 
       const isStrict = document.body.dataset.interactionMode === 'strict';
       return isStrict ? "I think we missed it. Let's watch it again." : "That's not quite the answer, but it's okay! Let's keep going!";
     }
@@ -2065,6 +2066,8 @@
             videoGrid.innerHTML = '<div class="video-empty">Couldn\'t load videos right now.</div>';
         }
     };
+
+    
 
     // Init
     loadConfig();

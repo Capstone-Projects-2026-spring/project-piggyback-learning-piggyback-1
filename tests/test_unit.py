@@ -221,3 +221,23 @@ def test_verify_password_correct():
 def test_verify_password_wrong():
     hashed = hash_password("mysecret")
     assert verify_password("wrongpassword", hashed) is False
+
+#Testing parents table and parent_id mirgration 
+
+from app.services.sqlite_store import get_conn
+
+
+def test_parents_table_exists():
+    with get_conn() as conn:
+        tables = {row[0] for row in conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()}
+        assert "parents" in tables
+
+def test_parents_table_has_correct_columns():
+    with get_conn() as conn:
+        cols = {row["name"] for row in conn.execute("PRAGMA table_info(parents)").fetchall()}
+        assert cols == {"parent_id", "display_name", "login_code_hash", "is_active", "created_at", "updated_at"}
+
+def test_children_has_parent_id_column():
+    with get_conn() as conn:
+        cols = {row["name"] for row in conn.execute("PRAGMA table_info(children)").fetchall()}
+        assert "parent_id" in cols
