@@ -46,7 +46,7 @@ function showPasswordModal(userType) {
     
     
     // Update modal title
-    modalTitle.textContent = userType === 'admin' ? 'Administrator Access' : 'Expert Access';
+    modalTitle.textContent = userType === 'admin' ? 'Administrator Access' : 'Parent Access';
 
     //only expert needed ID (well for now )
     if (userType === 'expert') {
@@ -109,7 +109,7 @@ document.getElementById('passwordForm').addEventListener('submit', async functio
         if (currentUserType === 'expert') {
             const expertId = (expertIdInput?.value || '').trim();
             if (!expertId) {
-                throw new Error('Expert ID is required.');
+                throw new Error('Parent ID is required.');
             }
             result = await loginExpert(expertId, enteredPassword);
         } else {

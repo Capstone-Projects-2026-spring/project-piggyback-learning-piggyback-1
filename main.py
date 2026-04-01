@@ -5,7 +5,7 @@ import base64
 import json
 import asyncio
 from datetime import datetime, timezone
-from app.services.sqlite_store import init_db
+from app.services.sqlite_store import init_db, get_conn
 from app.services.expert_auth_service import (
     authenticate_expert,
     can_expert_access_video,
@@ -16,6 +16,7 @@ from app.services.expert_auth_service import (
     get_expert,
     list_video_ids_for_expert,
     normalize_expert_id,
+    verify_password,
 )
 from app.services.children_service import get_child, list_children
 from video_quiz_routes import router_video_quiz, router_api, refresh_kids_videos_json
@@ -170,6 +171,39 @@ async def learner_list_children_for_expert(expert_id: str):
             "count": len(children),
         }
     )
+
+
+@app.post("/api/learners/parents/login")
+async def parent_login(request: Request):
+    body = await request.json()
+    parent_id = (body.get("parent_id") or "").strip().lower()
+    login_code = (body.get("login_code") or "").strip()
+
+    if not parent_id or not login_code:
+        return JSONResponse({"success": False, "error": "Parent ID and login code are required."}, status_code=400)
+
+    with get_conn() as conn:
+        parent = conn.execute(
+            "SELECT * FROM parents WHERE parent_id = ? AND is_active = 1", (parent_id,)
+        ).fetchone()
+
+    # If parent has a login_code_hash set, verify it. Otherwise allow login with just the parent_id.
+    if not parent:
+        return JSONResponse({"success": False, "error": "Invalid Login Code. Please try again."}, status_code=401)
+    if parent["login_code_hash"] and not verify_password(login_code, parent["login_code_hash"]):
+        return JSONResponse({"success": False, "error": "Invalid Login Code. Please try again."}, status_code=401)
+
+    with get_conn() as conn:
+        rows = conn.execute(
+            "SELECT * FROM children WHERE parent_id = ? AND is_active = 1", (parent_id,)
+        ).fetchall()
+
+    children = [dict(r) for r in rows]
+    return JSONResponse({
+        "success": True,
+        "parent": {"parent_id": parent["parent_id"], "display_name": parent["display_name"]},
+        "children": children
+    })
 
 
 @app.get("/api/learners/children/{child_id}/report")

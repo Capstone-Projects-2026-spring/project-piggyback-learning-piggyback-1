@@ -253,13 +253,13 @@
 
 <body>
 
-  <!-- ── Step 1: Expert ID Login ── -->
+  <!-- ── Step 1: Parent Login ── -->
   <div id="screen-login">
     <div class="login-card">
       <div class="login-logo">🐷</div>
       <h1>Piggyback Learning</h1>
-      <p class="login-subtitle">Enter your Expert ID to get started</p>
-      <input id="expert-id-input" type="text" placeholder="Expert ID" maxlength="20" autocomplete="off">
+      <p class="login-subtitle">Enter your Login Code to get started</p>
+      <input id="login-code-input" type="text" placeholder="Login Code" maxlength="50" autocomplete="off">
       <button id="login-btn" class="login-btn">Let's Go! →</button>
       <p id="login-error" class="login-error"></p>
     </div>
@@ -267,7 +267,7 @@
 
   <!-- ── Step 2: Child Profile Cards ── -->
   <div id="screen-profiles">
-    <button class="back-to-login" id="back-to-login-btn">← Switch Expert</button>
+    <button class="back-to-login" id="back-to-login-btn">← Switch Parent</button>
     <div class="expert-badge" id="expert-badge"></div>
     <h1>Who's Watching?</h1>
     <p class="profiles-subtitle" id="profiles-subtitle"></p>
@@ -648,7 +648,7 @@ async function openParentReport() {
   const child  = state.selected_child || {};
   const childId = child.child_id || '';
   const childName = child.first_name || 'Child';
-  const expertName = state.expert_name || 'Expert';
+  const expertName = state.parent_name || 'Parent';
 
   const content = document.getElementById('parent-report-content');
   content.innerHTML = '<div style="text-align:center;color:#6c757d;padding:40px;">Loading...</div>';
@@ -752,7 +752,7 @@ const retryHtml = `
       </div>
       <div>
         <div style="font-size:17px;font-weight:700;color:#2c3e50;">${childName}</div>
-        <div style="font-size:13px;color:#6c757d;">Supervised by ${expertName}</div>
+        <div style="font-size:13px;color:#6c757d;">Supervised by ${expertName} (Parent)</div>
       </div>
     </div>
 
@@ -799,44 +799,48 @@ function saveState(patch) {
     return s;
 }
 
-// ── Step 1: Expert ID Login ─────────────────────────────────────────────
+// ── Step 1: Parent Login ─────────────────────────────────────────────
 (function initLogin() {
-    const input  = document.getElementById('expert-id-input');
-    const btn    = document.getElementById('login-btn');
-    const errEl  = document.getElementById('login-error');
+    const codeInput = document.getElementById('login-code-input');
+    const btn       = document.getElementById('login-btn');
+    const errEl     = document.getElementById('login-error');
 
-    // If we already have a valid expert_id in session, skip login
+    // If we already have a valid parent_id in session, skip login
     const saved = loadState();
-    if (saved.expert_id && saved.children) {
+    if (saved.parent_id && saved.children) {
         showProfiles();
         return;
     }
 
     btn.addEventListener('click', doLogin);
-    input.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+    codeInput.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 
     async function doLogin() {
-        const expertId = input.value.trim();
-        if (!expertId) {
-            errEl.textContent = 'Please enter your Expert ID.';
+        const loginCode = codeInput.value.trim();
+        if (!loginCode) {
+            errEl.textContent = 'Please enter your Login Code.';
             return;
         }
         btn.disabled = true;
         errEl.textContent = '';
         try {
-            const res  = await fetch(`/api/learners/experts/${encodeURIComponent(expertId)}/children`);
+            const res  = await fetch('/api/learners/parents/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ parent_id: loginCode, login_code: loginCode })
+            });
             const data = await res.json();
             if (!res.ok || !data.success) {
-                errEl.textContent = data.error || 'Expert ID not found. Please try again.';
+                errEl.textContent = data.error || 'Invalid Login Code. Please try again.';
                 return;
             }
             if (!data.children || data.children.length === 0) {
-                errEl.textContent = 'No active children found for this Expert ID.';
+                errEl.textContent = 'No active children found for this account.';
                 return;
             }
             saveState({
-                expert_id: expertId,
-                expert_name: data.expert.display_name,
+                parent_id: loginCode,
+                parent_name: data.parent.display_name,
                 children: data.children,
                 step: 'profiles'
             });
@@ -885,7 +889,7 @@ function goBackToLogin() {
     sessionStorage.removeItem(STATE_KEY);
     document.getElementById('screen-profiles').style.display = 'none';
     document.getElementById('screen-login').style.display = 'flex';
-    document.getElementById('expert-id-input').value = '';
+    document.getElementById('login-code-input').value = '';
     document.getElementById('login-error').textContent = '';
 }
 
@@ -898,15 +902,15 @@ function showProfiles() {
     const screen = document.getElementById('screen-profiles');
     screen.style.display = 'flex';
 
-    // Wire up the "Switch Expert" back button
+    // Wire up the "Switch Parent" back button
     document.getElementById('back-to-login-btn').onclick = goBackToLogin;
 
-    const { expert_name, children } = loadState();
+    const { parent_name, children } = loadState();
 
-    // Top-left expert badge
-    document.getElementById('expert-badge').textContent = expert_name || 'Expert';
+    // Top-left parent badge
+    document.getElementById('expert-badge').textContent = parent_name || 'Parent';
     document.getElementById('profiles-subtitle').textContent =
-        `Welcome ${expert_name} · Select your profile`;
+        `Welcome ${parent_name} · Select your profile`;
 
     // Render one card per active child
     const grid = document.getElementById('profiles-grid');
