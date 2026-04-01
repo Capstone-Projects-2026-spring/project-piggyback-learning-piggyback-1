@@ -300,12 +300,6 @@
             <div class="admin-card">
                 <h3 class="admin-card-title">Create Child</h3>
                 <form id="create-child-form" class="admin-form-row">
-                    <div class="admin-field">
-                        <label for="child-expert-select">Parent</label>
-                        <select id="child-expert-select" class="admin-input" required>
-                            <option value="">Select parent...</option>
-                        </select>
-                    </div>
                     <div class="admin-field admin-field-grow">
                         <label for="child-first-name">First Name</label>
                         <input id="child-first-name" type="text" placeholder="First Name" class="admin-input" maxlength="40" required />
@@ -355,10 +349,7 @@
                 <div class="admin-card-header">
                     <h3 class="admin-card-title" id="children-dir-heading">Children Directory</h3>
                     <div class="admin-card-controls">
-                        <span class="admin-control-label">Parent:</span>
-                        <select id="children-filter-expert" class="admin-filter-select">
-                            <option value="">All</option>
-                        </select>
+                        <span class="admin-control-label">Total: <span id="children-total-count">—</span></span>
                         <label class="admin-toggle-label">
                             <input type="checkbox" id="children-include-inactive" />
                             Show inactive

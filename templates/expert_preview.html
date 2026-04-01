@@ -382,8 +382,71 @@
             <div style="padding: 16px 24px;">
                 <button onclick="backToDashboard()" style="background:none;border:none;color:#6a1b9a;font-size:15px;font-weight:600;cursor:pointer;">← Back to Dashboard</button>
             </div>
-            <div style="padding: 24px; text-align:center; color:#6c757d;">
-                Child Management coming soon.
+            <div style="padding: 0 24px 40px;">
+
+                <!-- Create Child Form -->
+                <div style="background:white;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.08);padding:28px;margin-bottom:24px;">
+                    <h3 style="margin:0 0 20px;color:#2c3e50;">Create Child</h3>
+                    <form id="card2-create-child-form" style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;">
+                        <input type="hidden" id="card2-expert-id" value="{{ expert_identity.expert_id }}">
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <label style="font-size:13px;font-weight:600;color:#495057;">First Name</label>
+                            <input id="card2-first-name" type="text" placeholder="First Name" maxlength="40" required
+                                style="padding:10px 14px;border:2px solid #e9ecef;border-radius:10px;font-size:15px;outline:none;"/>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <label style="font-size:13px;font-weight:600;color:#495057;">Last Name</label>
+                            <input id="card2-last-name" type="text" placeholder="Last Name" maxlength="40" required
+                                style="padding:10px 14px;border:2px solid #e9ecef;border-radius:10px;font-size:15px;outline:none;"/>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <label style="font-size:13px;font-weight:600;color:#495057;">Interaction Mode</label>
+                            <select id="card2-interaction-mode" style="padding:10px 14px;border:2px solid #e9ecef;border-radius:10px;font-size:15px;">
+                                <option value="flexible">Flexible (Skip Enabled)</option>
+                                <option value="strict">Strict (Skip Disabled)</option>
+                                <option value="passive">Passive (Questions Disabled)</option>
+                            </select>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <label style="font-size:13px;font-weight:600;color:#495057;">Icon</label>
+                            <select id="card2-icon-key" style="padding:10px 14px;border:2px solid #e9ecef;border-radius:10px;font-size:15px;">
+                                <option value="simba">🦁 Simba</option>
+                                <option value="nemo">🐠 Nemo</option>
+                                <option value="walle">🤖 WALL-E</option>
+                                <option value="moana">👸 Moana</option>
+                                <option value="elsa">❄️ Elsa</option>
+                                <option value="spiderman">🕷️ Spider-Man</option>
+                                <option value="mickey">🐭 Mickey Mouse</option>
+                                <option value="pooh">🧸 Winnie the Pooh</option>
+                                <option value="chase">🐾 Chase</option>
+                                <option value="spongebob">🧽 SpongeBob</option>
+                                <option value="turtle">🐢 Ninja Turtles</option>
+                                <option value="bluey">🦸 Bluey</option>
+                                <option value="hellokitty">🐱 Hello Kitty</option>
+                                <option value="mlp">🧁 My Little Pony</option>
+                                <option value="peppa">🌟 Peppa Pig</option>
+                                <option value="mario">🎮 Mario</option>
+                                <option value="dino">🦕 Dino</option>
+                            </select>
+                        </div>
+                        <div>
+                            <button type="submit" style="background:#6a1b9a;color:white;border:none;border-radius:10px;padding:12px 24px;font-size:15px;font-weight:600;cursor:pointer;">+ Create Child</button>
+                        </div>
+                    </form>
+                    <div id="card2-status" style="margin-top:12px;font-size:14px;display:none;"></div>
+                </div>
+
+                <!-- Children List -->
+                <div style="background:white;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.08);padding:28px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                        <h3 style="margin:0;color:#2c3e50;">My Children</h3>
+                        <button onclick="loadCard2Children()" style="background:none;border:1px solid #dee2e6;border-radius:8px;padding:6px 14px;cursor:pointer;font-size:14px;">↻ Refresh</button>
+                    </div>
+                    <div id="card2-children-list">
+                        <div style="text-align:center;color:#6c757d;padding:20px;">Loading...</div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -405,6 +468,7 @@ function showDashboardSection(section) {
     document.getElementById('section-question-review').style.display = section === 'question-review' ? 'block' : 'none';
     document.getElementById('section-child-management').style.display = section === 'child-management' ? 'block' : 'none';
     document.getElementById('section-parent-report').style.display = section === 'parent-report' ? 'block' : 'none';
+    if (section === 'child-management') loadCard2Children();
 }
 
 function backToDashboard() {
@@ -413,6 +477,83 @@ function backToDashboard() {
     document.getElementById('section-child-management').style.display = 'none';
     document.getElementById('section-parent-report').style.display = 'none';
 }
+
+// ── Card 2: Child Management ──
+const ICON_EMOJI = {
+    simba:'🦁',nemo:'🐠',walle:'🤖',moana:'👸',elsa:'❄️',spiderman:'🕷️',
+    mickey:'🐭',pooh:'🧸',chase:'🐾',spongebob:'🧽',turtle:'🐢',bluey:'🦸',
+    hellokitty:'🐱',mlp:'🧁',peppa:'🌟',mario:'🎮',dino:'🦕'
+};
+
+async function loadCard2Children() {
+    const expertId = document.getElementById('card2-expert-id').value;
+    const container = document.getElementById('card2-children-list');
+    container.innerHTML = '<div style="text-align:center;color:#6c757d;padding:20px;">Loading...</div>';
+    try {
+        const res = await fetch(`/api/admin/children?expert_id=${encodeURIComponent(expertId)}`);
+        const data = await res.json();
+        if (!data.children || data.children.length === 0) {
+            container.innerHTML = '<div style="text-align:center;color:#6c757d;padding:20px;">No children yet.</div>';
+            return;
+        }
+        container.innerHTML = `<table style="width:100%;border-collapse:collapse;">
+            <thead><tr style="background:#f8f9fa;">
+                <th style="padding:10px;text-align:left;font-size:13px;color:#6c757d;">Icon</th>
+                <th style="padding:10px;text-align:left;font-size:13px;color:#6c757d;">Name</th>
+                <th style="padding:10px;text-align:left;font-size:13px;color:#6c757d;">ID</th>
+                <th style="padding:10px;text-align:left;font-size:13px;color:#6c757d;">Mode</th>
+                <th style="padding:10px;text-align:left;font-size:13px;color:#6c757d;">Status</th>
+            </tr></thead>
+            <tbody>${data.children.map(c => `<tr style="border-top:1px solid #f0f0f0;">
+                <td style="padding:10px;font-size:22px;">${ICON_EMOJI[c.icon_key] || '👤'}</td>
+                <td style="padding:10px;">${c.first_name} ${c.last_name}</td>
+                <td style="padding:10px;color:#6c757d;font-size:13px;">${c.child_id}</td>
+                <td style="padding:10px;font-size:13px;">${c.interaction_mode}</td>
+                <td style="padding:10px;font-size:13px;">${c.is_active ? '✅ Active' : '❌ Inactive'}</td>
+            </tr>`).join('')}</tbody>
+        </table>`;
+    } catch(e) {
+        container.innerHTML = '<div style="color:#dc3545;padding:20px;">Failed to load children.</div>';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('card2-create-child-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const status = document.getElementById('card2-status');
+        const expertId = document.getElementById('card2-expert-id').value;
+        const payload = {
+            expert_id: expertId,
+            first_name: document.getElementById('card2-first-name').value.trim(),
+            last_name: document.getElementById('card2-last-name').value.trim(),
+            interaction_mode: document.getElementById('card2-interaction-mode').value,
+            icon_key: document.getElementById('card2-icon-key').value,
+        };
+        try {
+            const res = await fetch('/api/admin/children', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.success) {
+                status.style.display = 'block';
+                status.style.color = '#198754';
+                status.textContent = `Child created! ID: ${data.child.child_id}`;
+                this.reset();
+                loadCard2Children();
+            } else {
+                status.style.display = 'block';
+                status.style.color = '#dc3545';
+                status.textContent = data.message || 'Failed to create child.';
+            }
+        } catch(e) {
+            status.style.display = 'block';
+            status.style.color = '#dc3545';
+            status.textContent = 'Network error.';
+        }
+    });
+});
 </script>
 
 <script src="/assets/js/expert_preview.js?v=4" defer></script>
