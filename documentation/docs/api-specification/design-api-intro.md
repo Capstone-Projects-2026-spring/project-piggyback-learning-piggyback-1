@@ -42,14 +42,6 @@ Backend is implemented with FastAPI and exposes:
 
 ## Backend API Surface (Inventory)
 
-### Page Routes (HTML)
-
-- `GET /`
-- `GET /home`
-- `GET /children`
-- `GET /expert-preview`
-- `GET /admin/`
-
 ### API Routes (JSON, form, multipart)
 
 - `POST /api/verify-password`
