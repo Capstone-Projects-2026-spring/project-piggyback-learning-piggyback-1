@@ -8,16 +8,73 @@
 <body data-selected-video-id="{{ (selected_video_id or '') | e }}">
     <div class="container">
         <div class="page-header">
-            <h1>Expert Preview - Video Question Review</h1>
-            <p>Walk through the downloaded video, refine each AI segment, and prepare the final set of comprehension questions.</p>
+            <h1>Parent Dashboard</h1>
+            <p>Choose what you'd like to manage today.</p>
             <button id="switch-expert-btn" onclick="switchExpert()" style="
                 position: fixed; top: 16px; right: 16px;
                 background: white; border: none; border-radius: 20px;
                 padding: 10px 18px; font-size: 14px; font-weight: 600;
                 color: #6a1b9a; cursor: pointer;
                 box-shadow: 0 2px 8px rgba(0,0,0,0.12); z-index: 999;
-            ">← Switch Expert</button>
+            ">← Switch Parent</button>
         </div>
+
+        <!-- ── 3-Card Landing ── -->
+        <div id="dashboard-cards" style="
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 40px 24px;
+        ">
+            <div onclick="showDashboardSection('question-review')" style="
+                background: white; border-radius: 20px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+                padding: 40px 32px; max-width: 280px; width: 100%;
+                text-align: center; cursor: pointer;
+                transition: transform 0.15s, box-shadow 0.15s;
+            " onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 8px 28px rgba(0,0,0,0.15)'"
+               onmouseout="this.style.transform='';this.style.boxShadow='0 4px 20px rgba(0,0,0,0.10)'">
+                <div style="font-size:52px;margin-bottom:16px;">🎬</div>
+                <h3 style="margin:0 0 8px;font-size:20px;color:#2c3e50;">Question Review</h3>
+                <p style="color:#6c757d;font-size:14px;margin:0 0 24px;">Review and approve AI-generated questions for videos.</p>
+                <button style="background:#6a1b9a;color:white;border:none;border-radius:12px;padding:12px 24px;font-size:15px;font-weight:600;cursor:pointer;">Go to Review</button>
+            </div>
+
+            <div onclick="showDashboardSection('child-management')" style="
+                background: white; border-radius: 20px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+                padding: 40px 32px; max-width: 280px; width: 100%;
+                text-align: center; cursor: pointer;
+                transition: transform 0.15s, box-shadow 0.15s;
+            " onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 8px 28px rgba(0,0,0,0.15)'"
+               onmouseout="this.style.transform='';this.style.boxShadow='0 4px 20px rgba(0,0,0,0.10)'">
+                <div style="font-size:52px;margin-bottom:16px;">👧</div>
+                <h3 style="margin:0 0 8px;font-size:20px;color:#2c3e50;">Child Management</h3>
+                <p style="color:#6c757d;font-size:14px;margin:0 0 24px;">Create and manage children profiles and assignments.</p>
+                <button style="background:#6a1b9a;color:white;border:none;border-radius:12px;padding:12px 24px;font-size:15px;font-weight:600;cursor:pointer;">Manage Children</button>
+            </div>
+
+            <div onclick="showDashboardSection('parent-report')" style="
+                background: white; border-radius: 20px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+                padding: 40px 32px; max-width: 280px; width: 100%;
+                text-align: center; cursor: pointer;
+                transition: transform 0.15s, box-shadow 0.15s;
+            " onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 8px 28px rgba(0,0,0,0.15)'"
+               onmouseout="this.style.transform='';this.style.boxShadow='0 4px 20px rgba(0,0,0,0.10)'">
+                <div style="font-size:52px;margin-bottom:16px;">📊</div>
+                <h3 style="margin:0 0 8px;font-size:20px;color:#2c3e50;">Parent Report</h3>
+                <p style="color:#6c757d;font-size:14px;margin:0 0 24px;">View learning reports and manage your login code settings.</p>
+                <button style="background:#6a1b9a;color:white;border:none;border-radius:12px;padding:12px 24px;font-size:15px;font-weight:600;cursor:pointer;">View Reports</button>
+            </div>
+        </div>
+
+        <!-- ── Section: Question Review ── -->
+        <div id="section-question-review" style="display:none;">
+            <div style="padding: 16px 24px;">
+                <button onclick="backToDashboard()" style="background:none;border:none;color:#6a1b9a;font-size:15px;font-weight:600;cursor:pointer;">← Back to Dashboard</button>
+            </div>
 
         <div class="steps" id="expert-steps">
             <div class="step active" data-step="1">
@@ -318,7 +375,46 @@
             </div>
         </div>
 
+        </div> <!-- end section-question-review -->
+
+        <!-- ── Section: Child Management ── -->
+        <div id="section-child-management" style="display:none;">
+            <div style="padding: 16px 24px;">
+                <button onclick="backToDashboard()" style="background:none;border:none;color:#6a1b9a;font-size:15px;font-weight:600;cursor:pointer;">← Back to Dashboard</button>
+            </div>
+            <div style="padding: 24px; text-align:center; color:#6c757d;">
+                Child Management coming soon.
+            </div>
+        </div>
+
+        <!-- ── Section: Parent Report ── -->
+        <div id="section-parent-report" style="display:none;">
+            <div style="padding: 16px 24px;">
+                <button onclick="backToDashboard()" style="background:none;border:none;color:#6a1b9a;font-size:15px;font-weight:600;cursor:pointer;">← Back to Dashboard</button>
+            </div>
+            <div style="padding: 24px; text-align:center; color:#6c757d;">
+                Parent Report coming soon.
+            </div>
+        </div>
+
     </div>
+
+<script>
+function showDashboardSection(section) {
+    document.getElementById('dashboard-cards').style.display = 'none';
+    document.getElementById('section-question-review').style.display = section === 'question-review' ? 'block' : 'none';
+    document.getElementById('section-child-management').style.display = section === 'child-management' ? 'block' : 'none';
+    document.getElementById('section-parent-report').style.display = section === 'parent-report' ? 'block' : 'none';
+}
+
+function backToDashboard() {
+    document.getElementById('dashboard-cards').style.display = 'flex';
+    document.getElementById('section-question-review').style.display = 'none';
+    document.getElementById('section-child-management').style.display = 'none';
+    document.getElementById('section-parent-report').style.display = 'none';
+}
+</script>
+
 <script src="/assets/js/expert_preview.js?v=4" defer></script>
 </body>
 </html>
