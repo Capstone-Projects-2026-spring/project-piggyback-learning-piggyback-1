@@ -51,32 +51,20 @@ Backend is implemented with FastAPI and exposes:
 - `POST /api/expert-questions`
 - `POST /api/save-final-questions`
 - `POST /api/tts`
-- `POST /api/download`
-- `POST /api/frames/{video_id}`
-- `GET /api/admin/videos`
-- `POST /api/submit-questions`
-- `GET /api/kids_videos`
-- `GET /api/final-questions/{video_id}`
-- `POST /api/check_answer`
-- `POST /api/transcribe`
-- `GET /api/config`
-
-### WebSocket Route
-
-- `WS /ws/questions/{video_id}`
-
-Client payload fields:
-
-- `start_seconds`
-- `interval_seconds`
-- `full_duration`
-
-Server event types:
-
-- `status`
-- `segment_result`
-- `done`
-- `error`
+- `POST /api/expert/login`
+- `POST /api/expert/logout`
+- `GET /api/learners/experts/{expert_id}/children`
+- `GET /api/learners/children/{child_id}/report`
+- `GET /api/learners/children/{child_id}/videos`
+- `GET /expert/edit/{video_id}`
+- `GET /api/expert/video/{video_id}/persona-variants`
+- `POST /api/expert/video/{video_id}/persona-variants`
+- `GET /api/expert/video/{video_id}/final-questions`
+- `POST /api/expert/video/{video_id}/update-questions`
+- `POST /api/expert/video/{video_id}/regenerate-question`
+- `GET /api/expert/videos`
+- `POST /api/expert/videos/{video_id}/claim`
+- `POST /api/expert/questions/persona-variants`
 
 ## Authentication and Authorization (Current State)
 
