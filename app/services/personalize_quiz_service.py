@@ -1,6 +1,7 @@
 import anthropic
 import json
 import os
+from typing import Dict, Any, Optional
 
 from anthropic.types import MessageParam
 from app.settings import ANTHROPIC_API_KEY
@@ -32,11 +33,7 @@ def generate_persona_variants(questions: Dict[str, Any], best_question_text: Opt
 
     # Check for Claude API key
     if not ANTHROPIC_API_KEY:
-        last_error_payload = {
-            "reason": "anthropic key missing",
-            "retryable": False
-        }
-        return None
+        return {"success": False, "message":f"Anthropic key missing."}
                     
     system_message = (
         "You are a safe, child-focused educational assistant. "
@@ -98,11 +95,7 @@ def generate_persona_variants(questions: Dict[str, Any], best_question_text: Opt
             system=system_message,
             messages=parts
         )
-        if resp.content:
-            text = resp.content[0].text
-        else:
-            text = "No text."
-
+        
         if resp.content:
             text = resp.content[0].text
         else:
