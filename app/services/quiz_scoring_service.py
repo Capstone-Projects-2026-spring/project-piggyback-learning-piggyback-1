@@ -47,12 +47,15 @@ def save_quiz_result(child_id: str, video_id: str, score_data: dict) -> dict:
     attempt = {
         "video_id": video_id,
         "timestamp": datetime.now().isoformat(),
+        "total": score_data.get("total", 0),
         "questions_total": score_data.get("total", 0),
         "questions_correct": score_data.get("correct", 0),
         "questions_wrong": score_data.get("wrong", 0),
         "percentage": score_data.get("percentage", 0),
+        "total_retries": score_data.get("total_retries", 0),
+        "avg_retries_per_question": score_data.get("avg_retries_per_question", 0.0),
         "details": score_data.get("details", [])
-    }
+}
     
     data["attempts"].append(attempt)
     

@@ -6,24 +6,305 @@
   <title>Kids Videos | Piggyback</title>
   <link rel="stylesheet" href="/assets/css/children.css">
   
-  <!-- Quiz scoring CSS -->
+  <!-- Learner flow CSS -->
   <style>
+  /* ── Login screen ── */
+  #screen-login {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    padding: 24px;
+  }
+  #screen-login .login-card {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    padding: 48px 40px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+  }
+  #screen-login .login-logo {
+    font-size: 64px;
+    margin-bottom: 12px;
+  }
+  #screen-login h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0 0 8px 0;
+  }
+  #screen-login .login-subtitle {
+    color: #6c757d;
+    font-size: 15px;
+    margin: 0 0 32px 0;
+  }
+  #screen-login input[type="text"] {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    font-size: 20px;
+    text-align: center;
+    letter-spacing: 3px;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+  }
+  #screen-login input[type="text"]:focus {
+    border-color: #fcb69f;
+  }
+  #screen-login .login-btn {
+    margin-top: 16px;
+    width: 100%;
+    padding: 14px;
+    background: #ff7043;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  #screen-login .login-btn:hover { background: #e64a19; }
+  #screen-login .login-btn:disabled { background: #ccc; cursor: not-allowed; }
+  #screen-login .login-error {
+    margin-top: 14px;
+    color: #dc3545;
+    font-size: 14px;
+    min-height: 20px;
+  }
+
+  /* ── Profiles screen ── */
+  #screen-profiles {
+    min-height: 100vh;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    padding: 24px;
+  }
+  #screen-profiles .expert-badge {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    background: white;
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #2c3e50;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+  #screen-profiles .back-to-login {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    background: white;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #6a1b9a;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+  #screen-profiles .back-to-login:hover { background: #f3e5f5; }
+  #screen-profiles h1 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #6a1b9a;
+    margin: 60px 0 8px 0;
+    text-align: center;
+  }
+  #screen-profiles .profiles-subtitle {
+    color: #6c757d;
+    font-size: 16px;
+    margin: 0 0 40px 0;
+    text-align: center;
+  }
+  .profiles-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: center;
+    max-width: 700px;
+  }
+  .profile-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .profile-card:hover { transform: scale(1.07); }
+  .profile-card .profile-icon {
+    width: 110px;
+    height: 110px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #e91e8c, #f06292);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 56px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+  .profile-card .profile-name {
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+
+  /* ── Companion selection screen ── */
+  #screen-companions {
+    min-height: 100vh;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    padding: 24px;
+  }
+  #screen-companions h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #6a1b9a;
+    margin: 0 0 8px 0;
+    text-align: center;
+  }
+  #screen-companions .companions-subtitle {
+    color: #6c757d;
+    font-size: 16px;
+    margin: 0 0 40px 0;
+    text-align: center;
+  }
+  #screen-companions .back-btn {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    background: white;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #6a1b9a;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+  #screen-companions .back-btn:hover { background: #f3e5f5; }
+  .companions-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: center;
+  }
+  .companion-card {
+    background: white;
+    border-radius: 20px;
+    padding: 32px 28px;
+    width: 180px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .companion-card:hover {
+    transform: scale(1.07);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  }
+  .companion-img {
+    width: 96px;
+    height: 96px;
+    object-fit: contain;
+    margin-bottom: 12px;
+  }
+  .companion-card .companion-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 6px;
+  }
+  .companion-card .companion-desc {
+    font-size: 13px;
+    color: #6c757d;
+  }
+
+  /* ── Quiz scoring animation ── */
   @keyframes fadeInOut {
       0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
       20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
       80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
       100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
   }
+
+  /* Hide Skip Button in Strict Mode */
+  body[data-interaction-mode="strict"] #skip-answer-btn {
+      display: none !important;
+  }
   </style>
 </head>
 
 <body>
-  <main class="kids-page">
+
+  <!-- ── Step 1: Expert ID Login ── -->
+  <div id="screen-login">
+    <div class="login-card">
+      <div class="login-logo">🐷</div>
+      <h1>Piggyback Learning</h1>
+      <p class="login-subtitle">Enter your Expert ID to get started</p>
+      <input id="expert-id-input" type="text" placeholder="Expert ID" maxlength="20" autocomplete="off">
+      <button id="login-btn" class="login-btn">Let's Go! →</button>
+      <p id="login-error" class="login-error"></p>
+    </div>
+  </div>
+
+  <!-- ── Step 2: Child Profile Cards ── -->
+  <div id="screen-profiles">
+    <button class="back-to-login" id="back-to-login-btn">← Switch Expert</button>
+    <div class="expert-badge" id="expert-badge"></div>
+    <h1>Who's Watching?</h1>
+    <p class="profiles-subtitle" id="profiles-subtitle"></p>
+    <div class="profiles-grid" id="profiles-grid"></div>
+  </div>
+
+  <!-- ── Step 3: Companion Selection ── -->
+  <div id="screen-companions">
+    <button class="back-btn" id="companions-back-btn">← Back</button>
+    <h1 id="companions-heading">Choose Your Companion</h1>
+    <p class="companions-subtitle">Pick a friend to watch videos with you!</p>
+    <div class="companions-grid">
+      <div class="companion-card" data-companion="pig">
+        <img class="companion-img" src="/assets/companions/pig.png" alt="Pig">
+        <div class="companion-name">Pippa the Pig</div>
+        <div class="companion-desc">Playful and loves stories</div>
+      </div>
+      <div class="companion-card" data-companion="rabbit">
+        <img class="companion-img" src="/assets/companions/bunny.png" alt="Bunny">
+        <div class="companion-name">Judy the Bunny</div>
+        <div class="companion-desc">Energetic and fun-loving</div>
+      </div>
+      <div class="companion-card" data-companion="alligator">
+        <img class="companion-img" src="/assets/companions/aligator.png" alt="Alligator">
+        <div class="companion-name">Ash the Alligator</div>
+        <div class="companion-desc">Curious and adventurous</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Steps 4-5: Main learning flow (hidden until login) ── -->
+  <main class="kids-page" id="main-flow" style="display:none;">
   
     <!-- Score Tracker -->
     <div id="scoreTracker" style="
         position: fixed;
-        top: 80px;
+        top: 110px;
         right: 20px;
         background: white;
         padding: 20px;
@@ -55,7 +336,7 @@
           <span aria-hidden="true">&#8592;</span>
           <span>Back to Library</span>
         </button>
-        <div class="kids-avatar" aria-hidden="true">&#128100;</div>
+        <span id="library-title" style="font-weight:600; font-size:16px; color:#2c3e50;"></span>
       </div>
       <div class="kids-search" role="search">
         <input id="kids-search" type="search" placeholder="Search Piggyback Kids" aria-label="Search for a video">
@@ -63,7 +344,72 @@
           <span aria-hidden="true">&#128269;</span>
         </button>
       </div>
+      <button id="parent-report-btn" type="button" onclick="openParentReport()" style="
+        background: linear-gradient(135deg, #6a1b9a, #e91e8c);
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 10px 18px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 2px 8px rgba(106,27,154,0.3);
+        white-space: nowrap;
+      ">
+        📊 Parent Report
+      </button>
     </header>
+
+    <!-- Parent Report Slide-in Panel -->
+    <div id="parent-report-overlay" style="
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 5000;
+    " onclick="closeParentReport(event)">
+      <div id="parent-report-panel" style="
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: min(420px, 100vw);
+        background: #f5f5f5;
+        overflow-y: auto;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        display: flex;
+        flex-direction: column;
+      " onclick="event.stopPropagation()">
+        <!-- Panel Header -->
+        <div style="
+          background: linear-gradient(135deg, #6a1b9a, #e91e8c);
+          padding: 20px 24px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          flex-shrink: 0;
+        ">
+          <h2 style="color:white; margin:0; font-size:20px; font-weight:700;">Learning Report</h2>
+          <button onclick="closeParentReport()" style="
+            background: none;
+            border: none;
+            color: white;
+            font-size: 22px;
+            cursor: pointer;
+            line-height: 1;
+            padding: 4px;
+          ">&#10005;</button>
+        </div>
+        <!-- Panel Content -->
+        <div id="parent-report-content" style="padding: 16px; flex: 1;">
+          <div style="text-align:center; color:#6c757d; padding: 40px;">Loading...</div>
+        </div>
+      </div>
+    </div>
 
     <!-- Video library -->
     <div id="video-grid"></div>
@@ -87,7 +433,8 @@
           <div id="blocker" aria-hidden="true"></div>
           <div id="question-box" role="dialog" aria-live="assertive" aria-labelledby="question" aria-describedby="timestamp feedback">
             <div class="question-character">
-              <video src="/assets/asking_question.webm" autoplay loop muted playsinline></video>
+              <video id="companion-video" src="/assets/Pig_updated.webm" autoplay loop muted playsinline></video>
+              <img id="companion-img" src="" alt="Companion" class="companion-speaking" style="display:none;">
             </div>
             <div class="question-bubble">
               <h3 id="question"></h3>
@@ -128,6 +475,7 @@ let quizScore = {
     correct: 0,
     wrong: 0,
     total: 0,
+    totalRetries: 0,
     expectedQuestions: 2,
     details: []
 };
@@ -139,7 +487,11 @@ function startQuizTracking(videoId, expectedQuestions = 2) {
     quizScore.total = 0;
     quizScore.expectedQuestions = expectedQuestions;
     quizScore.details = [];
-    document.getElementById('scoreTracker').style.display = 'block';
+    quizScore.totalRetries = 0;
+    const isPassive = document.body.dataset.interactionMode === 'passive';
+    if (!isPassive) {
+        document.getElementById('scoreTracker').style.display = 'block';
+    }
     updateScoreDisplay();
     console.log('Quiz started:', videoId);
 }
@@ -150,33 +502,48 @@ function updateScoreDisplay() {
     document.getElementById('totalScore').textContent = `${quizScore.correct}/${quizScore.total}`;
 }
 
-function recordAnswer(question, expectedAnswer, userAnswer, status, similarity) {
+function recordAnswer(question, expectedAnswer, userAnswer, status, similarity, questionType) {
     if (status === 'correct') {
         quizScore.correct++;
     } else {
         quizScore.wrong++;
     }
     quizScore.total++;
+    updateScoreDisplay();
+
     quizScore.details.push({
         question: question,
         expectedAnswer: expectedAnswer,
         userAnswer: userAnswer,
         status: status,
         similarity: similarity,
+        question_type: questionType || null,
         timestamp: new Date().toISOString()
     });
-    updateScoreDisplay();
     showQuickFeedback(status);
     if (quizScore.total >= quizScore.expectedQuestions) {
         setTimeout(() => showFinalScore(), 1500);
     }
 }
 
+function recordRetry(question, spoken, sim) {
+  quizScore.totalRetries = (quizScore.totalRetries || 0) + 1;
+  quizScore.details.push({
+    question: question,
+    userAnswer: spoken,
+    status: 'retry',
+    similarity: sim,
+    timestamp: new Date().toISOString()
+  });
+  updateScoreDisplay();
+}
+
 function showQuickFeedback(status) {
+    const isStrict = document.body.dataset.interactionMode === 'strict';
     const messages = {
         'correct': { emoji: '🐷', text: 'Correct!', color: '#28a745' },
         'almost': { emoji: '🐷', text: 'Close!', color: '#ffc107' },
-        'wrong': { emoji: '🐷', text: 'Keep trying!', color: '#dc3545' }
+        'wrong': { emoji: '🐷', text: isStrict ? 'Keep trying!' : 'Keep going!', color: '#dc3545' }
     };
     const feedback = messages[status] || messages['wrong'];
     const el = document.createElement('div');
@@ -221,6 +588,8 @@ async function saveScoreAndClose() {
                     correct: quizScore.correct,
                     wrong: quizScore.wrong,
                     percentage: percentage,
+                    total_retries: quizScore.totalRetries || 0,
+                    avg_retries_per_question: quizScore.total > 0 ? parseFloat((quizScore.totalRetries / quizScore.total).toFixed(2)) : 0,
                     details: quizScore.details
                 }
             })
@@ -240,6 +609,12 @@ async function saveScoreAndClose() {
 }
 
 function getChildId() {
+    // Use the real child_id selected during the learner flow
+    const state = loadState();
+    if (state.selected_child && state.selected_child.child_id) {
+        return state.selected_child.child_id;
+    }
+    // Fallback for direct access outside the learner flow
     let id = sessionStorage.getItem('childId');
     if (!id) {
         id = 'child_' + Date.now();
@@ -249,6 +624,368 @@ function getChildId() {
 }
 
 console.log('✅ Quiz scoring ready!');
+</script>
+
+<!-- ── Parent Report Panel ── -->
+<script>
+const CATEGORY_META = {
+  character:  { label: 'Character',  icon: '👤' },
+  settings:   { label: 'Setting',    icon: '🏞️' },
+  feeling:    { label: 'Feeling',    icon: '💚' },
+  action:     { label: 'Action',     icon: '⚡' },
+  causal:     { label: 'Causal',     icon: '🔗' },
+  outcome:    { label: 'Outcome',    icon: '🎯' },
+  prediction: { label: 'Prediction', icon: '🔮' },
+};
+
+async function openParentReport() {
+  const overlay = document.getElementById('parent-report-overlay');
+  const panel   = document.getElementById('parent-report-panel');
+  overlay.style.display = 'block';
+  requestAnimationFrame(() => { panel.style.transform = 'translateX(0)'; });
+
+  const state = loadState();
+  const child  = state.selected_child || {};
+  const childId = child.child_id || '';
+  const childName = child.first_name || 'Child';
+  const expertName = state.expert_name || 'Expert';
+
+  const content = document.getElementById('parent-report-content');
+  content.innerHTML = '<div style="text-align:center;color:#6c757d;padding:40px;">Loading...</div>';
+
+  try {
+    const res  = await fetch(`/api/learners/children/${encodeURIComponent(childId)}/report`);
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message || 'Failed to load report');
+    renderParentReport(content, childName, expertName, data);
+  } catch (err) {
+    content.innerHTML = `<div style="text-align:center;color:#dc3545;padding:40px;">Could not load report.<br><small>${err.message}</small></div>`;
+  }
+}
+
+function closeParentReport(e) {
+  if (e && e.target !== document.getElementById('parent-report-overlay')) return;
+  const panel = document.getElementById('parent-report-panel');
+  panel.style.transform = 'translateX(100%)';
+  setTimeout(() => { document.getElementById('parent-report-overlay').style.display = 'none'; }, 300);
+}
+// Also allow close button (no event arg)
+const _origClose = closeParentReport;
+window.closeParentReport = function(e) {
+  if (!e) {
+    const panel = document.getElementById('parent-report-panel');
+    panel.style.transform = 'translateX(100%)';
+    setTimeout(() => { document.getElementById('parent-report-overlay').style.display = 'none'; }, 300);
+  } else {
+    _origClose(e);
+  }
+};
+
+function renderParentReport(container, childName, expertName, data) {
+  const score = Math.round(data.overall_score || 0);
+  const attempts = data.total_attempts || 0;
+  const categories = data.top_categories || [];
+  const recentVideos = data.recent_videos || [];
+
+  const scoreColor = score >= 80 ? '#4caf50' : score >= 60 ? '#ff9800' : '#f44336';
+
+  let categoriesHtml = '';
+  if (categories.length === 0) {
+    categoriesHtml = '<p style="color:#6c757d;font-size:14px;">No category data yet.</p>';
+  } else {
+    categoriesHtml = categories.map(cat => {
+      const meta = CATEGORY_META[cat.type] || { label: cat.type, icon: '📌' };
+      const pct = cat.score;
+      return `
+        <div style="margin-bottom:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <span style="font-size:14px;font-weight:600;color:#2c3e50;">${meta.icon} ${meta.label}</span>
+            <span style="font-size:14px;color:#6c757d;">${pct}/100</span>
+          </div>
+          <div style="background:#e9ecef;border-radius:6px;height:10px;overflow:hidden;">
+            <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#6a1b9a,#e91e8c);border-radius:6px;transition:width 0.6s ease;"></div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+const totalRetries = data.total_retries || 0;
+const avgRetries = data.avg_retries_per_question != null ? Number(data.avg_retries_per_question).toFixed(1) : '0.0';
+const totalQuizzes = data.total_attempts || 0;
+const avgRetriesPerQuiz = totalQuizzes > 0 ? (totalRetries / totalQuizzes).toFixed(1) : '0.0';
+
+const retryHtml = `
+    <div style="background:white;border-radius:12px;padding:16px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:12px;">
+      <h3 style="margin:0 0 12px;font-size:15px;font-weight:700;color:#2c3e50;">Engagement</h3>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0f0;">
+        <span style="font-size:14px;color:#2c3e50;">Total Question Retries</span>
+        <span style="font-size:16px;font-weight:700;color:#6a1b9a;">${totalRetries}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0f0;">
+        <span style="font-size:14px;color:#2c3e50;">Avg Retries per Question</span>
+        <span style="font-size:16px;font-weight:700;color:#6a1b9a;">${avgRetries}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;">
+        <span style="font-size:14px;color:#2c3e50;">Avg Retries per Quiz</span>
+        <span style="font-size:16px;font-weight:700;color:#6a1b9a;">${avgRetriesPerQuiz}</span>
+      </div>
+    </div>`;
+
+  let recentHtml = '';
+  if (recentVideos.length > 0) {
+    recentHtml = `
+      <div style="background:white;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:12px;">
+        <h3 style="margin:0 0 12px;font-size:15px;font-weight:700;color:#2c3e50;">Recent Videos</h3>
+        ${recentVideos.map(v => `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0f0;">
+            <span style="font-size:13px;color:#2c3e50;flex:1;margin-right:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${v.video_title || v.video_id}</span>
+            <span style="font-size:13px;font-weight:700;color:${v.percentage>=80?'#4caf50':v.percentage>=60?'#ff9800':'#f44336'};flex-shrink:0;">${v.percentage}%</span>
+          </div>`).join('')}
+      </div>`;
+  }
+
+  container.innerHTML = `
+    <!-- Child card -->
+    <div style="background:white;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:12px;display:flex;align-items:center;gap:14px;">
+      <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#9c27b0,#e91e8c);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <span style="font-size:24px;">👤</span>
+      </div>
+      <div>
+        <div style="font-size:17px;font-weight:700;color:#2c3e50;">${childName}</div>
+        <div style="font-size:13px;color:#6c757d;">Supervised by ${expertName}</div>
+      </div>
+    </div>
+
+    <!-- Overall score -->
+    <div style="background:${scoreColor};border-radius:12px;padding:24px;text-align:center;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.12);">
+      <div style="font-size:52px;font-weight:800;color:white;line-height:1;">${score}%</div>
+      <div style="font-size:15px;color:rgba(255,255,255,0.9);margin-top:4px;">Overall Score</div>
+    </div>
+
+    <!-- Quiz attempts -->
+    <div style="background:white;border-radius:12px;padding:16px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="font-size:15px;font-weight:700;color:#2c3e50;">Quiz Attempts</div>
+        <div style="font-size:13px;color:#6c757d;">Total completed</div>
+      </div>
+      <div style="font-size:36px;font-weight:800;color:#6a1b9a;">${attempts}</div>
+    </div>
+
+    ${retryHtml}
+
+    <!-- Category scores -->
+    <div style="background:white;border-radius:12px;padding:16px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:12px;">
+      <h3 style="margin:0 0 16px;font-size:15px;font-weight:700;color:#2c3e50;">Category Scores</h3>
+      ${categoriesHtml}
+    </div>
+
+    ${recentHtml}
+  `;
+}
+</script>
+
+<!-- ── Learner Flow State Machine ── -->
+<script>
+// ── State ──────────────────────────────────────────────────────────────
+const STATE_KEY = 'learnerFlowState';
+
+function loadState() {
+    try { return JSON.parse(sessionStorage.getItem(STATE_KEY)) || {}; }
+    catch { return {}; }
+}
+function saveState(patch) {
+    const s = Object.assign(loadState(), patch);
+    sessionStorage.setItem(STATE_KEY, JSON.stringify(s));
+    return s;
+}
+
+// ── Step 1: Expert ID Login ─────────────────────────────────────────────
+(function initLogin() {
+    const input  = document.getElementById('expert-id-input');
+    const btn    = document.getElementById('login-btn');
+    const errEl  = document.getElementById('login-error');
+
+    // If we already have a valid expert_id in session, skip login
+    const saved = loadState();
+    if (saved.expert_id && saved.children) {
+        showProfiles();
+        return;
+    }
+
+    btn.addEventListener('click', doLogin);
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+    async function doLogin() {
+        const expertId = input.value.trim();
+        if (!expertId) {
+            errEl.textContent = 'Please enter your Expert ID.';
+            return;
+        }
+        btn.disabled = true;
+        errEl.textContent = '';
+        try {
+            const res  = await fetch(`/api/learners/experts/${encodeURIComponent(expertId)}/children`);
+            const data = await res.json();
+            if (!res.ok || !data.success) {
+                errEl.textContent = data.error || 'Expert ID not found. Please try again.';
+                return;
+            }
+            if (!data.children || data.children.length === 0) {
+                errEl.textContent = 'No active children found for this Expert ID.';
+                return;
+            }
+            saveState({
+                expert_id: expertId,
+                expert_name: data.expert.display_name,
+                children: data.children,
+                step: 'profiles'
+            });
+            showProfiles();
+        } catch (err) {
+            console.error(err);
+            errEl.textContent = 'Network error. Please check your connection.';
+        } finally {
+            btn.disabled = false;
+        }
+    }
+})();
+
+// icon_key values match what admin assigns to each child
+const CHILD_ICON_EMOJI = {
+  simba:       '🦁',
+  nemo:        '🐠',
+  walle:       '🤖',
+  moana:       '👸',
+  elsa:        '❄️',
+  spiderman:   '🕷️',
+  mickey:      '🐭',
+  pooh:        '🧸',
+  chase:       '🐾',
+  spongebob:   '🧽',
+  turtle:      '🐢',
+  bluey:       '🦸',
+  hellokitty:  '🐱',
+  mlp:         '🧁',
+  peppa:       '🌟',
+  mario:       '🎮',
+  dino:        '🦕',
+  pig:         '🐷',
+  fox:         '🦊',
+  owl:         '🦉',
+  cat:         '🐱',
+  bear:        '🐻',
+  alligator:   '🐊',
+  rabbit:      '🐰',
+  lion:        '🦁',
+  penguin:     '🐧',
+};
+
+function goBackToLogin() {
+    // Clear all session state so the next visit always starts at login
+    sessionStorage.removeItem(STATE_KEY);
+    document.getElementById('screen-profiles').style.display = 'none';
+    document.getElementById('screen-login').style.display = 'flex';
+    document.getElementById('expert-id-input').value = '';
+    document.getElementById('login-error').textContent = '';
+}
+
+// Always require login when the user navigates away or closes the tab
+window.addEventListener('beforeunload', () => sessionStorage.removeItem(STATE_KEY));
+
+function showProfiles() {
+    // Hide login, show profiles screen
+    document.getElementById('screen-login').style.display = 'none';
+    const screen = document.getElementById('screen-profiles');
+    screen.style.display = 'flex';
+
+    // Wire up the "Switch Expert" back button
+    document.getElementById('back-to-login-btn').onclick = goBackToLogin;
+
+    const { expert_name, children } = loadState();
+
+    // Top-left expert badge
+    document.getElementById('expert-badge').textContent = expert_name || 'Expert';
+    document.getElementById('profiles-subtitle').textContent =
+        `Welcome ${expert_name} · Select your profile`;
+
+    // Render one card per active child
+    const grid = document.getElementById('profiles-grid');
+    grid.innerHTML = '';
+    children.forEach(child => {
+        const emoji = CHILD_ICON_EMOJI[child.icon_key] || '👤';
+        const card = document.createElement('div');
+        card.className = 'profile-card';
+        card.innerHTML = `
+            <div class="profile-icon">${emoji}</div>
+            <div class="profile-name">${child.first_name}</div>
+        `;
+        // On click, save selected child and advance to companion screen (Step 3)
+        card.addEventListener('click', () => {
+            saveState({ selected_child: child, step: 'companions' });
+            showCompanions();
+        });
+        grid.appendChild(card);
+    });
+}
+
+function showCompanions() {
+    // Hide profiles, show companion picker
+    document.getElementById('screen-profiles').style.display = 'none';
+    const screen = document.getElementById('screen-companions');
+    screen.style.display = 'flex';
+
+    // Update heading with child's first name
+    const { selected_child } = loadState();
+    document.getElementById('companions-heading').textContent =
+        `Hi ${selected_child.first_name}! Choose Your Companion`;
+
+    // Back goes to profiles screen
+    document.getElementById('companions-back-btn').onclick = () => {
+        screen.style.display = 'none';
+        showProfiles();
+    };
+
+    // Each card click saves companion and moves to library (Step 4)
+    document.querySelectorAll('.companion-card').forEach(card => {
+        card.onclick = () => {
+            saveState({ companion: card.dataset.companion, step: 'library' });
+            showLibrary();
+        };
+    });
+}
+
+const COMPANION_EMOJI = { pig: '🐷', rabbit: '🐰', alligator: '🐊' };
+
+function showLibrary() {
+    document.getElementById('screen-companions').style.display = 'none';
+    document.getElementById('main-flow').style.display = '';
+
+    const { selected_child, companion } = loadState();
+
+    // Update header: companion emoji + child's first name
+    const emoji = COMPANION_EMOJI[companion] || '🐷';
+    document.getElementById('library-title').textContent =
+        `${emoji} ${selected_child.first_name}'s Videos`;
+
+    // Set the interaction mode on the body to enable CSS/JS logic
+    document.body.dataset.interactionMode = selected_child.interaction_mode || 'flexible';
+
+    // Back button stops any playing video then returns to companion screen
+    document.getElementById('back-button').onclick = () => {
+        if (window.__stopVideo) window.__stopVideo();
+        document.getElementById('main-flow').style.display = 'none';
+        showCompanions();
+    };
+
+    // Load only this child's assigned videos
+    window.__loadScopedVideos(selected_child.child_id);
+}
+
+function showMainFlow() {
+    // Used when advancing past the pre-player screens into the quiz player
+    document.getElementById('screen-companions').style.display = 'none';
+    document.getElementById('main-flow').style.display = '';
+}
 </script>
 
 </body>

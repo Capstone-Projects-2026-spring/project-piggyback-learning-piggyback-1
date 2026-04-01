@@ -67,10 +67,17 @@
       "Awesome work!",
       "You nailed it!"
     ];
-    const BORDERLINE_FEEDBACK = [
-      "Almost! Let's watch it again."
-    ];
-    const RETRY_FEEDBACK = "I think we missed it. Let's watch it again.";
+    function getBorderlineFeedback() {
+      const isStrict = document.body.dataset.interactionMode === 'strict';
+      return isStrict ? "Almost! Let's watch it again." : "Almost! Let's keep going!";
+    }
+    
+    function getRetryFeedback() {
+      const isStrict = document.body.dataset.interactionMode === 'strict';
+      return isStrict ? "I think we missed it. Let's watch it again." : "That's not quite the answer, but it's okay! Let's keep going!";
+    }
+    const wrongAttempted = new Set();
+    const retryCountMap = new Map();
 
     // ===============================
     // Global State
@@ -713,8 +720,15 @@
 
     if (skipAnswerBtn) {
       skipAnswerBtn.addEventListener("click", () => {
+        const isStrictMode = document.body.dataset.interactionMode === "strict";
+    
+        // disable skipping in strict mode
+        if (isStrictMode) return;
         hideQuestionActions();
+    
         if (currentQuestionContext) {
+          const quesSec = toSeconds(currentQuestionContext.q.ques_time);
+          asked.add(quesSec);
           setPlayerTime(currentQuestionContext.segStart);
         }
         resumeVideo();
@@ -911,12 +925,15 @@
       }
 
       asked.clear();
+      wrongAttempted.clear();
+      retryCountMap.clear();
       previousTime = 0;
       maxAllowedTime = 0;
       skipLockBypass = false;
 
-      // Load matching questions
-      fetch(`/api/final-questions/${encodeURIComponent(video.video_id)}?nocache=${Date.now()}`)
+      // Load matching questions (pass companion so backend can return persona-specific questions)
+      const _companion = (typeof loadState === 'function' ? loadState().companion : '') || '';
+      fetch(`/api/final-questions/${encodeURIComponent(video.video_id)}?companion=${encodeURIComponent(_companion)}&nocache=${Date.now()}`)
         .then(res => res.json())
         .then(data => {
           if (!data.success) throw new Error(data.error || "Missing final questions");
@@ -998,6 +1015,11 @@
         }
 
         // --- Question Triggers ---
+        if (document.body.dataset.interactionMode === 'passive') {
+          previousTime = currentTime;
+          return;
+        }
+
         for (const segment of segments) {
           const segStart = segment.segment_start || 0;
           const segEnd = segment.segment_end && segment.segment_end > segStart
@@ -1331,9 +1353,15 @@
       }
     }
 
-    function tryRecordAnswer(question, answer, spoken, status, sim) {
+    function tryRecordAnswer(question, answer, spoken, status, sim, questionType) {
       if (typeof recordAnswer === "function") {
-        recordAnswer(question, answer, spoken, status, sim);
+        recordAnswer(question, answer, spoken, status, sim, questionType);
+      }
+    }
+
+    function tryRecordRetry(question, spoken, sim) {
+      if (typeof recordRetry === 'function') {
+        recordRetry(question, spoken, sim);
       }
     }
 
@@ -1427,6 +1455,22 @@
       if (currentIndex >= 0) {
         prefetchUpcomingQuestions(currentIndex + 1);
       }
+
+      // Swap companion webm based on selected companion
+      const _companion = (typeof loadState === 'function' ? loadState().companion : '') || 'pig';
+      const _compVideo = document.getElementById('companion-video');
+      const COMPANION_WEBMS = {
+        pig:       '/assets/Pig_updated.webm',
+        rabbit:    '/assets/Bunny_video.webm',
+        alligator: '/assets/aligator_video.webm',
+      };
+      const _newSrc = COMPANION_WEBMS[_companion] || COMPANION_WEBMS['pig'];
+      if (_compVideo.getAttribute('src') !== _newSrc) {
+        _compVideo.src = _newSrc;
+        _compVideo.load();
+      }
+      _compVideo.style.display = 'block';
+      document.getElementById('companion-img').style.display = 'none';
 
       document.getElementById("question-box").style.display = "flex";
       document.getElementById("question").innerText = q.question;
@@ -1777,60 +1821,120 @@
           }
         }
 
-        if (status === "correct") {
+        // Read back the learner's answer before any feedback
+        if (spoken && spoken.trim()) {
+          await speakFeedbackText(`You said: ${spoken.trim()}`);
+        }
+
+        if (status === 'correct') {
           const celebrationMessage = pickRandomCelebration();
           asked.add(quesSec);
-
-          correctAnswers++;
-          updateProgress();
-          tryRecordAnswer(q.question, q.answer, spoken, "correct", sim);
-
-          await deliverFeedback({
-            message: celebrationMessage,
-            color: "#22c55e",
-            confetti: true,
-            minVisibleMs: MIN_FEEDBACK_DISPLAY_MS + 200
-          });
+        
+          if (!wrongAttempted.has(quesSec)) {
+            // First attempt was correct — count it
+            correctAnswers++;
+            updateProgress();
+            tryRecordAnswer(q.question, q.answer, spoken, "correct", sim, q.question_type);
+            await deliverFeedback({
+              message: celebrationMessage,
+              color: "#22c55e",
+              confetti: true,
+              minVisibleMs: MIN_FEEDBACK_DISPLAY_MS + 200
+            });
+          } else {
+            // Already counted as wrong on first attempt — this is a retry, track engagement only
+            retryCountMap.set(quesSec, (retryCountMap.get(quesSec) || 0) + 1);
+            tryRecordRetry(q.question, spoken, sim);
+            if (typeof showQuickFeedback === 'function') {
+              showQuickFeedback('correct');
+            }
+            await deliverFeedback({
+              message: celebrationMessage,
+              color: "#22c55e",
+              confetti: true,
+              minVisibleMs: MIN_FEEDBACK_DISPLAY_MS + 200
+            });
+          }
 
           await wait(200);
           resumeVideo();
           return;
         }
 
+        const isStrictMode = document.body.dataset.interactionMode === "strict";
+
         const rewindTo = askedInSegment.length > 0
           ? Math.max(...askedInSegment) + 1
           : segStart;
 
+// ----------------------
+// ALMOST CASE
+// ----------------------
         if (status === "almost") {
-          const almostMessage = BORDERLINE_FEEDBACK[0] || "Almost! Let's watch it again.";
+          const spokenTrimmed = (spoken || "").trim();
+          const almostMessage = spokenTrimmed
+            ? `${spokenTrimmed} is not quite the answer. Try again!`
+            : getBorderlineFeedback();
 
           await deliverFeedback({
             message: almostMessage,
             color: "#d97706",
             minVisibleMs: MIN_FEEDBACK_DISPLAY_MS
           });
+          
+          if (!wrongAttempted.has(quesSec)) {
+            wrongAttempted.add(quesSec);
+            tryRecordAnswer(q.question, q.answer, spoken, "almost", sim, q.question_type);
+          } else {
+            retryCountMap.set(quesSec, (retryCountMap.get(quesSec) || 0) + 1);
+            tryRecordRetry(q.question, spoken, sim);
+          }
 
-          tryRecordAnswer(q.question, q.answer, spoken, "almost", sim);
+          if (isStrictMode) {
+            setPlayerTime(rewindTo);
+            asked.delete(quesSec);
+          }
 
-          setPlayerTime(rewindTo);
           await wait(200);
           resumeVideo();
           return;
         }
 
+// ----------------------
+// WRONG CASE
+// ----------------------
         await deliverFeedback({
-          message: RETRY_FEEDBACK,
+          message: getRetryFeedback(),
           color: "#ef4444",
           minVisibleMs: MIN_FEEDBACK_DISPLAY_MS
         });
 
-        tryRecordAnswer(q.question, q.answer, spoken, "wrong", sim);
+        if (!wrongAttempted.has(quesSec)) {
+          wrongAttempted.add(quesSec);
+          tryRecordAnswer(q.question, q.answer, spoken, "wrong", sim, q.question_type);
+        } else {
+          retryCountMap.set(quesSec, (retryCountMap.get(quesSec) || 0) + 1);
+          tryRecordRetry(q.question, spoken, sim);
+        }
+        if (isStrictMode) {
+  // STRICT MODE = rewind and retry
+          setPlayerTime(rewindTo);
+  // allow question to trigger again
+          asked.delete(quesSec);
+        } else {
+  // FLEXIBLE MODE = reveal the answer then continue
+          await deliverFeedback({
+            message: `The answer is ${q.answer}.`,
+            color: "#384b87",
+            minVisibleMs: MIN_FEEDBACK_DISPLAY_MS
+          });
+          asked.add(quesSec);
+        }
 
-        setPlayerTime(rewindTo);
         await wait(200);
         resumeVideo();
       } catch (err) {
-        console.error("[Warning] Answer check failed:", err);
+        console.error("[Warning] Answer check failed - full error:", err, err?.stack);
         document.getElementById("feedback").innerText = "[Warning] Could not check answer.";
         setTimeout(resumeVideo, 1000);
       }
@@ -1941,6 +2045,30 @@
 
 
 
+    // Expose scoped loader for the learner flow state machine.
+    // Called from children.html after companion selection with a real child_id.
+    // Stops video playback — called by back button when leaving the library/player screen
+    window.__stopVideo = function() {
+        if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
+            ytPlayer.pauseVideo();
+        }
+    };
+
+    window.__loadScopedVideos = async function(childId) {
+        try {
+            const res = await fetch(`/api/learners/children/${encodeURIComponent(childId)}/videos`);
+            const data = await res.json();
+            libraryVideos = Array.isArray(data.videos) ? data.videos : [];
+            applyFilters();
+        } catch (err) {
+            console.error('[Error] loading scoped videos:', err);
+            videoGrid.innerHTML = '<div class="video-empty">Couldn\'t load videos right now.</div>';
+        }
+    };
+
     // Init
     loadConfig();
-    loadVideos();
+    // Only auto-load all videos if NOT in the learner flow (which uses scoped videos per child)
+    if (!sessionStorage.getItem('learnerFlowState')) {
+        loadVideos();
+    }

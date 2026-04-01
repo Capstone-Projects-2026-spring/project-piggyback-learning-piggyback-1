@@ -5,16 +5,12 @@ from typing import Any, Dict, List, Optional
 from app.services.expert_auth_service import normalize_expert_id
 from app.services.sqlite_store import get_conn
 
+# Fixed icon picker options allowed by backend/API validation.
 ALLOWED_CHILD_ICON_KEYS = (
-    "pig",
-    "fox",
-    "owl",
-    "cat",
-    "bear",
-    "alligator",
-    "rabbit",
-    "lion",
-    "penguin",
+    "pig", "fox", "owl", "cat", "bear", "rabbit", "lion", "penguin",
+    "simba", "nemo", "walle", "moana", "elsa", "spiderman", "mickey",
+    "pooh", "chase", "spongebob", "turtle", "bluey", "hellokitty",
+    "mlp", "peppa", "mario", "dino",
 )
 
 MAX_CHILD_ID_RETRIES = 60
@@ -43,6 +39,7 @@ def _row_to_child(row: Any) -> Dict[str, Any]:
         "first_name": row["first_name"],
         "last_name": row["last_name"],
         "icon_key": row["icon_key"],
+        "interaction_mode": row["interaction_mode"] or "flexible",
         "is_active": bool(row["is_active"]),
         "created_at": row["created_at"],
         "updated_at": row["updated_at"],
@@ -70,7 +67,7 @@ def _child_id_exists(child_id: str) -> bool:
         ).fetchone()
     return row is not None
 
-
+# Generate a 6-digit child ID and retry on rare collisions.
 def generate_child_id() -> str:
     for _ in range(MAX_CHILD_ID_RETRIES):
         candidate = f"{secrets.randbelow(1_000_000):06d}"
@@ -86,7 +83,7 @@ def get_child(child_id: str, include_inactive: bool = True) -> Optional[Dict[str
 
     query = """
         SELECT c.child_id, c.expert_id, c.first_name, c.last_name, c.icon_key,
-               c.is_active, c.created_at, c.updated_at, e.display_name AS expert_name
+               c.interaction_mode, c.is_active, c.created_at, c.updated_at, e.display_name AS expert_name
         FROM children c
         LEFT JOIN experts e ON e.expert_id = c.expert_id
         WHERE c.child_id = ?
@@ -128,12 +125,12 @@ def list_children(
     with get_conn() as conn:
         rows = conn.execute(
             f"""
-            SELECT c.child_id, c.expert_id, c.first_name, c.last_name, c.icon_key,
+            SELECT c.child_id, c.expert_id, c.first_name, c.last_name, c.icon_key, c.interaction_mode,
                    c.is_active, c.created_at, c.updated_at, e.display_name AS expert_name
             FROM children c
             LEFT JOIN experts e ON e.expert_id = c.expert_id
             {where_sql}
-            ORDER BY lower(COALESCE(c.expert_id, '')), lower(c.last_name), lower(c.first_name), c.child_id
+            ORDER BY lower(c.expert_id), lower(c.last_name), lower(c.first_name), c.child_id
             """,
             tuple(values),
         ).fetchall()
@@ -141,16 +138,19 @@ def list_children(
     return [_row_to_child(row) for row in rows]
 
 
+# Each child must belong to an existing expert.
 def create_child(
     expert_id: str,
     first_name: str,
     last_name: str,
     icon_key: str,
+    interaction_mode: str = "flexible",
 ) -> Dict[str, Any]:
     expert_id = normalize_expert_id(expert_id)
     first_name = normalize_name(first_name)
     last_name = normalize_name(last_name)
     icon_key = normalize_icon_key(icon_key)
+    interaction_mode = (interaction_mode or "flexible").strip().lower()
 
     if not expert_id:
         raise ValueError("expert_id is required")
@@ -165,17 +165,18 @@ def create_child(
 
     now = utc_now_iso()
     child_id = generate_child_id()
-
+    
+# DB unique index prevents duplicate first+last name under the same expert.
     try:
         with get_conn() as conn:
             conn.execute(
                 """
                 INSERT INTO children (
-                    child_id, expert_id, first_name, last_name, icon_key, is_active, created_at, updated_at
+                    child_id, expert_id, first_name, last_name, icon_key, interaction_mode, is_active, created_at, updated_at
                 )
-                VALUES (?, ?, ?, ?, ?, 1, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?)
                 """,
-                (child_id, expert_id, first_name, last_name, icon_key, now, now),
+                (child_id, expert_id, first_name, last_name, icon_key, interaction_mode, now, now),
             )
             conn.commit()
     except Exception as exc:
@@ -194,11 +195,12 @@ def create_child(
 
 def update_child(
     child_id: str,
-    expert_id: Optional[str] = None,
     first_name: Optional[str] = None,
     last_name: Optional[str] = None,
     icon_key: Optional[str] = None,
+    interaction_mode: Optional[str] = None,
     is_active: Optional[bool] = None,
+    expert_id: Optional[str] = None,
 ) -> Optional[Dict[str, Any]]:
     child_id = normalize_child_id(child_id)
     if not child_id:
@@ -208,15 +210,15 @@ def update_child(
     values: List[Any] = []
 
     if expert_id is not None:
-        normalized_expert_id = normalize_expert_id(expert_id)
-        if normalized_expert_id:
-            _ensure_expert_exists(normalized_expert_id)
-            updates.append("expert_id = ?")
-            values.append(normalized_expert_id)
-        else:
-            # empty value means unlink child from expert
+        if expert_id == "":
+            # empty string means unlink
             updates.append("expert_id = ?")
             values.append(None)
+        else:
+            cleaned_expert = normalize_expert_id(expert_id)
+            _ensure_expert_exists(cleaned_expert)
+            updates.append("expert_id = ?")
+            values.append(cleaned_expert)
 
     if first_name is not None:
         cleaned_first = normalize_name(first_name)
@@ -238,6 +240,10 @@ def update_child(
             raise ValueError("icon_key is invalid")
         updates.append("icon_key = ?")
         values.append(cleaned_icon)
+
+    if interaction_mode is not None:
+        updates.append("interaction_mode = ?")
+        values.append(interaction_mode.strip().lower())
 
     if is_active is not None:
         if not isinstance(is_active, bool):
@@ -269,6 +275,16 @@ def update_child(
         return None
     return get_child(child_id)
 
-
+# Soft-delete behavior: mark inactive instead of deleting. (might be changed later since we are hard coding it to 60 students/learners)
 def deactivate_child(child_id: str) -> Optional[Dict[str, Any]]:
     return update_child(child_id, is_active=False)
+
+
+def delete_child(child_id: str) -> bool:
+    child_id = normalize_child_id(child_id)
+    if not child_id:
+        return False
+    with get_conn() as conn:
+        cur = conn.execute("DELETE FROM children WHERE child_id = ?", (child_id,))
+        conn.commit()
+    return cur.rowcount > 0

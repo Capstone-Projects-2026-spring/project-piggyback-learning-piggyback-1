@@ -93,6 +93,7 @@ def extract_frames_per_second_for_video(video_id: str) -> Dict[str, Any]:
             ensure_ascii=False,
         )
 
+
     # Persist CSV for debugging/manual review.
     csv_path = output_dir / "frame_data.csv"
     with open(csv_path, "w", encoding="utf-8") as f:

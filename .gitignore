@@ -29,3 +29,6 @@ speech_log.json
 .pytest_cache/
 data/
 *.db
+report.html
+pytest_report.html
+assets/style.csspytest-cache-files-*/

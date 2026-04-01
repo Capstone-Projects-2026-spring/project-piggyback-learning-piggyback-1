@@ -2,7 +2,7 @@
 
 GRADING_CONFIG = {
     # RapidFuzz thresholds
-    "rapidfuzz_correct": 0.8,   # >= this → auto correct
+    "rapidfuzz_correct": 0.75,  # >= this → auto correct
     "rapidfuzz_wrong": 0.45,     # <= this → auto wrong
 
     # OpenAI settings

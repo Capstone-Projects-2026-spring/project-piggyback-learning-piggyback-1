@@ -1,4 +1,9 @@
 
+        async function switchExpert() {
+            await fetch('/api/expert/logout', { method: 'POST' });
+            window.location.href = '/';
+        }
+
         let currentVideoId = null;
         let videoElement = null;
         let ytPlayer = null;
@@ -49,6 +54,7 @@
             container: null,
             modals: []
         };
+        let personaVariantsCache = {};
 
         function getFullscreenElement() {
             return document.fullscreenElement ||
@@ -275,6 +281,7 @@
                     llmModalState.rankingComment = llmRankingCommentInput.value;
                 });
             }
+
         });
         
         function initStepNavigation() {
@@ -390,6 +397,12 @@
                             <span>Files: ${fileCount}</span>
                             <span>${questionText}</span>
                         </div>
+                        <!-- Link to re-edit finalized questions for this video -->
+                        <a href="/expert/edit/${video.id}"
+                           onclick="event.stopPropagation()"
+                           style="display:inline-block;margin-top:6px;font-size:.8rem;color:#2563eb;text-decoration:none;background:#eff6ff;border:1px solid #bfdbfe;padding:3px 10px;border-radius:4px">
+                           ✏ Change Questions
+                        </a>
                     </div>
                 `;
 
@@ -2805,7 +2818,7 @@
             }
 
             const enable = Boolean(currentVideoId && hasActivePlayer());
-            manualButton.disabled = !enable;
+            manualButton.disabled = !enable || isVideoPlaybackLocked();
         }
 
         function updateReviewButtonState() {
@@ -2832,236 +2845,253 @@
         }
 
         async function renderReviewQuestions() {
-            const reviewVideo = document.getElementById('review-video-id');
+            const reviewVideo    = document.getElementById('review-video-id');
             const reviewSegments = document.getElementById('review-total-segments');
-            const reviewList = document.getElementById('review-questions-list');
+            const reviewList     = document.getElementById('review-questions-list');
+            const charBtn        = document.getElementById('btn-characterize');
+            const editPageBtn    = document.getElementById('btn-open-edit-page');
+            if (!reviewList) return;
 
-            if (!reviewList) {
-                return;
-            }
-
-            if (reviewVideo) {
-                reviewVideo.textContent = getSelectedVideoLabel() || 'Not selected';
-            }
-
-            if (reviewSegments) {
-                reviewSegments.textContent = currentSegments.length.toString();
-            }
+            if (reviewVideo)    reviewVideo.textContent    = getSelectedVideoLabel() || 'Not selected';
+            if (reviewSegments) reviewSegments.textContent = currentSegments.length.toString();
 
             if (!currentSegments || currentSegments.length === 0) {
                 reviewList.innerHTML = '<div class="review-placeholder">No question segments available for this video.</div>';
+                if (charBtn)  charBtn.disabled  = false;
+                if (editPageBtn) editPageBtn.disabled = false;
                 return;
             }
 
             reviewList.innerHTML = '';
 
-            // Initialize llmQuestionEdits if needed
-            if (!llmQuestionEdits[currentVideoId]) {
-                llmQuestionEdits[currentVideoId] = {};
-            } 
+            try {
 
-            // Create accordion for each segment
-            for (let index = 0; index < currentSegments.length; index++) {
-                const segment = currentSegments[index];
-                const segmentKey = getSegmentKey(segment);
-                const questions = await resolveSegmentQuestions(segment);
-                
-                const accordionItem = document.createElement('div');
-                accordionItem.className = 'accordion-item';
-
-                // Create accordion header
-                const header = document.createElement('div');
-                header.className = 'accordion-header';
-                if (index === 0) {
-                    header.classList.add('active');
-                }
-                
-
-                const title = document.createElement('div');
-                title.className = 'accordion-title';
-                title.innerHTML = `
-                    <span class="segment-index">Segment ${index + 1}</span>
-                    <span class="segment-time">${formatTime(segment.start)} - ${formatTime(segment.end)}</span>
-                `;
-                
-                const arrow = document.createElement('span');
-                arrow.className = 'accordion-arrow';
-                arrow.innerHTML = '&#9662;';
-                
-                header.appendChild(title);
-                header.appendChild(arrow);
-                
-                // Create accordion content
-                const content = document.createElement('div');
-                content.className = 'accordion-content';
-                if (index === 0) {
-                    content.classList.add('active');
-                }
-                
-                const inner = document.createElement('div');
-                inner.className = 'accordion-inner';
-                
-                // Left column - Expert Questions
-                const expertColumn = document.createElement('div');
-                expertColumn.className = 'question-column expert-column';
-                
-                const expertHeader = document.createElement('div');
-                expertHeader.className = 'column-header';
-                expertHeader.textContent = 'Expert Questions';
-                expertColumn.appendChild(expertHeader);
-                
-                // Get expert question for this segment
-                const expertEntry = getExpertQuestionForSegment(segment);
-                
-                // Also find manual questions that fall within this segment
-                const manualQuestionsInSegment = [];
-                Object.entries(expertQuestions).forEach(([key, entry]) => {
-                    if (entry && entry.isManual && entry.timestamp >= segment.start && entry.timestamp <= segment.end) {
-                        manualQuestionsInSegment.push(entry);
-                    }
-                });
-                
-                // Display segment expert question first
-                if (expertEntry && !expertEntry.isManual) {
-                    const expertDiv = document.createElement('div');
-                    expertDiv.className = 'expert-question-display';
-                    
-                    if (expertEntry.skipped) {
-                        expertDiv.classList.add('skipped');
-                        expertDiv.innerHTML = `
-                            <div class="question-type-label">SKIPPED</div>
-                            <div style="color: #dd6b20;">Segment marked as skipped</div>
-                            ${expertEntry.skipReason ? `<div style="color: #9c4221; font-size: 0.9rem;">Reason: ${expertEntry.skipReason}</div>` : ''}
-                        `;
-                    } else {
-                        expertDiv.innerHTML = `
-                            <div class="question-type-label">${getExpertQuestionTypeLabel(expertEntry.questionType)}</div>
-                            <div style="font-weight: 600; margin-bottom: 8px;">${expertEntry.question || 'No question'}</div>
-                            <div style="color: #4a5568;">Answer: ${expertEntry.answer || 'No answer'}</div>
-                        `;
-                    }
-                    expertColumn.appendChild(expertDiv);
-                }
-                
-                // Display manual questions in this segment
-                if (manualQuestionsInSegment.length > 0) {
-                    manualQuestionsInSegment.forEach(manualEntry => {
-                        const manualDiv = document.createElement('div');
-                        manualDiv.className = 'expert-question-display';
-                        manualDiv.style.borderLeft = '4px solid #38a169';
-                        manualDiv.style.marginTop = '12px';
-                        
-                        manualDiv.innerHTML = `
-                            <div style="font-size: 0.8rem; color: #38a169; margin-bottom: 6px;">Manual @ ${formatTime(manualEntry.timestamp)}</div>
-                            <div class="question-type-label" style="background: #38a169;">${getExpertQuestionTypeLabel(manualEntry.questionType)}</div>
-                            <div style="font-weight: 600; margin-bottom: 8px;">${manualEntry.question || 'No question'}</div>
-                            <div style="color: #4a5568;">Answer: ${manualEntry.answer || 'No answer'}</div>
-                        `;
-                        expertColumn.appendChild(manualDiv);
-                    });
-                }
-                
-                if (!expertEntry && manualQuestionsInSegment.length === 0) {
-                    expertColumn.innerHTML += '<div style="color: #718096; text-align: center; padding: 20px;">No expert question added yet</div>';
-                }
-                
-                // Right column - LLM Questions
-                const llmColumn = document.createElement('div');
-                llmColumn.className = 'question-column llm-column';
-                
-                const llmHeader = document.createElement('div');
-                llmHeader.className = 'column-header';
-                llmHeader.textContent = 'AI-Generated Questions';
-                llmColumn.appendChild(llmHeader);
-
-                if (questions && typeof questions === 'object' && Object.keys(questions).length > 0) {
-                    // First, identify the best question
-                    let bestQuestionText = null;
-                    if (segment.result && segment.result.best_question) {
-                        bestQuestionText = segment.result.best_question;
-                    }
-
-                    // Check for expert-selected best question
-                    const expertBestKey = llmQuestionEdits[currentVideoId] && 
-                                         llmQuestionEdits[currentVideoId][`${segmentKey}_expertBest`];
-
-                    const getAiRankValue = (data) => {
-                        if (!data) return Number.POSITIVE_INFINITY;
-                        const rawRank = data.rank ?? data.ranking ?? data.llm_ranking ?? data.llmRank;
-                        const parsed = Number(rawRank);
-                        if (!Number.isFinite(parsed) || parsed <= 0) {
-                            return Number.POSITIVE_INFINITY;
+            // Pre-load saved persona variants and winners from server
+            try {
+                const pvRes = await fetch(`/api/expert/video/${currentVideoId}/persona-variants`);
+                if (pvRes.ok) {
+                    const pvData = await pvRes.json();
+                    const savedSegments = (pvData.data && pvData.data.segments) || pvData.segments || {};
+                    for (const [segKey, segData] of Object.entries(savedSegments)) {
+                        // Match by numeric start/end to handle different key formats (e.g. "0-59" vs "00000-00059")
+                        const [startStr, endStr] = segKey.split('-');
+                        const segStart = parseInt(startStr, 10);
+                        const segEnd   = parseInt(endStr,   10);
+                        const seg = currentSegments.find(s => Number(s.start) === segStart && Number(s.end) === segEnd);
+                        if (seg) {
+                            if (segData.persona_winners) seg.persona_winners = segData.persona_winners;
+                            if (segData.persona_variants) {
+                                personaVariantsCache[`${currentVideoId}_${getSegmentKey(seg)}`] = segData.persona_variants;
+                            }
                         }
-                        return parsed;
+                    }
+                }
+            } catch (e) {
+                console.warn('Could not pre-load persona variants:', e);
+            }
+
+            // Render each segment with its raw AI questions (or persona columns if characterized)
+            for (let index = 0; index < currentSegments.length; index++) {
+                const segment    = currentSegments[index];
+                const segmentKey = getSegmentKey(segment);
+                const questions  = await resolveSegmentQuestions(segment);
+                const cacheKey   = `${currentVideoId}_${segmentKey}`;
+                const hasVariants = !!personaVariantsCache[cacheKey];
+
+                const segmentBlock = document.createElement('div');
+                segmentBlock.className = 'review-segment-block';
+                segmentBlock.dataset.segmentKey = segmentKey;
+
+                // Collapsible header
+                const headerBar = document.createElement('div');
+                headerBar.className = 'segment-header-bar' + (index === 0 ? ' open' : '');
+                headerBar.innerHTML = `
+                    <div>
+                        <span class="segment-index-label">Segment ${index + 1}</span>
+                        <span class="segment-time-label" style="margin-left:10px;opacity:.85;font-size:.9rem">${formatTime(segment.start)} - ${formatTime(segment.end)}</span>
+                    </div>
+                    <span class="segment-header-chevron">${index === 0 ? '&#9650;' : '&#9660;'}</span>
+                `;
+
+                const questionList = document.createElement('div');
+                questionList.className = 'review-question-list';
+                if (index > 0) questionList.style.display = 'none';
+
+                headerBar.addEventListener('click', () => {
+                    const isOpen = questionList.style.display !== 'none';
+                    questionList.style.display = isOpen ? 'none' : 'block';
+                    headerBar.querySelector('.segment-header-chevron').innerHTML = isOpen ? '&#9660;' : '&#9650;';
+                    headerBar.classList.toggle('open', !isOpen);
+                });
+
+                if (hasVariants) {
+                    // Show 3 persona columns with winner badges
+                    const personaWinners = segment.persona_winners || {};
+                    const variants = personaVariantsCache[cacheKey];
+                    const personaConfigs = {
+                        bunny:     { colClass: 'bunny-column',     emoji: '🐰', name: 'Bunny' },
+                        alligator: { colClass: 'alligator-column', emoji: '🐊', name: 'Alligator' },
+                        pig:       { colClass: 'pig-column',       emoji: '🐷', name: 'Pig' }
                     };
 
-                    const sortedEntries = Object.entries(questions).sort((a, b) => {
-                        const rankA = getAiRankValue(a[1]);
-                        const rankB = getAiRankValue(b[1]);
-                        if (rankA !== rankB) {
-                            return rankA - rankB;
-                        }
-                        return String(a[0]).localeCompare(String(b[0]));
+                    const grid = document.createElement('div');
+                    grid.className = 'review-persona-grid';
+                    grid.id = `persona-grid-${segmentKey}`;
+
+                    Object.entries(personaConfigs).forEach(([persona, cfg]) => {
+                        const col = document.createElement('div');
+                        col.className = `review-persona-col ${cfg.colClass}`;
+                        col.id = `persona-col-${segmentKey}-${persona}`;
+
+                        const colHeader = document.createElement('div');
+                        colHeader.className = 'review-persona-col-header';
+                        colHeader.innerHTML = `<span class="review-persona-emoji">${cfg.emoji}</span><span class="review-persona-name">${cfg.name}</span>`;
+                        col.appendChild(colHeader);
+
+                        grid.appendChild(col);
                     });
 
-                    sortedEntries.forEach(([type, data]) => {
-                        const questionKey = `${segmentKey}_${type}`;
-                        
-                        // Get any existing edits for this question
-                        const edits = llmQuestionEdits[currentVideoId][questionKey] || {};
-                        const isTrashed = edits.trashed || false;
-                        const currentQuestion = data.q || '';
-                        const currentAnswer = data.a || '';
-                        
-                        // Check if this is the best question
-                        const isAIBestQuestion = bestQuestionText && (data.q === bestQuestionText);
-                        const isExpertBestQuestion = expertBestKey === questionKey;
-                        
-                        const editableDiv = document.createElement('div');
-                        editableDiv.className = 'editable-question';
-                        editableDiv.id = `question-${questionKey}`;
-                        if (isTrashed) editableDiv.classList.add('trashed');
-                        if (isAIBestQuestion || isExpertBestQuestion) editableDiv.classList.add('best-question');
-                        
-                        editableDiv.innerHTML = `
-                            <div class="question-header">
-                                <div class="question-summary">
-                                    <div>
-                                        <span class="question-type-label">${type}</span>
-                                        ${isAIBestQuestion ? '<span class="best-indicator">AI BEST</span>' : ''}
-                                        ${isExpertBestQuestion ? '<span class="best-indicator" style="background: #27ae60;">EXPERT BEST</span>' : ''}
-                                    </div>
-                                    <div class="question-preview">${currentQuestion}</div>
-                                    <div class="answer-preview">${currentAnswer}</div>
-                                </div>
-                            </div>
-                        `;
-                        
-                        llmColumn.appendChild(editableDiv);
-                    });
+                    questionList.appendChild(grid);
+                    segmentBlock.appendChild(headerBar);
+                    segmentBlock.appendChild(questionList);
+                    reviewList.appendChild(segmentBlock);
+
+                    renderPersonaColumns(segmentKey, variants, personaWinners);
                 } else {
-                    llmColumn.innerHTML += '<div style="color: #718096; text-align: center; padding: 20px;">No AI-generated questions for this segment</div>';
+                    // Show raw AI questions
+                    if (questions && Object.keys(questions).length > 0) {
+                        Object.entries(questions).forEach(([type, data]) => {
+                            if (!data || typeof data !== 'object') return;
+                            const card = document.createElement('div');
+                            card.className = 'review-q-card';
+                            card.innerHTML = `
+                                <span class="review-type-badge">${type}</span>
+                                <div class="review-question-label">QUESTION</div>
+                                <div class="review-question-text">${data.q || ''}</div>
+                                <div class="review-answer-label">ANSWER</div>
+                                <div class="review-answer-text">${data.a || ''}</div>
+                            `;
+                            questionList.appendChild(card);
+                        });
+                    } else {
+                        questionList.innerHTML = '<div class="no-question-placeholder">No AI questions for this segment.</div>';
+                    }
+
+                    segmentBlock.appendChild(headerBar);
+                    segmentBlock.appendChild(questionList);
+                    reviewList.appendChild(segmentBlock);
                 }
-                
-                inner.appendChild(expertColumn);
-                inner.appendChild(llmColumn);
-                content.appendChild(inner);
-                
-                // Add header click handler
-                header.addEventListener('click', () => toggleAccordion(index));
-                
-                accordionItem.appendChild(header);
-                accordionItem.appendChild(content);
-                reviewList.appendChild(accordionItem);
             }
-            
-            // Add save button
-            const saveSection = document.createElement('div');
-            saveSection.style.textAlign = 'center';
-            saveSection.innerHTML = `
-                <button class="btn-save-changes" onclick="saveAllLLMEdits()">Finalize questions and submit</button>
-            `;
-            reviewList.appendChild(saveSection);
+
+            } catch (renderErr) {
+                console.warn('renderReviewQuestions error:', renderErr);
+            } finally {
+                if (charBtn)     charBtn.disabled     = false;
+                if (editPageBtn) editPageBtn.disabled = false;
+            }
+        }
+
+        async function characterizeAllQuestions() {
+            const btn       = document.getElementById('btn-characterize');
+            const statusEl  = document.getElementById('characterize-status');
+            const editPageBtn = document.getElementById('btn-open-edit-page');
+            btn.disabled    = true;
+            btn.textContent = '✨ Characterizing...';
+            statusEl.textContent = '';
+
+            let successCount = 0;
+
+            for (let index = 0; index < currentSegments.length; index++) {
+                const segment    = currentSegments[index];
+                const segmentKey = getSegmentKey(segment);
+                const questions  = await resolveSegmentQuestions(segment);
+
+                if (!questions || !Object.keys(questions).length) continue;
+
+                statusEl.textContent = `Generating segment ${index + 1} of ${currentSegments.length}...`;
+
+                try {
+                    const res = await fetch('/api/expert/questions/persona-variants', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ questions, best_question: segment.result?.best_question || null })
+                    });
+                    const data = await res.json();
+                    if (data.success && data.variants) {
+                        personaVariantsCache[`${currentVideoId}_${segmentKey}`] = data.variants;
+                        // Save to server
+                        await fetch(`/api/expert/video/${currentVideoId}/persona-variants`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ segments: { [segmentKey]: { persona_variants: data.variants } } })
+                        });
+                        successCount++;
+                    }
+                } catch (e) {
+                    console.warn(`Segment ${index + 1} characterization failed:`, e);
+                }
+            }
+
+            btn.disabled    = false;
+            btn.textContent = '🔄 Characterize';
+
+            if (successCount > 0) {
+                statusEl.textContent = `✅ Done! ${successCount} segment(s) characterized.`;
+                statusEl.style.color = '#16a34a';
+                if (editPageBtn) {
+                    editPageBtn.disabled = false;
+                    editPageBtn.style.animation = 'pulse 0.6s ease 2';
+                }
+                // Re-render so persona columns appear immediately, then restore status
+                await renderReviewQuestions();
+                if (statusEl) {
+                    statusEl.textContent = `✅ Done! ${successCount} segment(s) characterized.`;
+                    statusEl.style.color = '#16a34a';
+                }
+            } else {
+                statusEl.textContent = 'No questions could be characterized.';
+                statusEl.style.color = '#dc2626';
+            }
+        }
+
+        function renderPersonaColumns(segmentKey, variants, personaWinners) {
+            const winners = personaWinners || {};
+            const personas = ['bunny', 'alligator', 'pig'];
+            personas.forEach(persona => {
+                const col = document.getElementById(`persona-col-${segmentKey}-${persona}`);
+                if (!col) return;
+
+                const personaQuestions = variants[persona] || {};
+                const winnerType = winners[persona];
+
+                if (winnerType && personaQuestions[winnerType]) {
+                    const displayData = personaQuestions[winnerType];
+                    const card = document.createElement('div');
+                    card.className = 'review-winner-inner-card';
+                    card.innerHTML = `
+                        <div class="review-winner-badges">
+                            <span class="review-type-badge">${winnerType}</span>
+                            <span class="review-kids-badge">⭐ Kids will see this one</span>
+                        </div>
+                        <div class="review-question-label">QUESTION</div>
+                        <div class="review-q-box">${displayData.q || ''}</div>
+                        <div class="review-answer-label">ANSWER</div>
+                        <div class="review-a-box">${displayData.a || ''}</div>
+                        <a class="review-regenerate-link" href="/expert/edit/${currentVideoId}">🔄 Regenerate with AI</a>
+                    `;
+                    col.appendChild(card);
+                } else {
+                    const placeholder = document.createElement('div');
+                    placeholder.className = 'review-no-selection';
+                    placeholder.textContent = 'No question selected for kids';
+                    col.appendChild(placeholder);
+                }
+            });
+        }
+
+        function openEditPage() {
+            if (!currentVideoId) return;
+            window.location.href = `/expert/edit/${currentVideoId}`;
         }
 
         function toggleAccordion(index) {
@@ -3176,9 +3206,9 @@
             renderReviewQuestions();
         }
 
-        async function saveAllLLMEdits() {
+        async function saveAllLLMEdits(silent = false) {
             if (!currentVideoId) {
-                showStatus('No video selected', 'error');
+                if (!silent) showStatus('No video selected', 'error');
                 return;
             }
 
@@ -3260,6 +3290,12 @@
                     }
                 }
 
+                // Include persona variants (character questions) from cache
+                const cacheKey = `${currentVideoId}_${segmentKey}`;
+                if (personaVariantsCache[cacheKey]) {
+                    segmentData.persona_variants = personaVariantsCache[cacheKey];
+                }
+
                 finalQuestions.segments.push(segmentData);
             }
 
@@ -3277,34 +3313,19 @@
                 const result = await response.json();
 
                 if (response.ok && result.success) {
-                    showStatus('Thank you! Final questions saved successfully.', 'success');
-                    console.log('Saved to:', result.filepath);
-
-                    // Save to localStorage as backup
                     localStorage.setItem(`final_questions_${currentVideoId}`, JSON.stringify(finalQuestions));
-
-                    // Update button to show success
-                    const btn = document.querySelector('.btn-save-changes');
-                    if (btn) {
-                        btn.disabled = true;
-                        btn.textContent = 'Saved to final_questions ?';
-                        setTimeout(() => {
-                            btn.disabled = false;
-                            btn.textContent = 'Finalize questions and submit';
-                        }, 3000);
+                    if (!silent) {
+                        showStatus('Thank you! Final questions saved successfully.', 'success');
+                        console.log('Saved to:', result.filepath);
+                        setTimeout(() => { window.location.href = '/'; }, 400);
                     }
-
-                    setTimeout(() => {
-                        window.location.href = '/';
-                    }, 400);
                 } else {
                     throw new Error(result.message || 'Server save failed');
                 }
             } catch (error) {
                 console.error('Error saving final questions:', error);
-                // Fallback to localStorage
                 localStorage.setItem(`final_questions_${currentVideoId}`, JSON.stringify(finalQuestions));
-                showStatus('Saved to browser storage. Error: ' + error.message, 'warning');
+                if (!silent) showStatus('Saved to browser storage. Error: ' + error.message, 'warning');
             }
         }
 
@@ -3348,20 +3369,23 @@
                 return segment.result.questions;
             }
 
-            const filename = `questions_${String(segment.start).padStart(5, '0')}-${String(segment.end).padStart(5, '0')}.json`;
-
+            // Questions are stored in a single per-video file: {videoId}.json
             try {
-                const response = await fetch(`/downloads/${currentVideoId}/questions/${filename}`);
+                const response = await fetch(`/downloads/${currentVideoId}/questions/${currentVideoId}.json`);
                 if (response.ok) {
                     const data = await response.json();
-                    ensureSegmentResultObject(segment);
-                    if (data.questions) {
-                        segment.result.questions = data.questions;
+                    const segKey = getSegmentKey(segment);
+                    const matchedSeg = (data.segments || []).find(s => getSegmentKey(s) === segKey);
+                    if (matchedSeg && matchedSeg.result) {
+                        ensureSegmentResultObject(segment);
+                        if (matchedSeg.result.questions) {
+                            segment.result.questions = matchedSeg.result.questions;
+                        }
+                        if (matchedSeg.result.best_question && !segment.result.best_question) {
+                            segment.result.best_question = matchedSeg.result.best_question;
+                        }
+                        return segment.result.questions || null;
                     }
-                    if (data.best_question && !segment.result.best_question) {
-                        segment.result.best_question = data.best_question;
-                    }
-                    return segment.result.questions || null;
                 }
             } catch (error) {
                 console.warn('Unable to resolve questions for segment', error);
@@ -4099,7 +4123,7 @@
                 nextPauseEl.textContent = formatTime(segment.end);
             }
 
-            updateExpertQuestionsPanel(segment);
+            loadAIQuestionsForSegment(segment);
 
             const approveSection = document.getElementById('approve-section');
             if (approveSection) {
@@ -4670,4 +4694,28 @@
                 return `${mins}:${secs.toString().padStart(2, '0')}`;
             }
         }
+        function renderQuestion(question) {
+
+    if (!question) {
+        return `<div class="question-empty">No question available</div>`;
+    }
+
+    return `
+        <div class="editable-question">
+
+            <div class="question-type-label">
+                ${question.type || ""}
+            </div>
+
+            <div class="question-preview">
+                ${question.text || question.question || ""}
+            </div>
+
+            <div class="answer-preview">
+                ${question.answer || ""}
+            </div>
+
+        </div>
+    `;
+}
     

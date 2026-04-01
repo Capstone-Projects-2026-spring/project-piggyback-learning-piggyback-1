@@ -195,11 +195,13 @@ def list_kids_videos():
 
 
 @router_api.get("/final-questions/{video_id}")
-def get_final_questions(video_id: str):
+def get_final_questions(video_id: str, companion: str = None):
     """
     Loads final_questions.json for the given video_id.
     Returns the best LLM-ranked question per segment (lowest llm_ranking)
     that is not trashed. If trashed=True, skip to the next question.
+    If companion is provided (pig/rabbit/alligator), returns persona-rephrased questions
+    from persona_variants.json when available.
     """
     path = DOWNLOADS_DIR / video_id / "final_questions" / "final_questions.json"
     if not path.exists():
@@ -208,6 +210,16 @@ def get_final_questions(video_id: str):
     data = json.loads(path.read_text(encoding="utf-8"))
     segments = data.get("segments", [])
     selected_segments = []
+
+    # Load persona variants if a companion was selected
+    COMPANION_TO_PERSONA = {"rabbit": "bunny", "pig": "pig", "alligator": "alligator"}
+    companion_persona = COMPANION_TO_PERSONA.get(companion or "")
+    persona_segments = {}
+    if companion_persona:
+        pv_path = DOWNLOADS_DIR / video_id / "persona_variants" / "persona_variants.json"
+        if pv_path.exists():
+            pv_data = json.loads(pv_path.read_text(encoding="utf-8"))
+            persona_segments = pv_data.get("segments", {})
 
     def _llm_sort_key(question: Dict[str, Any]) -> int:
         rank = question.get("llm_ranking")
@@ -218,29 +230,76 @@ def get_final_questions(video_id: str):
 
     for seg in segments:
         ai_qs = seg.get("aiQuestions", [])
-        if not ai_qs:
+        seg_start = float(seg.get("start") or 0)
+        seg_end = float(seg.get("end") or 0)
+
+        question_text = None
+        answer_text = None
+        question_type = None
+        llm_ranking = None
+        expert_ranking = None
+
+        if ai_qs:
+            # Sort by expert_ranking first, fall back to llm_ranking
+            sorted_qs = sorted(ai_qs, key=lambda q: (
+                _llm_sort_key({"llm_ranking": q.get("expert_ranking")}),
+                _llm_sort_key(q)
+            ))
+            chosen_q = next((q for q in sorted_qs if not q.get("trashed", False)), None)
+            if chosen_q:
+                question_text = chosen_q.get("question") or chosen_q.get("originalQuestion")
+                answer_text = chosen_q.get("answer") or chosen_q.get("originalAnswer")
+                question_type = chosen_q.get("type")
+                llm_ranking = chosen_q.get("llm_ranking")
+                expert_ranking = chosen_q.get("expert_ranking")
+
+        # If no aiQuestions, fall back to persona_variants stored in the segment itself
+        if not question_text:
+            seg_variants = seg.get("persona_variants", {})
+            persona_to_try = companion_persona or "bunny"
+            persona_qs = seg_variants.get(persona_to_try) or seg_variants.get("bunny") or seg_variants.get("pig") or seg_variants.get("alligator")
+            if persona_qs:
+                # Pick first available question type
+                PREFERRED_TYPES = ["character", "action", "feeling", "causal", "setting", "outcome", "prediction"]
+                for qt in PREFERRED_TYPES:
+                    q_data = persona_qs.get(qt, {})
+                    if q_data.get("q"):
+                        question_text = q_data["q"]
+                        answer_text = q_data.get("a", "")
+                        question_type = qt
+                        break
+
+        if not question_text:
             continue
 
-        # Sort by llm_ranking (lowest = best)
-        sorted_qs = sorted(ai_qs, key=_llm_sort_key)
+        # Try to substitute companion-specific persona variant question
+        if companion_persona and persona_segments:
+            for seg_key, seg_data in persona_segments.items():
+                parts = seg_key.split("-")
+                if len(parts) == 2:
+                    try:
+                        if abs(float(parts[0]) - seg_start) < 0.5 and abs(float(parts[1]) - seg_end) < 0.5:
+                            variants = seg_data.get("persona_variants", {})
+                            winners = seg_data.get("persona_winners", {})
+                            winner_type = winners.get(companion_persona)
+                            if winner_type and companion_persona in variants:
+                                q_data = variants[companion_persona].get(winner_type, {})
+                                if q_data.get("q"):
+                                    question_text = q_data["q"]
+                                    answer_text = q_data.get("a", answer_text)
+                            break
+                    except (ValueError, TypeError):
+                        continue
 
-        # Find first non-trashed question
-        chosen_q = next((q for q in sorted_qs if not q.get("trashed", False)), None)
-        if chosen_q:
-            question_text = chosen_q.get("question") or chosen_q.get("originalQuestion")
-            answer_text = chosen_q.get("answer") or chosen_q.get("originalAnswer")
-            selected_segments.append({
-                "segment_range_start": seg.get("start"),
-                "segment_range_end": seg.get("end"),
-                "question": question_text,
-                "answer": answer_text,
-                "llm_ranking": chosen_q.get("llm_ranking"),
-                "expert_ranking": chosen_q.get("expert_ranking"),
-            })
-
-    # Exclude the final segment so it never propagates to questions.json
-    if selected_segments:
-        selected_segments = selected_segments[:-1]
+        selected_segments.append({
+            "segment_range_start": seg.get("start"),
+            "segment_range_end": seg.get("end"),
+            "question": question_text,
+            "answer": answer_text,
+            "question_type": question_type,
+            "llm_ranking": llm_ranking,
+            "expert_ranking": expert_ranking,
+        })
 
     return {"success": True, "segments": selected_segments}
 
@@ -484,6 +543,10 @@ def simplify_item(item: str) -> str:
 
 
 def extract_items(expected_raw: str) -> list[str]:
+    # Only treat as a list if there's a comma, or "and" appears after a comma
+    # (e.g. "red, blue, and green"). Bare "and" without a comma is part of a phrase.
+    if "," not in expected_raw:
+        return []
     parts = [
         p
         for p in re.split(r",|\sand\s", expected_raw, flags=re.IGNORECASE)
@@ -746,6 +809,7 @@ async def api_save_quiz_score(payload: dict = Body(...)):
 
 
 @router_api.get("/get-quiz-scores/{child_id}")
+
 def api_get_quiz_scores(child_id: str):
     """
     Get all quiz scores for a child

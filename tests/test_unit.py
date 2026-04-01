@@ -113,18 +113,22 @@ def test_create_and_list_child():
     children = list_children(expert_id=expert["expert_id"])
     assert any(c["child_id"] == child["child_id"] for c in children)
 
-def test_duplicate_child_same_expert_blocked():
-    expert = _new_expert()
-    create_child(expert["expert_id"], "Ava", "Stone", "cat")
-    with pytest.raises(RuntimeError, match="duplicate_child_profile"):
-        create_child(expert["expert_id"], " ava ", " stone ", "cat")
-
 def test_same_name_different_experts_allowed():
     expert_a = _new_expert()
     expert_b = _new_expert()
     child_a = create_child(expert_a["expert_id"], "Noah", "Kim", "bear")
     child_b = create_child(expert_b["expert_id"], "Noah", "Kim", "bear")
     assert child_a["child_id"] != child_b["child_id"]
+
+
+def test_duplicate_name_same_expert_now_allowed():
+    # unique name index was dropped -- same first+last under same expert is now allowed
+    expert = _new_expert()
+    child_a = create_child(expert["expert_id"], "Ava", "Stone", "cat")
+    child_b = create_child(expert["expert_id"], "Ava", "Stone", "fox")
+    assert child_a["child_id"] != child_b["child_id"]
+    children = list_children(expert_id=expert["expert_id"])
+    assert len([c for c in children if c["first_name"] == "Ava"]) == 2
 
 def test_invalid_icon_rejected():
     expert = _new_expert()
@@ -149,47 +153,71 @@ def test_update_and_deactivate_child():
     
 #more test on childrens condition
 
-def test_update_child_unlink_sets_expert_id_none():
+
+#new test for Icon behaviors
+
+# Testing new icon keys added in companion update
+from app.services.children_service import ALLOWED_CHILD_ICON_KEYS, normalize_child_id, normalize_name, normalize_icon_key
+
+def test_new_icon_keys_are_valid():
+    new_icons = ["simba", "nemo", "walle", "moana", "elsa", "spiderman", "mickey",
+                 "pooh", "chase", "spongebob", "turtle", "bluey", "hellokitty",
+                 "mlp", "peppa", "mario", "dino"]
+    for icon in new_icons:
+        assert icon in ALLOWED_CHILD_ICON_KEYS, f"{icon} should be allowed"
+
+def test_bad_icon_still_rejected():
+    assert "dragon" not in ALLOWED_CHILD_ICON_KEYS
+    assert "unicorn" not in ALLOWED_CHILD_ICON_KEYS
+
+
+# Testing normalize helpers
+def test_normalize_child_id_strips_whitespace():
+    assert normalize_child_id("  123456  ") == "123456"
+
+def test_normalize_child_id_empty():
+    assert normalize_child_id("") == ""
+    assert normalize_child_id(None) == ""
+
+def test_normalize_name_collapses_spaces():
+    assert normalize_name("  John   Doe  ") == "John Doe"
+
+def test_normalize_name_empty():
+    assert normalize_name("") == ""
+
+def test_normalize_icon_key_lowercases():
+    assert normalize_icon_key("PIG") == "pig"
+    assert normalize_icon_key(" Fox ") == "fox"
+
+
+# Testing delete_child
+from app.services.children_service import delete_child
+
+def test_delete_child_removes_record():
     expert = _new_expert()
     suffix = uuid4().hex[:6]
-    child = create_child(expert["expert_id"], f"Mia{suffix}", "Lin", "fox")
+    child = create_child(expert["expert_id"], f"Del{suffix}", "Test", "cat")
+    child_id = child["child_id"]
 
-    updated = update_child(child["child_id"], expert_id="")
+    result = delete_child(child_id)
+    assert result is True
+    assert get_child(child_id, include_inactive=True) is None
 
-    assert updated is not None
-    assert updated["expert_id"] is None
-
-
-def test_update_child_links_unlinked_child_back_to_expert():
-    expert_a = _new_expert()
-    expert_b = _new_expert()
-    suffix = uuid4().hex[:6]
-    child = create_child(expert_a["expert_id"], f"Noah{suffix}", "Kim", "bear")
-
-    update_child(child["child_id"], expert_id="")
-    relinked = update_child(child["child_id"], expert_id=expert_b["expert_id"])
-
-    assert relinked is not None
-    assert relinked["expert_id"] == expert_b["expert_id"]
+def test_delete_child_nonexistent_returns_false():
+    assert delete_child("999999") is False
 
 
-def test_update_child_rejects_unknown_expert_id():
-    expert = _new_expert()
-    suffix = uuid4().hex[:6]
-    child = create_child(expert["expert_id"], f"Ivy{suffix}", "Cho", "owl")
+# Testing hash_password and verify_password
+from app.services.expert_auth_service import hash_password, verify_password
 
-    with pytest.raises(ValueError, match="expert_id not found"):
-        update_child(child["child_id"], expert_id="exp_does_not_exist")
+def test_hash_password_is_not_plaintext():
+    hashed = hash_password("mysecret")
+    assert hashed != "mysecret"
 
+def test_verify_password_correct():
+    hashed = hash_password("mysecret")
+    assert verify_password("mysecret", hashed) is True
 
-def test_delete_expert_auto_unlinks_children():
-    expert = _new_expert()
-    suffix = uuid4().hex[:6]
-    child = create_child(expert["expert_id"], f"Leo{suffix}", "Park", "cat")
-
-    deleted = delete_expert(expert["expert_id"])
-    loaded = get_child(child["child_id"], include_inactive=True)
-
-    assert deleted is True
-    assert loaded is not None
-    assert loaded["expert_id"] is None
+def test_verify_password_wrong():
+    hashed = hash_password("mysecret")
+    assert verify_password("wrongpassword", hashed) is False

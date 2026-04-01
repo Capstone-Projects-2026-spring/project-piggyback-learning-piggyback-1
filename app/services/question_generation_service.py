@@ -308,7 +308,7 @@ Return JSON only (no extra text) in this structure:
                                 "retryable": False,
                             }
                             return None
-                        gemini_model_name = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
+                        gemini_model_name = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
                         gemini_model = genai.GenerativeModel(gemini_model_name)
                     
                     #Keep provider output contrtact idential(JSON) , so downstream flow is
@@ -346,20 +346,18 @@ Return JSON only (no extra text) in this structure:
                         return None
                     
                     claude_client = anthropic.Anthropic()
-                    model_name = os.getenv("ANTHROPIC_API_KEY", "claude-opus-4-6")
+                    model_name = os.getenv("ANTHROPIC_MODEL", "claude-haiku-4-5-20251001")
 
                     # Load Claude prompt
-                    prompt_text = ""
+                    prompt_text = "\n\nIMPORTANT: Return only raw JSON with no markdown, no code fences, no explanation."
                     for item in content_with_prompt:
                         if isinstance(item, dict) and item.get("type")== "text":
                             prompt_text += str(item.get("text", "")) + "\n\n"  
-
-                    parts = [system_message + "\n\n" + prompt_text]
-
+                    image_parts = []
                     # Load frames
                     for frame in sampled_frames:
                         try:
-                            parts.append({
+                            image_parts.append({
                                     "type":"image",
                                     "source": {
                                         "type":"base64",
@@ -369,12 +367,23 @@ Return JSON only (no extra text) in this structure:
                                 })
                         except Exception:
                             continue
-                    
+
+                    parts = [
+                        {
+                            "role":"user",
+                            "content":[
+                                {"type":"text", "text": prompt_text.strip()},
+                                *image_parts
+                            ]
+                        }
+                    ]
+
                     # Get Claude response
                     resp = claude_client.messages.create(
-                        model="claude-opus-4-6",
+                        model=model_name,
                         max_tokens=1024,
-                        messages=[{"role": "user", "content": parts}]
+                        system=system_message,
+                        messages=parts
                     )
                     if resp.content:
                         result_content= resp.content[0].text
@@ -391,13 +400,18 @@ Return JSON only (no extra text) in this structure:
 
                 if result_content:
                     try:
-                        json.loads(result_content)
-                        return result_content
-                    except Exception:
-                        last_error_payload= {
+                        parsed = _maybe_parse_json(result_content)
+                        if isinstance(parsed, (dict, list)):
+                            return json.dumps(parsed)  # normalize to clean JSON string
+                        last_error_payload = {
                             "reason": "invalid_json",
                             "retryable": True,
-                            #Keeps logs/debug payload small and readable for team/UI.
+                            "raw_preview": str(result_content)[:300],
+                        }
+                    except Exception:
+                        last_error_payload = {
+                            "reason": "invalid_json",
+                            "retryable": True,
                             "raw_preview": str(result_content)[:300],
                         }
                 else:
@@ -617,3 +631,72 @@ def resolve_question_file_param(value: Optional[str]) -> Optional[Path]:
         return candidate
     return None
 
+'''
+def generate_persona_variants(
+    questions: Dict[str, Any], best_question_text: Optional[str] = None
+) -> Dict[str, Any]:
+    """
+    Take AI questions {type: {q, a, ...}} and rephrase them into 3 child-friendly
+    personas: bunny (warm/gentle), alligator (blunt/direct), pig (excited).
+    Returns {"success": bool, "variants": {bunny: {type: {q, a}}, ...}}.
+    """
+    if not questions or not isinstance(questions, dict):
+        return {"success": False, "message": "No questions provided"}
+
+    questions_text = "\n".join(
+        f"- Type: {qtype.upper()}, Question: {data.get('q', '')}, Answer: {data.get('a', '')}"
+        for qtype, data in questions.items()
+        if isinstance(data, dict) and data.get("q")
+    )
+    if not questions_text.strip():
+        return {"success": False, "message": "No valid questions to rephrase"}
+
+    prompt = (
+        "You are helping rephrase reading comprehension questions for young children "
+        "into 3 different character personas. Keep the meaning and correct answers "
+        "exactly the same — only change the wording/tone of the QUESTIONS.\n\n"
+        "PERSONAS:\n"
+        "- bunny: Warm, gentle, nurturing. Uses 'dear friend' or 'sweetie'. Asks with soft openers "
+        "like 'Can you remember...?' or 'Do you know...?'. Max 12 words. Always feels cozy and caring.\n"
+        "- alligator: Blunt, direct, zero fluff. Max 8 words. Imperative style. No greetings or filler. "
+        "One idea per sentence. Example style: 'Who is the hero? Answer.'\n"
+        "- pig: Wildly enthusiastic! Starts with 'Ooh!' or 'Wow!'. Uses CAPS on 1-2 key words. "
+        "Repeats phrases for excitement like 'tell me tell me!'. Always ends with '?!'\n\n"
+        f"Original questions:\n{questions_text}\n\n"
+        "Return ONLY a valid JSON object with this exact structure:\n"
+        "{\n"
+        '  "bunny": {"TYPE": {"q": "rephrased question", "a": "same original answer"}, ...},\n'
+        '  "alligator": {"TYPE": {"q": "rephrased question", "a": "same original answer"}, ...},\n'
+        '  "pig": {"TYPE": {"q": "rephrased question", "a": "same original answer"}, ...}\n'
+        "}\n"
+        "Use lowercase keys for question types. Return only the JSON, no explanation."
+    )
+
+    try:
+        response = OPENAI_CLIENT.chat.completions.create(
+            model="gpt-4o-mini",
+            max_tokens=2000,
+            messages=[{"role": "user", "content": prompt}],
+        )
+        text = response.choices[0].message.content.strip() if response.choices else ""
+        parsed = _maybe_parse_json(text)
+        if not isinstance(parsed, dict):
+            return {"success": False, "message": "Invalid AI response format"}
+
+        # Mark the best question in each persona variant
+        if best_question_text:
+            for persona_key, persona_qs in parsed.items():
+                if not isinstance(persona_qs, dict):
+                    continue
+                for qtype, data in persona_qs.items():
+                    if not isinstance(data, dict):
+                        continue
+                    orig = questions.get(qtype)
+                    if isinstance(orig, dict) and orig.get("q") == best_question_text:
+                        data["is_best"] = True
+
+        return {"success": True, "variants": parsed}
+    except Exception as exc:
+        return {"success": False, "message": f"Persona generation failed: {exc}"}
+
+'''

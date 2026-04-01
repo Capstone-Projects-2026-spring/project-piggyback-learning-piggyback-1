@@ -463,6 +463,21 @@
       display: block;
     }
 
+    @keyframes companion-speak {
+      0%   { transform: translateY(0) rotate(0deg); }
+      20%  { transform: translateY(-6px) rotate(-2deg); }
+      40%  { transform: translateY(0) rotate(2deg); }
+      60%  { transform: translateY(-4px) rotate(-1deg); }
+      80%  { transform: translateY(0) rotate(1deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+
+    .companion-speaking {
+      width: 100%;
+      display: block;
+      animation: companion-speak 0.6s ease-in-out infinite;
+    }
+
     #question-box .question-bubble {
       position: relative;
       flex: 1;

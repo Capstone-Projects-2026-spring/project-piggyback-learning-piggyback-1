@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Edit Questions - {{ video_id }}</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
+
+        /* ── Page header ── */
+        .page-header {
+            background: #fff;
+            padding: 20px 28px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 4px rgba(0,0,0,.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .page-header h1 { margin: 0; font-size: 1.3rem; color: #111827; }
+        .page-header-left { display: flex; align-items: center; gap: 16px; }
+        .back-btn {
+            text-decoration: none; color: #555;
+            border: 1px solid #d1d5db; padding: 7px 16px;
+            border-radius: 7px; font-size: .88rem;
+        }
+        .back-btn:hover { background: #f9fafb; }
+        .btn-save {
+            background: #2563eb; color: #fff; border: none;
+            padding: 10px 26px; border-radius: 8px;
+            font-size: .95rem; font-weight: 700; cursor: pointer;
+        }
+        .btn-save:hover { background: #1d4ed8; }
+        .btn-save:disabled { background: #93c5fd; cursor: default; }
+        .status-msg { font-size: .88rem; min-width: 180px; }
+        .status-msg.success { color: #16a34a; }
+        .status-msg.error   { color: #dc2626; }
+
+        /* ── Segment block ── */
+        .segment-block { margin-bottom: 24px; }
+
+        .segment-header-bar {
+            background: #2563eb;
+            color: #fff;
+            border-radius: 10px;
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+        }
+        .segment-header-bar .seg-title  { font-size: 1.25rem; font-weight: 700; }
+        .segment-header-bar .seg-time   { font-size: .9rem; opacity: .85; margin-top: 3px; }
+        .segment-header-bar .seg-close  {
+            background: none; border: none; color: #fff;
+            font-size: 1.4rem; cursor: pointer; line-height: 1;
+            padding: 0 4px;
+        }
+
+        /* ── 3-column persona grid ── */
+        .persona-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 14px;
+        }
+        @media (max-width: 900px) { .persona-grid { grid-template-columns: 1fr; } }
+
+        .persona-col { border-radius: 14px; padding: 18px 16px; }
+        .persona-col.bunny     { background: #fdf2f8; border: 2px solid #ec4899; }
+        .persona-col.alligator { background: #f0fdf4; border: 2px solid #22c55e; }
+        .persona-col.pig       { background: #faf5ff; border: 2px solid #a855f7; }
+
+        .persona-col-title {
+            font-size: 1.05rem; font-weight: 700;
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 14px;
+        }
+        .persona-col-title.bunny     { color: #be185d; }
+        .persona-col-title.alligator { color: #15803d; }
+        .persona-col-title.pig       { color: #7c3aed; }
+
+        /* ── Persona card ── */
+        .persona-card {
+            background: #fff;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 14px 14px 12px;
+            margin-bottom: 10px;
+        }
+        .persona-card.winner {
+            border: 2px solid #f59e0b;
+            background: #fffbeb;
+        }
+
+        .persona-card-header {
+            display: flex; align-items: center;
+            flex-wrap: wrap; gap: 8px;
+            margin-bottom: 12px;
+        }
+        .type-badge {
+            background: #ede9fe; color: #6d28d9;
+            padding: 3px 10px; border-radius: 10px;
+            font-size: .78rem; font-weight: 600;
+        }
+        .winner-badge {
+            background: #fef3c7; color: #92400e;
+            padding: 3px 10px; border-radius: 10px;
+            font-size: .78rem; font-weight: 700;
+        }
+
+        .persona-field { margin-bottom: 10px; }
+        .persona-field label {
+            display: block; font-size: .72rem; font-weight: 700;
+            color: #9ca3af; letter-spacing: .06em;
+            text-transform: uppercase; margin-bottom: 5px;
+        }
+        .persona-field textarea {
+            width: 100%; border: 1px solid #d1d5db;
+            border-radius: 6px; padding: 8px 10px;
+            font-size: .9rem; resize: vertical;
+            min-height: 54px; font-family: inherit;
+        }
+        .persona-field textarea:focus { outline: none; border-color: #2563eb; }
+
+        .persona-card-actions {
+            display: flex; align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .regen-link {
+            background: none; border: none;
+            color: #2563eb; font-size: .83rem;
+            cursor: pointer; padding: 0;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .regen-link:hover { text-decoration: underline; }
+        .regen-link:disabled { color: #93c5fd; cursor: default; text-decoration: none; }
+
+        .set-winner-btn {
+            background: #f59e0b; color: #fff;
+            border: none; padding: 6px 14px;
+            border-radius: 6px; font-size: .82rem;
+            font-weight: 600; cursor: pointer;
+        }
+        .set-winner-btn:hover { background: #d97706; }
+        .unset-btn {
+            background: #374151; color: #fff;
+            border: none; padding: 6px 14px;
+            border-radius: 6px; font-size: .82rem;
+            font-weight: 600; cursor: pointer;
+        }
+        .unset-btn:hover { background: #1f2937; }
+
+        .no-data    { text-align: center; color: #9ca3af; padding: 60px 20px; }
+        .loading    { text-align: center; color: #6b7280; padding: 40px; }
+        .persona-placeholder { text-align: center; padding: 20px 0; color: #9ca3af; font-size: .88rem; }
+    </style>
+</head>
+<body>
+
+<div class="page-header">
+    <div class="page-header-left">
+        <a class="back-btn" href="/expert-preview?video={{ video_id }}">← Back to Review</a>
+        <h1>Edit Questions &mdash; <code>{{ video_id }}</code></h1>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px">
+        <span class="status-msg" id="statusMsg"></span>
+        <button class="btn-save" id="saveAllBtn" onclick="saveAll()">Save All Changes</button>
+    </div>
+</div>
+
+<div id="mainContainer">
+    <div class="loading">Loading questions...</div>
+</div>
+
+<script>
+const VIDEO_ID = "{{ video_id }}";
+let segmentsData = [];
+
+const PERSONAS = ['bunny', 'alligator', 'pig'];
+const PERSONA_EMOJI  = { bunny: '🐰', alligator: '🐊', pig: '🐷' };
+const PERSONA_LABELS = { bunny: 'Bunny', alligator: 'Alligator', pig: 'Pig' };
+
+// ── Load questions ─────────────────────────────────────────────────────────────
+async function loadQuestions() {
+    try {
+        // 1. Try persona_variants.json first
+        const pvRes  = await fetch(`/api/expert/video/${VIDEO_ID}/persona-variants`);
+        const pvJson = await pvRes.json();
+        const segmentsMap = (pvJson.success && pvJson.data && pvJson.data.segments) ? pvJson.data.segments : {};
+
+        if (Object.keys(segmentsMap).length > 0) {
+            // Persona variants already exist — use them directly
+            segmentsData = Object.entries(segmentsMap).map(([segKey, segData]) => {
+                const [startStr, endStr] = segKey.split('-');
+                return {
+                    segmentKey:       segKey,
+                    start:            parseInt(startStr, 10),
+                    end:              parseInt(endStr,   10),
+                    aiQuestions:      segData.aiQuestions      || [],
+                    persona_variants: segData.persona_variants || {},
+                    persona_winners:  segData.persona_winners  || {},
+                };
+            });
+            segmentsData.sort((a, b) => a.start - b.start);
+        } else {
+            // 2. Fall back to final_questions.json — build segments from aiQuestions
+            const fqRes  = await fetch(`/api/expert/video/${VIDEO_ID}/final-questions`);
+            const fqJson = await fqRes.json();
+            if (!fqJson.success) {
+                document.getElementById('mainContainer').innerHTML =
+                    `<div class="no-data">${fqJson.message}</div>`;
+                return;
+            }
+            segmentsData = (fqJson.data.segments || []).map(seg => {
+                const startPad = String(seg.start).padStart(5, '0');
+                const endPad   = String(seg.end).padStart(5, '0');
+                return {
+                    segmentKey:       `${startPad}-${endPad}`,
+                    start:            seg.start,
+                    end:              seg.end,
+                    aiQuestions:      seg.aiQuestions      || [],
+                    persona_variants: seg.persona_variants || {},
+                    persona_winners:  seg.persona_winners  || {},
+                };
+            });
+        }
+
+        renderAll();
+    } catch (e) {
+        document.getElementById('mainContainer').innerHTML =
+            `<div class="no-data">Failed to load questions: ${e.message}</div>`;
+    }
+}
+
+// ── Render all segments ────────────────────────────────────────────────────────
+function renderAll() {
+    const container = document.getElementById('mainContainer');
+    container.innerHTML = '';
+
+    if (!segmentsData.length) {
+        container.innerHTML = '<div class="no-data">No segments found.</div>';
+        return;
+    }
+
+    segmentsData.forEach((seg, si) => {
+        const block = document.createElement('div');
+        block.className = 'segment-block';
+        block.id = `seg-block-${si}`;
+
+        // Blue collapsible header
+        const header = document.createElement('div');
+        header.className = 'segment-header-bar';
+        header.innerHTML = `
+            <div>
+                <div class="seg-title">Segment ${si + 1}</div>
+                <div class="seg-time">${formatTime(seg.start)} - ${formatTime(seg.end)}</div>
+            </div>
+            <button class="seg-close" onclick="toggleSegment(${si}, event)" title="Collapse">✕</button>
+        `;
+        header.addEventListener('click', (e) => {
+            if (!e.target.classList.contains('seg-close')) toggleSegment(si, e);
+        });
+        block.appendChild(header);
+
+        // 3-column grid
+        const grid = document.createElement('div');
+        grid.className = 'persona-grid';
+        grid.id = `persona-grid-${si}`;
+
+        PERSONAS.forEach(persona => {
+            const col = document.createElement('div');
+            col.className = `persona-col ${persona}`;
+            col.innerHTML = `
+                <div class="persona-col-title ${persona}">
+                    ${PERSONA_EMOJI[persona]} ${PERSONA_LABELS[persona]} Questions
+                </div>
+                <div class="persona-cards-wrap" id="persona-cards-${si}-${persona}">
+                    <div class="persona-placeholder">No questions yet.</div>
+                </div>
+            `;
+            grid.appendChild(col);
+        });
+
+        // Generate button — shown when no variants exist yet
+        const hasVariants = seg.persona_variants && Object.keys(seg.persona_variants).length > 0;
+        if (!hasVariants) {
+            const genBar = document.createElement('div');
+            genBar.style.cssText = 'text-align:center;padding:16px 0 4px';
+            genBar.innerHTML = `<button class="btn-save" id="gen-btn-${si}" onclick="generateForSegment(${si})">✨ Generate Character Questions</button>`;
+            block.appendChild(genBar);
+        }
+
+        block.appendChild(grid);
+        container.appendChild(block);
+
+        if (hasVariants) {
+            _renderPersonaCards(si, seg.persona_variants);
+        }
+    });
+}
+
+// ── Generate persona variants for a segment (edit page) ───────────────────────
+async function generateForSegment(si) {
+    const seg = segmentsData[si];
+    const btn = document.getElementById(`gen-btn-${si}`);
+    if (btn) { btn.disabled = true; btn.textContent = '✨ Generating...'; }
+
+    PERSONAS.forEach(p => {
+        const wrap = document.getElementById(`persona-cards-${si}-${p}`);
+        if (wrap) wrap.innerHTML = '<div class="persona-placeholder">Generating...</div>';
+    });
+
+    // Build questions dict from aiQuestions
+    const questionsDict = {};
+    (seg.aiQuestions || []).forEach(q => {
+        if (!q.trashed && q.type) {
+            questionsDict[q.type] = { q: q.question || q.q || '', a: q.answer || q.a || '' };
+        }
+    });
+
+    if (!Object.keys(questionsDict).length) {
+        showStatus('No source questions found for this segment.', 'error');
+        if (btn) { btn.disabled = false; btn.textContent = '✨ Generate Character Questions'; }
+        return;
+    }
+
+    try {
+        const res  = await fetch('/api/expert/questions/persona-variants', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ questions: questionsDict, best_question: null })
+        });
+        const json = await res.json();
+        if (!json.success || !json.variants) throw new Error(json.message || 'Generation failed');
+
+        seg.persona_variants = json.variants;
+        if (!seg.persona_winner) seg.persona_winner = null;
+
+        // Remove generate button and render cards
+        if (btn) btn.closest('div').remove();
+        _renderPersonaCards(si, json.variants);
+
+        // Persist to server
+        fetch(`/api/expert/video/${VIDEO_ID}/persona-variants`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ segments: { [seg.segmentKey]: { persona_variants: json.variants } } })
+        }).catch(() => {});
+
+        showStatus('Generated! Set a kids question and Save All when ready.', 'success');
+    } catch (e) {
+        showStatus(`Generation failed: ${e.message}`, 'error');
+        if (btn) { btn.disabled = false; btn.textContent = '✨ Generate Character Questions'; }
+    }
+}
+
+function toggleSegment(si, e) {
+    const grid = document.getElementById(`persona-grid-${si}`);
+    if (grid) grid.style.display = grid.style.display === 'none' ? 'grid' : 'none';
+}
+
+// ── Render persona cards for a segment ────────────────────────────────────────
+function _renderPersonaCards(si, variants) {
+    const seg = segmentsData[si];
+
+    PERSONAS.forEach(persona => {
+        const wrap = document.getElementById(`persona-cards-${si}-${persona}`);
+        if (!wrap) return;
+        wrap.innerHTML = '';
+
+        const personaData = variants[persona] || {};
+
+        const allEntries = Object.entries(personaData);
+        if (!allEntries.length) {
+            wrap.innerHTML = '<div class="persona-placeholder">No question generated.</div>';
+            return;
+        }
+
+        allEntries.forEach(([type, data]) => {
+            if (!data || typeof data !== 'object') return;
+
+            // Each persona tracks its own independent winner via persona_winners[persona]
+            const winners  = seg.persona_winners || {};
+            const isWinner = winners[persona] === type;
+
+            const card = document.createElement('div');
+            card.className = 'persona-card' + (isWinner ? ' winner' : '');
+            card.id = `pcard-${si}-${persona}-${type}`;
+
+            card.innerHTML = `
+                <div class="persona-card-header">
+                    <span class="type-badge">${type.replace(/_/g,' ')}</span>
+                    ${isWinner ? '<span class="winner-badge">⭐ Kids will see this one</span>' : ''}
+                </div>
+                <div class="persona-field">
+                    <label>Question</label>
+                    <textarea id="pq_${si}_${persona}_${type}"
+                        onchange="syncPersonaData(${si},'${persona}','${type}','q',this.value)">${escHtml(data.q || '')}</textarea>
+                </div>
+                <div class="persona-field">
+                    <label>Answer</label>
+                    <textarea id="pa_${si}_${persona}_${type}" rows="2"
+                        onchange="syncPersonaData(${si},'${persona}','${type}','a',this.value)">${escHtml(data.a || '')}</textarea>
+                </div>
+                <div class="persona-card-actions">
+                    <button class="regen-link" id="pregen_${si}_${persona}_${type}"
+                        onclick="regenPersonaCard(${si},'${persona}','${type}')">
+                        🔄 Regenerate
+                    </button>
+                    ${isWinner
+                        ? `<button class="unset-btn" onclick="unsetPersonaWinner(${si},'${persona}')">Unset</button>`
+                        : `<button class="set-winner-btn" onclick="setPersonaWinner(${si},'${persona}','${type}')">Set as kids question</button>`
+                    }
+                </div>
+            `;
+            wrap.appendChild(card);
+        });
+    });
+}
+
+// ── Per-persona independent winner selection ───────────────────────────────────
+function setPersonaWinner(si, persona, type) {
+    if (!segmentsData[si].persona_winners) segmentsData[si].persona_winners = {};
+    segmentsData[si].persona_winners[persona] = type;
+    _renderPersonaCards(si, segmentsData[si].persona_variants);
+    persistSegmentWinners(si);
+    showStatus(`${persona} question set! Save All Changes to persist.`, 'success');
+}
+
+function unsetPersonaWinner(si, persona) {
+    if (segmentsData[si].persona_winners) delete segmentsData[si].persona_winners[persona];
+    _renderPersonaCards(si, segmentsData[si].persona_variants);
+    persistSegmentWinners(si);
+    showStatus('Selection cleared.', 'success');
+}
+
+function persistSegmentWinners(si) {
+    const seg = segmentsData[si];
+    fetch(`/api/expert/video/${VIDEO_ID}/persona-variants`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ segments: { [seg.segmentKey]: { persona_winners: seg.persona_winners || {} } } })
+    }).catch(() => {});
+}
+
+// ── Sync edits to data ─────────────────────────────────────────────────────────
+function syncPersonaData(si, persona, type, field, value) {
+    const seg = segmentsData[si];
+    if (seg.persona_variants?.[persona]?.[type]) {
+        seg.persona_variants[persona][type][field] = value;
+    }
+}
+
+// ── Regenerate a single persona card ──────────────────────────────────────────
+async function regenPersonaCard(si, persona, type) {
+    const seg = segmentsData[si];
+    const btn = document.getElementById(`pregen_${si}_${persona}_${type}`);
+    btn.disabled = true; btn.textContent = 'Regenerating...';
+
+    const baseQ = (seg.aiQuestions || []).find(q => q.type === type);
+    const questionsDict = {};
+    if (baseQ) {
+        questionsDict[type] = { q: baseQ.question || baseQ.q || '', a: baseQ.answer || baseQ.a || '' };
+    } else {
+        const cur = seg.persona_variants?.[persona]?.[type];
+        if (cur) questionsDict[type] = { q: cur.q || '', a: cur.a || '' };
+    }
+
+    try {
+        const res  = await fetch('/api/expert/questions/persona-variants', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ questions: questionsDict, best_question: null })
+        });
+        const json = await res.json();
+        if (!json.success || !json.variants) throw new Error(json.message || 'Failed');
+
+        const newData = json.variants[persona]?.[type];
+        if (newData) {
+            if (!seg.persona_variants)          seg.persona_variants = {};
+            if (!seg.persona_variants[persona]) seg.persona_variants[persona] = {};
+            seg.persona_variants[persona][type] = newData;
+
+            const qEl = document.getElementById(`pq_${si}_${persona}_${type}`);
+            const aEl = document.getElementById(`pa_${si}_${persona}_${type}`);
+            if (qEl) qEl.value = newData.q || '';
+            if (aEl) aEl.value = newData.a || '';
+            showStatus('Regenerated! Review and Save All when ready.', 'success');
+        }
+    } catch (e) {
+        showStatus(`Regeneration failed: ${e.message}`, 'error');
+    } finally {
+        btn.disabled = false; btn.textContent = '🔄 Regenerate';
+    }
+}
+
+// ── Save all ───────────────────────────────────────────────────────────────────
+async function saveAll() {
+    const btn = document.getElementById('saveAllBtn');
+    btn.disabled = true; btn.textContent = 'Saving...';
+    try {
+        // Build segments map keyed by segmentKey
+        const segmentsMap = {};
+        segmentsData.forEach(seg => {
+            segmentsMap[seg.segmentKey] = {
+                persona_variants: seg.persona_variants || {},
+                persona_winners:  seg.persona_winners  || {},
+            };
+        });
+
+        // Save persona variants
+        const res  = await fetch(`/api/expert/video/${VIDEO_ID}/persona-variants`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ segments: segmentsMap })
+        });
+        const json = await res.json();
+        if (!json.success) throw new Error(json.message);
+
+        // Also finalize — fetch existing final_questions to preserve aiQuestions
+        const existingFqRes = await fetch(`/api/expert/video/${VIDEO_ID}/final-questions`);
+        const existingFq    = await existingFqRes.json();
+        const existingSegs  = (existingFq.success && existingFq.data?.segments) ? existingFq.data.segments : [];
+        const existingByRange = {};
+        existingSegs.forEach(s => { existingByRange[`${s.start}-${s.end}`] = s; });
+
+        const finalQuestions = {
+            segments: segmentsData.map(seg => {
+                const existing = existingByRange[`${seg.start}-${seg.end}`] || {};
+                return {
+                    start:            seg.start,
+                    end:              seg.end,
+                    aiQuestions:      existing.aiQuestions || seg.aiQuestions || [],
+                    persona_variants: seg.persona_variants || {},
+                    persona_winners:  seg.persona_winners  || {},
+                };
+            })
+        };
+        const fqRes  = await fetch('/api/save-final-questions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ videoId: VIDEO_ID, data: finalQuestions })
+        });
+        const fqJson = await fqRes.json();
+        if (!fqJson.success) throw new Error(fqJson.message);
+
+        showStatus('Saved & finalized!', 'success');
+    } catch (e) {
+        showStatus(`Save failed: ${e.message}`, 'error');
+    } finally {
+        btn.disabled = false; btn.textContent = 'Save All Changes';
+    }
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function showStatus(msg, type) {
+    const el = document.getElementById('statusMsg');
+    el.textContent = msg;
+    el.className = `status-msg ${type}`;
+    setTimeout(() => { el.textContent = ''; el.className = 'status-msg'; }, 4000);
+}
+
+function formatTime(secs) {
+    if (secs == null) return '?';
+    const m = Math.floor(secs / 60);
+    const s = Math.floor(secs % 60);
+    return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function escHtml(str) {
+    return String(str)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+loadQuestions();
+</script>
+</body>
+</html>

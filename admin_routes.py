@@ -23,8 +23,11 @@ from app.services.children_service import(
     list_children,
     update_child,
     deactivate_child,
+    delete_child,
 )
-from fastapi.responses import HTMLResponse
+from app.services.report_service import get_child_report
+
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 #Pulls shared path from settings.py so all module uses the same directory
 from app.settings import DOWNLOADS_DIR, TEMPLATES_DIR
@@ -341,6 +344,15 @@ async def api_admin_delete_expert(expert_id: str):
         raise HTTPException(status_code=404, detail="expert not found")
     return {"success": True}
 
+# Permanently delete a child from the database
+@router_admin_api.delete("/admin/children/{child_id}")
+async def api_admin_delete_child(child_id: str):
+    deleted = delete_child(child_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="child not found")
+    return {"success": True}
+
+
 #Admin loads video + current expert assignment state for assignment UI bootstrap
 @router_admin_api.get("/admin/videos/assignments")
 def api_admin_list_video_assignments():
@@ -497,6 +509,7 @@ async def api_admin_create_child(payload: Dict[str, Any] = Body(...)):
     first_name = str(payload.get("first_name") or "").strip()
     last_name = str(payload.get("last_name") or "").strip()
     icon_key = str(payload.get("icon_key") or "").strip().lower()
+    interaction_mode = str(payload.get("interaction_mode") or "flexible").strip().lower()
 
     try:
         child = create_child(
@@ -504,6 +517,7 @@ async def api_admin_create_child(payload: Dict[str, Any] = Body(...)):
             first_name=first_name,
             last_name=last_name,
             icon_key=icon_key,
+            interaction_mode=interaction_mode,
         )
         return {"success": True, "child": child}
     except ValueError as exc:
@@ -520,6 +534,7 @@ async def api_admin_update_child(child_id: str, payload: Dict[str, Any] = Body(.
     first_name = payload.get("first_name")
     last_name = payload.get("last_name")
     icon_key = payload.get("icon_key")
+    interaction_mode = payload.get("interaction_mode")
     is_active = payload.get("is_active")
 
     if expert_id is not None:
@@ -528,6 +543,8 @@ async def api_admin_update_child(child_id: str, payload: Dict[str, Any] = Body(.
         first_name = str(first_name)
     if last_name is not None:
         last_name = str(last_name)
+    if interaction_mode is not None:
+        interaction_mode = str(interaction_mode).strip().lower()
     if icon_key is not None:
         icon_key = str(icon_key)
     if is_active is not None and not isinstance(is_active, bool):
@@ -536,11 +553,12 @@ async def api_admin_update_child(child_id: str, payload: Dict[str, Any] = Body(.
     try:
         child = update_child(
             child_id=child_id,
-            expert_id=expert_id,
             first_name=first_name,
             last_name=last_name,
             icon_key=icon_key,
+            interaction_mode=interaction_mode,
             is_active=is_active,
+            expert_id=expert_id,
         )
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc))
@@ -732,3 +750,10 @@ async def ws_questions(websocket: WebSocket, video_id: str):
 def asyncio_to_thread(func, *args, **kwargs):
     loop = asyncio.get_event_loop()
     return loop.run_in_executor(None, lambda: func(*args, **kwargs))
+
+
+@router_admin_api.get("/reports/child/{child_id}")
+async def api_get_child_report(child_id: str):
+    """Return quiz score report for one child, used by parental reports tab."""
+    report = get_child_report(child_id)
+    return JSONResponse({"success": True, "report": report})

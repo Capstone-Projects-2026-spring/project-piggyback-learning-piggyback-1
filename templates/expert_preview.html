@@ -3,13 +3,20 @@
 <head>
     <meta charset="utf-8">
     <title>Expert Preview - Video Question Review</title>
-    <link rel="stylesheet" href="/assets/css/expert_preview.css">
+    <link rel="stylesheet" href="/assets/css/expert_preview.css?v=2">
 </head>
 <body data-selected-video-id="{{ (selected_video_id or '') | e }}">
     <div class="container">
         <div class="page-header">
             <h1>Expert Preview - Video Question Review</h1>
             <p>Walk through the downloaded video, refine each AI segment, and prepare the final set of comprehension questions.</p>
+            <button id="switch-expert-btn" onclick="switchExpert()" style="
+                position: fixed; top: 16px; right: 16px;
+                background: white; border: none; border-radius: 20px;
+                padding: 10px 18px; font-size: 14px; font-weight: 600;
+                color: #6a1b9a; cursor: pointer;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.12); z-index: 999;
+            ">← Switch Expert</button>
         </div>
 
         <div class="steps" id="expert-steps">
@@ -155,9 +162,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="ai-questions" id="expert-questions">
-                            <!-- AI questions will be populated here -->
-                        </div>
+                        
                         <div class="approve-section" id="approve-section" style="display: none;">
                             <h3>Ready to Approve?</h3>
                             <p>Review the questions above and click approve to continue to the next segment</p>
@@ -289,20 +294,32 @@
         </div>
         <div class="step-content" id="step-3" data-step="3">
             <div class="review-card">
-                <h2>Review Questions</h2>
-                <p class="selection-help">Inspect each segment and its questions before sharing them with learners.</p>
-                <div class="review-meta">
-                    <div><strong>Video:</strong> <span id="review-video-id">Not selected</span></div>
-                    <div><strong>Total segments:</strong> <span id="review-total-segments">0</span></div>
+                <div class="review-card-header-row">
+                    <div class="review-card-header-left">
+                        <h2>Review Questions</h2>
+                        <p class="selection-help">Inspect each segment and its questions before sharing them with learners.</p>
+                        <div class="review-meta">
+                            <div><strong>Video:</strong> <span id="review-video-id">Not selected</span></div>
+                            <div><strong>Total segments:</strong> <span id="review-total-segments">0</span></div>
+                        </div>
+                    </div>
+                    <div class="review-card-header-right">
+                        <div style="display:flex;gap:10px;align-items:center;">
+                            <button class="btn-characterize" id="btn-characterize" onclick="characterizeAllQuestions()" disabled>
+                                🔄 Characterize
+                            </button>
+                            <button class="btn-review-edit" id="btn-open-edit-page" onclick="openEditPage()" disabled>Edit</button>
+                        </div>
+                        <div class="characterize-status" id="characterize-status"></div>
+                    </div>
                 </div>
-                <div class="review-questions-list" id="review-questions-list">
-                    <div class="review-placeholder">Select a video on Step 1 and choose 'Review Questions' to view the full set.</div>
-                </div>
+
+                <div class="review-questions-list" id="review-questions-list"></div>
             </div>
         </div>
 
     </div>
-<script src="/assets/js/expert_preview.js? v=2" defer></script>
+<script src="/assets/js/expert_preview.js?v=4" defer></script>
 </body>
 </html>
 

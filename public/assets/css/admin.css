@@ -1,12 +1,13 @@
 
         .admin-tabs {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
+            display: flex;
             gap: 14px;
             margin: 0 0 22px 0;
+            width: 100%;
             }
 
             .admin-tab {
+            flex: 1;
             border: 0;
             border-radius: 14px;
             padding: 16px 14px;
@@ -36,15 +37,9 @@
             display: block;
             }
 
-            @media (max-width: 1100px) {
-            .admin-tabs {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-            }
-
             @media (max-width: 640px) {
             .admin-tabs {
-                grid-template-columns: 1fr;
+                flex-direction: column;
             }
             }
 
@@ -786,5 +781,486 @@
             font-size: 0.9rem;
             color: #6c757d;
             margin-top: 8px;
+            font-weight: 500;
+        }
+
+        /* =====================================================
+           Refined UI — Assign Experts + Assign Children tabs
+           ===================================================== */
+
+        #assign-experts .main-content,
+        #assign-children .main-content {
+            padding: 36px 40px;
+        }
+
+        /* Section-level heading */
+        #assign-experts .main-content > h2,
+        #assign-children .main-content > h2 {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 4px;
+            letter-spacing: -0.01em;
+        }
+
+        #assign-experts .main-content > p,
+        #assign-children .main-content > p {
+            font-size: 0.88rem;
+            color: #6b7280;
+            margin-bottom: 28px;
+        }
+
+        /* Card panels — override gray search-container */
+        #assign-experts .search-container,
+        #assign-children .search-container {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 28px 28px 24px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+        /* Panel header h3 */
+        #assign-experts .search-container > h3,
+        #assign-children .search-container > h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f3f4f6;
+            letter-spacing: 0;
+        }
+
+        /* Table container */
+        #assign-experts .results-table-container,
+        #assign-children .results-table-container {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: none;
+        }
+
+        /* Table header */
+        #assign-experts .results-table th,
+        #assign-children .results-table th {
+            background: #f9fafb;
+            color: #6b7280;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            padding: 10px 16px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        /* Table rows */
+        #assign-experts .results-table td,
+        #assign-children .results-table td {
+            padding: 13px 16px;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.88rem;
+            color: #374151;
+            vertical-align: middle;
+        }
+
+        #assign-experts .results-table tr:last-child td,
+        #assign-children .results-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        #assign-experts .results-table tr:hover td,
+        #assign-children .results-table tr:hover td {
+            background: #f9fafb;
+        }
+
+        /* Smaller inline action buttons in table rows */
+        #assign-experts .results-table .btn,
+        #assign-children .results-table .btn {
+            padding: 6px 14px;
+            font-size: 0.8rem;
+            border-radius: 7px;
+        }
+
+        /* Status badge inside table */
+        #assign-experts .results-table .badge,
+        #assign-children .results-table .badge {
+            font-size: 0.72rem;
+            padding: 3px 10px;
+        }
+
+        /* Inline text inputs inside table rows (e.g. edit name / new password) */
+        #assign-experts .results-table input[type="text"],
+        #assign-experts .results-table input[type="password"] {
+            padding: 7px 10px;
+            font-size: 0.82rem;
+            border-radius: 7px;
+            border-width: 1px;
+        }
+
+        /* Toolbar above children table */
+        #assign-children .children-toolbar {
+            margin-bottom: 16px;
+        }
+
+        /* Form label refinement inside these sections */
+        #assign-experts .search-form label,
+        #assign-children .search-form label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        /* Refresh / outline button inside toolbar */
+        #assign-children #refresh-children-btn,
+        #assign-experts #refresh-assignments-btn {
+            padding: 8px 18px;
+            font-size: 0.85rem;
+            border-radius: 8px;
+        }
+
+        /* =====================================================
+           Admin Cards — refined UI for Experts + Children tabs
+           ===================================================== */
+
+        .admin-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 28px 28px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+        }
+
+        .admin-card-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 20px 0;
+            letter-spacing: -0.01em;
+        }
+
+        .admin-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .admin-card-header .admin-card-title {
+            margin-bottom: 0;
+        }
+
+        .admin-card-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .admin-control-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #6b7280;
+        }
+
+        .admin-filter-select {
+            padding: 6px 10px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            background: #f9fafb;
+            color: #374151;
+            cursor: pointer;
+        }
+
+        .admin-toggle-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #374151;
+            cursor: pointer;
+        }
+
+        /* Form row */
+        .admin-form-row {
+            display: flex;
+            gap: 14px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            margin-bottom: 0;
+        }
+
+        .admin-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 130px;
+        }
+
+        .admin-field.admin-field-grow {
+            flex: 1;
+        }
+
+        .admin-field.admin-field-btn {
+            justify-content: flex-end;
+        }
+
+        .admin-field label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #6b7280;
+            letter-spacing: 0.02em;
+            text-transform: none;
+            margin: 0;
+        }
+
+        .admin-input {
+            background: #f3f4f6;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            padding: 11px 14px;
+            font-size: 0.9rem;
+            color: #111827;
+            transition: border-color 0.15s, box-shadow 0.15s;
+            outline: none;
+        }
+
+        .admin-input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+            background: #fff;
+        }
+
+        /* Create button */
+        .btn-create {
+            background: #22c55e;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 11px 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.15s, transform 0.1s;
+        }
+
+        .btn-create:hover {
+            background: #16a34a;
+            transform: translateY(-1px);
+        }
+
+        .btn-create.btn-create-sm {
+            padding: 7px 14px;
+            font-size: 0.82rem;
+            border-radius: 8px;
+        }
+
+        /* Ghost refresh button */
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #6b7280;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .btn-ghost:hover {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        /* Table */
+        .admin-table-wrap {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+        }
+
+        .admin-table thead th {
+            background: #f9fafb;
+            padding: 10px 14px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #6b7280;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            border-bottom: 1px solid #e5e7eb;
+            white-space: nowrap;
+        }
+
+        .admin-table tbody td {
+            padding: 12px 14px;
+            font-size: 0.88rem;
+            color: #374151;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: middle;
+        }
+
+        .admin-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .admin-table tbody tr:hover td {
+            background: #fafafa;
+        }
+
+        /* Cell types */
+        .admin-id-cell {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.82rem;
+            color: #4b5563;
+        }
+
+        .admin-child-id {
+            color: #2563eb;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .admin-video-title {
+            font-weight: 500;
+            max-width: 260px;
+        }
+
+        /* Status badge */
+        .admin-status-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .admin-status-badge.status-active {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .admin-status-badge.status-inactive {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        /* Inline inputs inside table */
+        .admin-inline-input {
+            background: #f3f4f6;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 0.85rem;
+            color: #111827;
+            width: 100%;
+            max-width: 160px;
+            outline: none;
+        }
+
+        .admin-inline-input:focus {
+            border-color: #6366f1;
+            background: #fff;
+        }
+
+        .admin-inline-select {
+            background: #f3f4f6;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 0.85rem;
+            color: #111827;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .admin-inline-select:focus {
+            border-color: #6366f1;
+        }
+
+        /* Action buttons */
+        .admin-actions-cell {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .admin-action-btn {
+            background: none;
+            border: none;
+            padding: 5px 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #374151;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.1s;
+        }
+
+        .admin-action-btn:hover {
+            background: #f3f4f6;
+        }
+
+        .admin-action-danger {
+            color: #ea580c;
+        }
+
+        .admin-action-remove {
+            color: #dc2626;
+        }
+
+        .admin-action-unlink, .admin-action-link {
+            color: #2563eb;
+        }
+
+        /* Expert chips */
+        .admin-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 6px;
+        }
+
+        .admin-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #eff6ff;
+            color: #1d4ed8;
+            border-radius: 999px;
+            padding: 2px 8px;
+            font-size: 0.78rem;
+            font-weight: 500;
+        }
+
+        .admin-chip-remove {
+            background: none;
+            border: none;
+            color: #1d4ed8;
+            cursor: pointer;
+            font-size: 0.9rem;
+            line-height: 1;
+            padding: 0 2px;
+        }
+
+        .admin-expert-count {
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: #374151;
             font-weight: 500;
         }

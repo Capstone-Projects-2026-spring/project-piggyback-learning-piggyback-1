@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Video Processing Dashboard</title>
-<link rel="stylesheet" href="/assets/css/admin.css?v=3">
+<link rel="stylesheet" href="/assets/css/admin.css?v=5">
 
 
 </head>
@@ -12,12 +12,18 @@
         <div class="header">
             <h1>Video Processing Dashboard</h1>
             <p>Download, extract frames, and generate educational questions from YouTube videos</p>
+            <button onclick="window.location.href='/'" style="
+                position: fixed; top: 16px; right: 16px;
+                background: #356ae6; border: none; border-radius: 20px;
+                padding: 10px 18px; font-size: 14px; font-weight: 600;
+                color: white; cursor: pointer;
+                box-shadow: 0 2px 8px rgba(53,106,230,0.35); z-index: 999;
+            ">🏠 Home</button>
         </div>
         <div class="admin-tabs">
         <button type="button" class="admin-tab active" data-target="video-dashboard">Video Processing Dashboard</button>
         <button type="button" class="admin-tab" data-target="assign-experts">Assign Videos - Experts</button>
         <button type="button" class="admin-tab" data-target="assign-children">Assign Conditions - Children</button>
-        <button type="button" class="admin-tab" data-target="parental-reports">Parental Reports</button>
         </div>
         <section id="video-dashboard" class="admin-section active">
         
@@ -220,38 +226,42 @@
 
     <section id="assign-experts" class="admin-section">
     <div class="main-content">
-        <h2>Assign Videos - Experts</h2>
-        <p>Manage expert accounts and assign downloaded videos.</p>
 
-        <div class="search-container">
-            <h3>Expert Accounts</h3>
-            <form id="create-expert-form" class="search-form">
-                <div class="form-group">
+        <div class="admin-card">
+            <h3 class="admin-card-title">Create Expert</h3>
+            <form id="create-expert-form" class="admin-form-row">
+                <div class="admin-field">
                     <label for="new-expert-id">Expert ID</label>
-                    <input id="new-expert-id" type="text" placeholder="exp_amy" required />
+                    <input id="new-expert-id" type="text" placeholder="exp_amy" class="admin-input" required />
                 </div>
-                <div class="form-group">
+                <div class="admin-field admin-field-grow">
                     <label for="new-expert-name">Display Name</label>
-                    <input id="new-expert-name" type="text" placeholder="Amy" required />
+                    <input id="new-expert-name" type="text" placeholder="Amy" class="admin-input" required />
                 </div>
-                <div class="form-group">
+                <div class="admin-field admin-field-grow">
                     <label for="new-expert-password">Password</label>
-                    <input id="new-expert-password" type="password" required />
+                    <input id="new-expert-password" type="password" placeholder="••••••••" class="admin-input" required />
                 </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-success">Create Expert</button>
+                <div class="admin-field admin-field-btn">
+                    <button type="submit" class="btn-create">+ Create Expert</button>
                 </div>
             </form>
             <div id="expert-admin-status" class="status-message" style="display:none;"></div>
+        </div>
 
-            <div class="results-table-container" style="margin-top:16px;">
-                <table class="results-table">
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h3 class="admin-card-title" id="active-experts-heading">Active Experts</h3>
+            </div>
+            <div class="admin-table-wrap">
+                <table class="admin-table">
                     <thead>
                         <tr>
                             <th>Expert ID</th>
                             <th>Display Name</th>
                             <th>Status</th>
-                            <th>Actions</th>
+                            <th>Password Reset</th>
+                            <th style="text-align:right;">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="expert-list-tbody"></tbody>
@@ -259,89 +269,105 @@
             </div>
         </div>
 
-        <div class="search-container">
-            <h3>Video Assignments</h3>
-            <button id="refresh-assignments-btn" type="button" class="btn btn-outline">Refresh</button>
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h3 class="admin-card-title">Downloaded Videos</h3>
+                <button id="refresh-assignments-btn" type="button" class="btn-ghost">↻ Refresh</button>
+            </div>
             <div id="assignment-admin-status" class="status-message" style="display:none; margin-top:12px;"></div>
-
-            <div class="results-table-container" style="margin-top:16px;">
-                <table class="results-table">
+            <div class="admin-table-wrap">
+                <table class="admin-table">
                     <thead>
                         <tr>
-                            <th>Video</th>
+                            <th>Video Title</th>
+                            <th>Video ID</th>
                             <th>Current Expert</th>
-                            <th>Assign To</th>
-                            <th>Action</th>
+                            <th>Assign To Expert</th>
+                            <th style="text-align:right;">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="assignment-list-tbody"></tbody>
                 </table>
             </div>
         </div>
+
     </div>
 </section>
 
     <section id="assign-children" class="admin-section">
         <div class="main-content">
-            <h2>Assign Conditions - Children</h2>
-            <p>Create and manage child profiles linked to experts.</p>
 
-            <div class="search-container">
-                <h3>Create Child Profile</h3>
-                <form id="create-child-form" class="search-form">
-                    <div class="form-group">
+            <div class="admin-card">
+                <h3 class="admin-card-title">Create Child</h3>
+                <form id="create-child-form" class="admin-form-row">
+                    <div class="admin-field">
                         <label for="child-expert-select">Expert</label>
-                        <select id="child-expert-select" required>
+                        <select id="child-expert-select" class="admin-input" required>
                             <option value="">Select expert...</option>
                         </select>
                     </div>
-                    <div class="form-group">
+                    <div class="admin-field admin-field-grow">
                         <label for="child-first-name">First Name</label>
-                        <input id="child-first-name" type="text" maxlength="40" required />
+                        <input id="child-first-name" type="text" placeholder="First Name" class="admin-input" maxlength="40" required />
                     </div>
-                    <div class="form-group">
+                    <div class="admin-field admin-field-grow">
                         <label for="child-last-name">Last Name</label>
-                        <input id="child-last-name" type="text" maxlength="40" required />
+                        <input id="child-last-name" type="text" placeholder="Last Name" class="admin-input" maxlength="40" required />
                     </div>
-                    <div class="form-group">
-                        <label for="child-icon-key">Icon</label>
-                        <select id="child-icon-key" required>
-                            <option value="pig">Pig</option>
-                            <option value="fox">Fox</option>
-                            <option value="owl">Owl</option>
-                            <option value="cat">Cat</option>
-                            <option value="bear">Bear</option>
-                            <option value="alligator">Alligator</option>
-                            <option value="rabbit">Rabbit</option>
-                            <option value="lion">Lion</option>
-                            <option value="penguin">Penguin</option>
+                    <div class="admin-field">
+                        <label for="child-interaction-mode">Interaction Mode</label>
+                        <select id="child-interaction-mode" class="admin-input">
+                            <option value="flexible" selected>Flexible (Skip Enabled)</option>
+                            <option value="strict">Strict (Skip Disabled)</option>
+                            <option value="passive">Passive (Questions Disabled)</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-success">Create Child</button>
+                    <div class="admin-field">
+                        <label for="child-icon-key">Icon</label>
+                        <select id="child-icon-key" class="admin-input" required>
+                            <option value="simba">🦁 Simba</option>
+                            <option value="nemo">🐠 Nemo &amp; Dory</option>
+                            <option value="walle">🤖 WALL-E</option>
+                            <option value="moana">👸 Moana</option>
+                            <option value="elsa">❄️ Elsa &amp; Anna</option>
+                            <option value="spiderman">🕷️ Spider-Man</option>
+                            <option value="mickey">🐭 Mickey Mouse</option>
+                            <option value="pooh">🧸 Winnie the Pooh</option>
+                            <option value="chase">🐾 Chase (PAW Patrol)</option>
+                            <option value="spongebob">🧽 SpongeBob</option>
+                            <option value="turtle">🐢 Ninja Turtles</option>
+                            <option value="bluey">🦸 Bluey &amp; Bingo</option>
+                            <option value="hellokitty">🐱 Hello Kitty</option>
+                            <option value="mlp">🧁 My Little Pony</option>
+                            <option value="peppa">🌟 Peppa Pig</option>
+                            <option value="mario">🎮 Mario &amp; Luigi</option>
+                            <option value="dino">🦕 Dino (Cocomelon)</option>
+                        </select>
+                    </div>
+                    <div class="admin-field admin-field-btn">
+                        <button type="submit" class="btn-create">+ Create Child</button>
                     </div>
                 </form>
                 <div id="child-admin-status" class="status-message" style="display:none;"></div>
             </div>
 
-            <div class="search-container">
-                <h3>Children Directory</h3>
-                <div class="children-toolbar">
-                    <div class="form-group">
-                        <label for="children-filter-expert">Filter by Expert</label>
-                        <select id="children-filter-expert">
-                            <option value="">All experts</option>
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h3 class="admin-card-title" id="children-dir-heading">Children Directory</h3>
+                    <div class="admin-card-controls">
+                        <span class="admin-control-label">Expert:</span>
+                        <select id="children-filter-expert" class="admin-filter-select">
+                            <option value="">All</option>
                         </select>
+                        <label class="admin-toggle-label">
+                            <input type="checkbox" id="children-include-inactive" />
+                            Show inactive
+                        </label>
+                        <button id="refresh-children-btn" type="button" class="btn-ghost">↻</button>
                     </div>
-                    <label class="children-inline-toggle">
-                        <input type="checkbox" id="children-include-inactive" />
-                        <span>Show inactive</span>
-                    </label>
-                    <button id="refresh-children-btn" type="button" class="btn btn-outline">Refresh</button>
                 </div>
-
-                <div class="results-table-container" style="margin-top:16px;">
-                    <table class="results-table">
+                <div class="admin-table-wrap">
+                    <table class="admin-table">
                         <thead>
                             <tr>
                                 <th>Child ID</th>
@@ -349,23 +375,20 @@
                                 <th>First Name</th>
                                 <th>Last Name</th>
                                 <th>Icon</th>
+                                <th>Interaction Mode</th>
                                 <th>Status</th>
-                                <th>Actions</th>
+                                <th style="text-align:right;">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="child-list-tbody"></tbody>
                     </table>
                 </div>
             </div>
+
         </div>
     </section>
-    <section id="parental-reports" class="admin-section">
-        <div class="main-content">
-            <h2>Parental Reports</h2>
-            <p>Coming next.</p>
+
         </div>
-    </section>
-        </div>
-<script src="/assets/js/admin.js?v=10" defer></script>
+<script src="/assets/js/admin.js?v=12" defer></script>
 </body>
 </html>

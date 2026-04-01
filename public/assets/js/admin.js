@@ -14,15 +14,42 @@
         let currentVideoMeta = null;
         let currentVideoHasFrames = false;
         const CHILD_ICON_EMOJI = {
-            pig: '🐷',
-            fox: '🦊',
-            owl: '🦉',
-            cat: '🐱',
-            bear: '🐻',
-            alligator: '🐊',
-            rabbit: '🐰',
-            lion: '🦁',
-            penguin: '🐧',
+            simba:       '🦁',
+            nemo:        '🐠',
+            walle:       '🤖',
+            moana:       '👸',
+            elsa:        '❄️',
+            spiderman:   '🕷️',
+            mickey:      '🐭',
+            pooh:        '🧸',
+            chase:       '🐾',
+            spongebob:   '🧽',
+            turtle:      '🐢',
+            bluey:       '🦸',
+            hellokitty:  '🐱',
+            mlp:         '🧁',
+            peppa:       '🌟',
+            mario:       '🎮',
+            dino:        '🦕',
+        };
+        const CHILD_ICON_NAME = {
+            simba:       'Simba',
+            nemo:        'Nemo & Dory',
+            walle:       'WALL-E',
+            moana:       'Moana',
+            elsa:        'Elsa & Anna',
+            spiderman:   'Spider-Man',
+            mickey:      'Mickey Mouse',
+            pooh:        'Winnie the Pooh',
+            chase:       'Chase (PAW Patrol)',
+            spongebob:   'SpongeBob',
+            turtle:      'Ninja Turtles',
+            bluey:       'Bluey & Bingo',
+            hellokitty:  'Hello Kitty',
+            mlp:         'My Little Pony',
+            peppa:       'Peppa Pig',
+            mario:       'Mario & Luigi',
+            dino:        'Dino (Cocomelon)',
         };
         
         // Initialize
@@ -479,21 +506,24 @@ function renderExpertTable() {
     const tbody = document.getElementById('expert-list-tbody');
     if (!tbody) return;
 
+    const headingEl = document.getElementById('active-experts-heading');
+    if (headingEl) headingEl.textContent = `Active Experts (${adminExperts.length})`;
+
     if (!adminExperts.length) {
-        tbody.innerHTML = '<tr><td colspan="4">No experts yet.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#9ca3af;padding:24px;">No experts yet.</td></tr>';
         return;
     }
 
     tbody.innerHTML = adminExperts.map((expert) => `
         <tr data-expert-id="${expert.expert_id}" data-active="${expert.is_active ? '1' : '0'}">
-            <td>${expert.expert_id}</td>
-            <td><input type="text" data-role="name" value="${expert.display_name || ''}" /></td>
-            <td>${expert.is_active ? 'Active' : 'Inactive'}</td>
-            <td>
-                <input type="password" data-role="password" placeholder="New password (optional)" />
-                <button type="button" class="btn btn-outline" data-action="save-expert">Save</button>
-                <button type="button" class="btn" data-action="toggle-expert">${expert.is_active ? 'Deactivate' : 'Activate'}</button>
-                <button type="button" class="btn btn-danger" data-action="remove-expert">Remove</button>
+            <td class="admin-id-cell">${expert.expert_id}</td>
+            <td><input type="text" class="admin-inline-input" data-role="name" value="${expert.display_name || ''}" /></td>
+            <td><span class="admin-status-badge ${expert.is_active ? 'status-active' : 'status-inactive'}">${expert.is_active ? 'active' : 'inactive'}</span></td>
+            <td><input type="password" class="admin-inline-input" data-role="password" placeholder="New password" /></td>
+            <td class="admin-actions-cell">
+                <button type="button" class="admin-action-btn" data-action="save-expert">💾 Save</button>
+                <button type="button" class="admin-action-btn admin-action-danger" data-action="toggle-expert">${expert.is_active ? '👤 Deactivate' : '✅ Activate'}</button>
+                <button type="button" class="admin-action-btn admin-action-remove" data-action="remove-expert">🗑 Remove</button>
             </td>
         </tr>
     `).join('');
@@ -524,7 +554,7 @@ function renderAssignmentTable() {
     if (!tbody) return;
 
     if (!adminAssignments.length) {
-        tbody.innerHTML = '<tr><td colspan="4">No downloaded videos found.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#9ca3af;padding:24px;">No downloaded videos found.</td></tr>';
         return;
     }
 
@@ -533,36 +563,36 @@ function renderAssignmentTable() {
         .join('');
 
     tbody.innerHTML = adminAssignments.map((row) => {
-    // build chips for each already-assigned expert
+    const assignedCount = (row.assigned_experts || []).length;
     const chips = (row.assigned_experts || []).map((e) => `
-        <span class="badge bg-secondary me-1">
+        <span class="admin-chip">
             ${e.expert_name || e.expert_id}
-            <button type="button" class="btn-close btn-close-white btn-sm ms-1"
+            <button type="button" class="admin-chip-remove"
                 data-action="remove-assignment"
                 data-video-id="${row.video_id}"
-                data-expert-id="${e.expert_id}"
-                aria-label="Remove">
-            </button>
+                data-expert-id="${e.expert_id}">×</button>
         </span>
     `).join('');
 
     return `
         <tr data-video-id="${row.video_id}">
-            <td>${row.title || row.video_id}<br><small>${row.video_id}</small></td>
-            <td>${
-    chips
-        ? `<details><summary>${(row.assigned_experts || []).length} expert(s)</summary>${chips}</details>`
-        : '<span class="text-muted">Unassigned</span>'
-    }</td>
-                <td>
-                    <select data-role="assignment-expert">
-                        <option value="">-- select expert --</option>
-                        ${expertOptions}
-                    </select>
-                    <button type="button" class="btn btn-success btn-sm ms-1" data-action="add-assignment">Add</button>
-                </td>
-            </tr>
-        `;
+            <td class="admin-video-title">${row.title || '—'}</td>
+            <td class="admin-id-cell">${row.video_id}</td>
+            <td>${assignedCount > 0
+                ? `<details><summary class="admin-expert-count">👁 ${assignedCount} expert(s)</summary><div class="admin-chips">${chips}</div></details>`
+                : '<span style="color:#9ca3af;">Unassigned</span>'
+            }</td>
+            <td>
+                <select class="admin-inline-select" data-role="assignment-expert">
+                    <option value="">-- select expert --</option>
+                    ${expertOptions}
+                </select>
+            </td>
+            <td class="admin-actions-cell">
+                <button type="button" class="btn-create btn-create-sm" data-action="add-assignment">+ Add</button>
+            </td>
+        </tr>
+    `;
 }).join('');
 
 // Add assignment
@@ -712,8 +742,8 @@ function escapeHtml(value) {
 function iconLabel(iconKey) {
     const key = String(iconKey || '').trim().toLowerCase();
     const emoji = CHILD_ICON_EMOJI[key] || '👤';
-    const title = key ? `${key.charAt(0).toUpperCase()}${key.slice(1)}` : 'Unknown';
-    return `${emoji} ${title}`;
+    const name = CHILD_ICON_NAME[key] || (key ? `${key.charAt(0).toUpperCase()}${key.slice(1)}` : 'Unknown');
+    return `${emoji} ${name}`;
 }
 
 function renderChildrenExpertOptions() {
@@ -796,8 +826,11 @@ function renderChildrenTable() {
     const tbody = document.getElementById('child-list-tbody');
     if (!tbody) return;
 
+    const dirHeading = document.getElementById('children-dir-heading');
+    if (dirHeading) dirHeading.textContent = `Children Directory (${adminChildren.length})`;
+
     if (!adminChildren.length) {
-        tbody.innerHTML = '<tr><td colspan="7">No children found for this filter.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#9ca3af;padding:24px;">No children found for this filter.</td></tr>';
         return;
     }
 
@@ -809,20 +842,20 @@ function renderChildrenTable() {
 
     tbody.innerHTML = adminChildren.map((child) => `
         <tr data-child-id="${child.child_id}" data-active="${child.is_active ? '1' : '0'}">
-            <td><span class="child-id-badge">${child.child_id}</span></td>
+            <td><span class="admin-child-id">${child.child_id}</span></td>
             <td>
                 ${child.expert_id
                     ? escapeHtml(child.expert_name || child.expert_id)
-                    : `<select data-role="child-link-expert">
+                    : `<select class="admin-inline-select" data-role="child-link-expert">
                         <option value="">Select expert...</option>
                         ${expertLinkOptions}
                     </select>`
                 }
             </td>
-            <td><input type="text" data-role="child-first-name" value="${escapeHtml(child.first_name || '')}" /></td>
-            <td><input type="text" data-role="child-last-name" value="${escapeHtml(child.last_name || '')}" /></td>
+            <td><input type="text" class="admin-inline-input" data-role="child-first-name" value="${escapeHtml(child.first_name || '')}" /></td>
+            <td><input type="text" class="admin-inline-input" data-role="child-last-name" value="${escapeHtml(child.last_name || '')}" /></td>
             <td>
-                <select data-role="child-icon-key">
+                <select class="admin-inline-select" data-role="child-icon-key">
                     ${Object.keys(CHILD_ICON_EMOJI).map((icon) => `
                         <option value="${icon}" ${icon === child.icon_key ? 'selected' : ''}>
                             ${iconLabel(icon)}
@@ -830,16 +863,24 @@ function renderChildrenTable() {
                     `).join('')}
                 </select>
             </td>
-            <td>${child.is_active ? 'Active' : 'Inactive'}</td>
             <td>
-                <button type="button" class="btn btn-outline" data-action="save-child">Save</button>
+                <select class="admin-inline-select" data-role="child-interaction-mode">
+                    <option value="flexible" ${child.interaction_mode === 'flexible' ? 'selected' : ''}>Flexible</option>
+                    <option value="strict" ${child.interaction_mode === 'strict' ? 'selected' : ''}>Strict</option>
+                    <option value="passive" ${child.interaction_mode === 'passive' ? 'selected' : ''}>Passive</option>
+                </select>
+            </td>
+            <td><span class="admin-status-badge ${child.is_active ? 'status-active' : 'status-inactive'}">${child.is_active ? 'active' : 'inactive'}</span></td>
+            <td class="admin-actions-cell">
+                <button type="button" class="admin-action-btn" data-action="save-child">💾 Save</button>
                 ${child.expert_id
-                    ? '<button type="button" class="btn btn-outline" data-action="unlink-child">Unlink</button>'
-                    : '<button type="button" class="btn btn-outline" data-action="link-child">Link</button>'
+                    ? '<button type="button" class="admin-action-btn admin-action-unlink" data-action="unlink-child">🔗 Unlink</button>'
+                    : '<button type="button" class="admin-action-btn admin-action-link" data-action="link-child">🔗 Link</button>'
                 }
-                <button type="button" class="btn ${child.is_active ? '' : 'btn-success'}" data-action="toggle-child">
-                    ${child.is_active ? 'Deactivate' : 'Activate'}
+                <button type="button" class="admin-action-btn admin-action-danger" data-action="toggle-child">
+                    ${child.is_active ? '👤 Deactivate' : '✅ Activate'}
                 </button>
+                <button type="button" class="admin-action-btn admin-action-remove" data-action="delete-child">🗑 Remove</button>
             </td>
         </tr>
     `).join('');
@@ -871,6 +912,30 @@ function renderChildrenTable() {
             await handleLinkChild(row);
         });
     });
+
+    tbody.querySelectorAll('[data-action="delete-child"]').forEach((btn) => {
+        btn.addEventListener('click', async (event) => {
+            const row = event.currentTarget.closest('tr');
+            await handleDeleteChild(row);
+        });
+    });
+}
+
+async function handleDeleteChild(row) {
+    const childId = row.dataset.childId;
+    if (!confirm(`Permanently remove child "${childId}"? This cannot be undone.`)) return;
+    try {
+        const resp = await fetch(`/api/admin/children/${encodeURIComponent(childId)}`, { method: 'DELETE' });
+        const data = await resp.json().catch(() => ({}));
+        if (!resp.ok || !data.success) {
+            throw new Error(data.detail || data.message || 'Failed to remove child.');
+        }
+        row.remove();
+        await loadChildrenDashboard(false);
+        setAdminPanelStatus('child-admin-status', `Child "${childId}" deleted.`, 'success');
+    } catch (error) {
+        setAdminPanelStatus('child-admin-status', error.message || 'Failed to remove child.', 'error');
+    }
 }
 
 function childMatchesCurrentFilters(child) {
@@ -907,11 +972,12 @@ async function handleCreateChild(event) {
         const first_name = (document.getElementById('child-first-name')?.value || '').trim();
         const last_name = (document.getElementById('child-last-name')?.value || '').trim();
         const icon_key = (document.getElementById('child-icon-key')?.value || '').trim().toLowerCase();
+        const interaction_mode = (document.getElementById('child-interaction-mode')?.value || 'flexible').trim().toLowerCase();
 
         const res = await fetch('/api/admin/children', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ expert_id, first_name, last_name, icon_key }),
+            body: JSON.stringify({ expert_id, first_name, last_name, icon_key, interaction_mode }),
         });
         const data = await res.json();
         if (!res.ok || !data.success) {
@@ -934,6 +1000,7 @@ async function handleSaveChild(row) {
             first_name: (row.querySelector('[data-role="child-first-name"]')?.value || '').trim(),
             last_name: (row.querySelector('[data-role="child-last-name"]')?.value || '').trim(),
             icon_key: (row.querySelector('[data-role="child-icon-key"]')?.value || '').trim().toLowerCase(),
+            interaction_mode: (row.querySelector('[data-role="child-interaction-mode"]')?.value || 'flexible').trim().toLowerCase(),
             is_active: row.dataset.active === '1',
         };
         const linkSelect = row.querySelector('[data-role="child-link-expert"]');

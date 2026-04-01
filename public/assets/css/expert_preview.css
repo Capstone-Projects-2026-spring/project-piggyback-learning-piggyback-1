@@ -1815,4 +1815,578 @@ select {
                 flex-direction: column;
             }
         }
+.questions-grid{
+    display:grid;
+    grid-template-columns: 1.2fr 1fr 1fr 1fr;
+    gap:20px;
+    margin-top:20px;
+}
 
+.question-column{
+    background:white;
+    border:1px solid #ddd;
+    border-radius:8px;
+    padding:15px;
+}
+
+.expert-column{
+    background:#f8f9fb;
+}
+
+.column-header{
+    font-weight:bold;
+    margin-bottom:10px;
+}
+
+.segment-header{
+    font-weight:600;
+    font-size:18px;
+    margin-top:30px;
+}
+
+.review-control-panel {
+    border: 1px solid rgba(168, 186, 213, 0.6);
+    border-radius: 16px;
+    padding: 18px;
+    margin: 20px 0;
+    background: #ffffff;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+}
+
+.review-control-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    gap: 12px;
+}
+
+.review-control-heading h4 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.review-control-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.review-control-row label {
+    font-size: 0.85rem;
+    color: #475569;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.review-control-row select {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #cbd5f5;
+    background: #f8fafc;
+}
+
+.review-control-type {
+    font-size: 0.85rem;
+    color: #1e3a8a;
+    font-weight: 600;
+}
+
+.review-control-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.review-control-editor {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+}
+
+.review-control-editor-card textarea {
+    width: 100%;
+    min-height: 90px;
+    border-radius: 10px;
+    border: 1px solid #cbd5e0;
+    padding: 10px;
+    font-size: 0.95rem;
+    resize: vertical;
+}
+
+.review-control-lock {
+    font-size: 0.85rem;
+    color: #475569;
+    font-style: italic;
+}
+
+/* ===== PERSONA REVIEW LAYOUT ===== */
+
+.segment-block {
+    margin-bottom: 28px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(44, 62, 139, 0.08);
+}
+
+.segment-header-bar {
+    background: #3b5bdb;
+    color: white;
+    padding: 14px 22px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    user-select: none;
+    border-radius: 12px;
+    transition: background 0.2s;
+}
+
+.segment-header-bar.open {
+    border-radius: 12px 12px 0 0;
+}
+
+.segment-header-bar:hover {
+    background: #2f4ec4;
+}
+
+.segment-index-label {
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.segment-time-label {
+    font-size: 0.88rem;
+    opacity: 0.85;
+    font-weight: 400;
+}
+
+.segment-header-chevron {
+    margin-left: auto;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* Questions 3-column grid (Bunny / Alligator / Pig) */
+.questions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    background: #f1f4fa;
+    padding: 16px;
+    gap: 14px;
+    border-radius: 0 0 12px 12px;
+}
+
+/* Review card header: title/meta on left, Edit button on right */
+.review-card-header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.review-card-header-left {
+    flex: 1;
+}
+
+.review-card-header-left h2 {
+    margin: 0 0 4px;
+}
+
+.review-card-header-right {
+    flex-shrink: 0;
+    padding-top: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.btn-review-edit {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    padding: 10px 28px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.btn-review-edit:hover:not(:disabled) {
+    background: #1d4ed8;
+}
+
+.btn-review-edit:disabled {
+    background: #93c5fd;
+    cursor: default;
+}
+
+/* ── Review Questions raw question display ── */
+.review-segment-block {
+    margin-bottom: 18px;
+}
+
+.review-question-list {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.review-q-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 12px 14px;
+}
+
+.review-action-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 0 8px;
+}
+
+.btn-characterize {
+    background: #7c3aed;
+    color: #fff;
+    border: none;
+    padding: 11px 26px;
+    border-radius: 8px;
+    font-size: .95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.btn-characterize:hover:not(:disabled) { background: #6d28d9; }
+.btn-characterize:disabled { background: #c4b5fd; cursor: default; }
+
+.characterize-status {
+    font-size: .9rem;
+    font-weight: 500;
+}
+
+@keyframes pulse {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.06); }
+    100% { transform: scale(1); }
+}
+
+/* Review persona grid layout (3 columns in Review Questions tab) */
+.review-persona-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    padding: 16px 0 8px;
+}
+
+.review-persona-col {
+    display: flex;
+    flex-direction: column;
+    border-radius: 14px;
+    padding: 18px 16px 16px;
+    min-height: 180px;
+    gap: 0;
+}
+
+.review-persona-col-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid rgba(0,0,0,0.08);
+    margin-bottom: 14px;
+}
+
+.review-persona-emoji {
+    font-size: 1.3rem;
+    line-height: 1;
+}
+
+.review-persona-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.bunny-column .review-persona-name    { color: #c53030; }
+.alligator-column .review-persona-name { color: #276749; }
+.pig-column .review-persona-name       { color: #6b46c1; }
+
+/* Winner inner card */
+.review-winner-inner-card {
+    background: #fffbeb;
+    border: 2px solid #f59e0b;
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.review-winner-badges {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+.review-q-box,
+.review-a-box {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 0.88rem;
+    color: #1f2937;
+    line-height: 1.45;
+}
+
+.review-q-box { font-weight: 500; }
+.review-a-box { color: #4b5563; }
+
+.review-regenerate-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #2563eb;
+    text-decoration: none;
+}
+
+.review-regenerate-link:hover { text-decoration: underline; }
+
+/* No question selected placeholder */
+.review-no-selection {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9ca3af;
+    font-size: 0.88rem;
+    font-style: italic;
+    padding: 24px 0;
+}
+
+/* Review persona cards (read-only display in Review Questions tab) */
+.review-persona-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+}
+
+.review-persona-card.kids-winner {
+    border: 2px solid #f59e0b;
+    background: #fffbeb;
+}
+
+.review-persona-card-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.review-type-badge {
+    background: #ede9fe;
+    color: #6d28d9;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.review-kids-badge {
+    background: #fef3c7;
+    color: #92400e;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.review-question-label,
+.review-answer-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #9ca3af;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    margin-top: 8px;
+}
+
+.review-question-text {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #1f2937;
+    line-height: 1.45;
+}
+
+.review-answer-text {
+    font-size: 0.85rem;
+    color: #4b5563;
+    line-height: 1.4;
+}
+
+/* Expert column */
+.expert-column {
+    background: #f8f9fb;
+    border: 1px solid #d4dae8;
+}
+
+.expert-column .column-header {
+    font-weight: 700;
+    color: #2e2b44;
+    font-size: 0.95rem;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #d4dae8;
+    margin-bottom: 12px;
+}
+
+/* Bunny column - warm pink */
+.bunny-column {
+    background: #fff5f7;
+    border: 1.5px solid #fbb6ce;
+}
+
+.bunny-column .column-header {
+    color: #c53030;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #fbb6ce;
+    margin-bottom: 12px;
+}
+
+.bunny-column .question-preview {
+    color: #e53e3e;
+}
+
+/* Alligator column - direct green */
+.alligator-column {
+    background: #f0fff4;
+    border: 1.5px solid #9ae6b4;
+}
+
+.alligator-column .column-header {
+    color: #276749;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #9ae6b4;
+    margin-bottom: 12px;
+}
+
+.alligator-column .question-preview {
+    color: #2f855a;
+}
+
+/* Pig column - excited purple */
+.pig-column {
+    background: #faf5ff;
+    border: 1.5px solid #d6bcfa;
+}
+
+.pig-column .column-header {
+    color: #6b46c1;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #d6bcfa;
+    margin-bottom: 12px;
+}
+
+.pig-column .question-preview {
+    color: #805ad5;
+}
+
+/* Question cards inside persona columns */
+.question-column .editable-question {
+    background: white;
+    border: 1px solid #e8ecf4;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 10px;
+}
+
+.question-column .editable-question:last-child {
+    margin-bottom: 0;
+}
+
+.question-header-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.ai-best-badge {
+    display: inline-block;
+    background: #ed8936;
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.question-preview {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+    line-height: 1.4;
+}
+
+.answer-preview {
+    font-size: 0.85rem;
+    color: #4a5568;
+    line-height: 1.4;
+}
+
+.persona-loading {
+    font-size: 0.85rem;
+    color: #718096;
+    font-style: italic;
+    padding: 12px 0;
+    text-align: center;
+}
+
+.no-question-placeholder {
+    font-size: 0.85rem;
+    color: #718096;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.review-save-section {
+    text-align: center;
+    margin-top: 28px;
+    padding-bottom: 20px;
+}
+
+/* Responsive: stack columns on small screens */
+@media (max-width: 900px) {
+    .questions-grid {
+        grid-template-columns: 1fr;
+    }
+}

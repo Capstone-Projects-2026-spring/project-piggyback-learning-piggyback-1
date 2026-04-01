@@ -26,6 +26,22 @@ def _children_needs_unlink_migration(conn: sqlite3.Connection) -> bool:
     return False
 
 
+def _migrate_drop_unique_name_index(conn: sqlite3.Connection) -> None:
+    indexes = {row["name"] for row in conn.execute("PRAGMA index_list(children)").fetchall()}
+    if "idx_children_unique_profile_per_expert" in indexes:
+        conn.execute("DROP INDEX idx_children_unique_profile_per_expert")
+        conn.commit()
+
+
+def _migrate_add_interaction_mode(conn: sqlite3.Connection) -> None:
+    cols = {row["name"] for row in conn.execute("PRAGMA table_info(children)").fetchall()}
+    if "interaction_mode" not in cols:
+        conn.execute(
+            "ALTER TABLE children ADD COLUMN interaction_mode TEXT NOT NULL DEFAULT 'flexible'"
+        )
+        conn.commit()
+
+
 def _migrate_children_for_unlink(conn: sqlite3.Connection) -> None:
     if not _children_needs_unlink_migration(conn):
         return
@@ -66,12 +82,6 @@ def _migrate_children_for_unlink(conn: sqlite3.Connection) -> None:
         CREATE INDEX IF NOT EXISTS idx_children_active_expert
             ON children (expert_id, is_active);
 
-        CREATE UNIQUE INDEX IF NOT EXISTS idx_children_unique_profile_per_expert
-            ON children (
-                expert_id,
-                lower(trim(first_name)),
-                lower(trim(last_name))
-            );
         """
     )
     conn.execute("PRAGMA foreign_keys = ON;")
@@ -154,6 +164,7 @@ def init_db() -> None:
                 first_name TEXT NOT NULL,
                 last_name TEXT NOT NULL,
                 icon_key TEXT NOT NULL,
+                interaction_mode TEXT NOT NULL DEFAULT 'flexible',
                 is_active INTEGER NOT NULL DEFAULT 1 CHECK (is_active IN (0,1)),
                 created_at TEXT NOT NULL,
                 updated_at TEXT NOT NULL,
@@ -168,12 +179,6 @@ def init_db() -> None:
             CREATE INDEX IF NOT EXISTS idx_children_active_expert
                 ON children (expert_id, is_active);            
             
-            CREATE UNIQUE INDEX IF NOT EXISTS idx_children_unique_profile_per_expert
-                ON children (
-                expert_id,
-                lower(trim(first_name)),
-                lower(trim(last_name))
-            );
 
             CREATE TABLE IF NOT EXISTS quiz_attempts(
 
@@ -196,4 +201,6 @@ def init_db() -> None:
 
         )
         _migrate_children_for_unlink(conn)
+        _migrate_add_interaction_mode(conn)
+        _migrate_drop_unique_name_index(conn)
         conn.commit()
