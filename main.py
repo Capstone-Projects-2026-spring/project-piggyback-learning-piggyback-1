@@ -298,6 +298,27 @@ async def expert_access_code(request: Request):
     return JSONResponse({"parent_id": parent_id, "has_custom_code": has_custom_code})
 
 
+@app.put("/api/expert/my-login-code")
+async def expert_update_own_login_code(request: Request):
+    from app.services.expert_auth_service import hash_password
+    identity = require_expert_session(request)
+    parent_id = identity["expert_id"]
+    body = await request.json()
+    new_code = (body.get("login_code") or "").strip()
+
+    if not new_code or len(new_code) > 5:
+        return JSONResponse({"success": False, "error": "Login code must be 5 characters or fewer."}, status_code=400)
+
+    now = datetime.now(timezone.utc).isoformat()
+    with get_conn() as conn:
+        conn.execute(
+            "UPDATE parents SET login_code_hash = ?, updated_at = ? WHERE parent_id = ?",
+            (hash_password(new_code), now, parent_id),
+        )
+        conn.commit()
+    return JSONResponse({"success": True})
+
+
 @app.get("/api/expert/report")
 async def expert_child_report(child_id: str, video_id: str = None, mode: str = "all"):
     """Scoped report for a child, optionally filtered by video and interaction mode."""

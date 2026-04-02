@@ -1,4 +1,6 @@
 
+        let _accessCodeParentId = null;
+
         async function openAccessCodeModal() {
             const modal = document.getElementById('access-code-modal');
             const content = document.getElementById('access-code-content');
@@ -7,20 +9,63 @@
             try {
                 const res = await fetch('/api/expert/access-code');
                 const data = await res.json();
-                if (data.has_custom_code) {
-                    content.innerHTML = `
-                        <div style="font-size:15px;color:#2c3e50;line-height:1.6;">
-                            A custom access code is set.<br>
-                            <span style="color:#6c757d;font-size:13px;">To update it, go to <strong>Card 3 → Parent Report → Login Code Settings</strong>.</span>
-                        </div>`;
-                } else {
-                    content.innerHTML = `
-                        <div style="font-size:14px;color:#6c757d;margin-bottom:8px;">No custom code set. Kids sign in with your Parent ID:</div>
-                        <div style="font-size:28px;font-weight:800;color:#6a1b9a;letter-spacing:2px;">${data.parent_id}</div>
-                        <div style="font-size:12px;color:#adb5bd;margin-top:8px;">You can set a custom code in Card 3 → Parent Report.</div>`;
-                }
+                _accessCodeParentId = data.parent_id;
+                renderAccessCodeContent(data.has_custom_code, data.parent_id);
             } catch(e) {
                 content.innerHTML = '<span style="color:#dc3545;">Could not load access code.</span>';
+            }
+        }
+
+        function renderAccessCodeContent(hasCustomCode, parentId) {
+            const content = document.getElementById('access-code-content');
+            const codeDisplay = hasCustomCode
+                ? `<div style="font-size:14px;color:#6c757d;margin-bottom:8px;">Custom access code is set.</div>`
+                : `<div style="font-size:14px;color:#6c757d;margin-bottom:8px;">No custom code set. Kids sign in with:</div>
+                   <div style="font-size:28px;font-weight:800;color:#6a1b9a;letter-spacing:2px;">${parentId}</div>`;
+
+            content.innerHTML = `
+                ${codeDisplay}
+                <div style="display:flex;justify-content:flex-end;margin-top:16px;">
+                    <button onclick="showAccessCodeEdit()" style="background:none;border:1px solid #dee2e6;border-radius:8px;padding:6px 14px;font-size:13px;font-weight:600;color:#6a1b9a;cursor:pointer;">Edit</button>
+                </div>
+                <div id="access-code-edit" style="display:none;margin-top:12px;">
+                    <input id="access-code-new-input" type="text" placeholder="New access code (max 5 chars)" maxlength="5"
+                        style="width:100%;padding:12px;border:2px solid #e9ecef;border-radius:10px;font-size:15px;box-sizing:border-box;text-align:center;outline:none;"/>
+                    <div id="access-code-save-status" style="font-size:13px;min-height:18px;margin-top:6px;"></div>
+                    <button onclick="saveAccessCode()" style="margin-top:10px;width:100%;padding:12px;background:#6a1b9a;color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;">Save</button>
+                </div>`;
+        }
+
+        function showAccessCodeEdit() {
+            document.getElementById('access-code-edit').style.display = 'block';
+            document.getElementById('access-code-new-input').focus();
+        }
+
+        async function saveAccessCode() {
+            const code = document.getElementById('access-code-new-input').value.trim();
+            const statusEl = document.getElementById('access-code-save-status');
+            statusEl.textContent = '';
+            if (!code || code.length > 5) {
+                statusEl.style.color = '#dc3545';
+                statusEl.textContent = 'Max 5 characters.';
+                return;
+            }
+            try {
+                const res = await fetch('/api/expert/my-login-code', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ login_code: code })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    renderAccessCodeContent(true, _accessCodeParentId);
+                } else {
+                    statusEl.style.color = '#dc3545';
+                    statusEl.textContent = data.error || 'Failed to save.';
+                }
+            } catch(e) {
+                statusEl.style.color = '#dc3545';
+                statusEl.textContent = 'Network error.';
             }
         }
 
