@@ -1,8 +1,51 @@
 
-        async function switchExpert() {
-            await fetch('/api/expert/logout', { method: 'POST' });
-            window.location.href = '/children';
+        function openSwitchParentModal() {
+            document.getElementById('switch-parent-id').value = '';
+            document.getElementById('switch-parent-pw').value = '';
+            document.getElementById('switch-parent-error').textContent = '';
+            const modal = document.getElementById('switch-parent-modal');
+            modal.style.display = 'flex';
+            document.getElementById('switch-parent-id').focus();
         }
+
+        function closeSwitchParentModal() {
+            document.getElementById('switch-parent-modal').style.display = 'none';
+        }
+
+        async function doSwitchParent() {
+            const expertId = document.getElementById('switch-parent-id').value.trim();
+            const password = document.getElementById('switch-parent-pw').value;
+            const errEl = document.getElementById('switch-parent-error');
+            errEl.textContent = '';
+            if (!expertId || !password) {
+                errEl.textContent = 'Please fill in both fields.';
+                return;
+            }
+            try {
+                const res = await fetch('/api/expert/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ expert_id: expertId, password })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    errEl.textContent = data.error || 'Invalid credentials.';
+                }
+            } catch(e) {
+                errEl.textContent = 'Network error.';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('switch-parent-pw').addEventListener('keydown', e => {
+                if (e.key === 'Enter') doSwitchParent();
+            });
+            document.getElementById('switch-parent-modal').addEventListener('click', function(e) {
+                if (e.target === this) closeSwitchParentModal();
+            });
+        });
 
         let currentVideoId = null;
         let videoElement = null;

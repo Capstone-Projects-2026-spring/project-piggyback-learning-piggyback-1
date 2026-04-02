@@ -10,13 +10,44 @@
         <div class="page-header">
             <h1>Parent Dashboard</h1>
             <p>Choose what you'd like to manage today.</p>
-            <button id="switch-expert-btn" onclick="switchExpert()" style="
+            <button id="switch-expert-btn" onclick="openSwitchParentModal()" style="
                 position: fixed; top: 16px; right: 16px;
                 background: white; border: none; border-radius: 20px;
                 padding: 10px 18px; font-size: 14px; font-weight: 600;
                 color: #6a1b9a; cursor: pointer;
                 box-shadow: 0 2px 8px rgba(0,0,0,0.12); z-index: 999;
             ">← Switch Parent</button>
+
+            <!-- Switch Parent Modal -->
+            <div id="switch-parent-modal" style="
+                display: none; position: fixed; inset: 0;
+                background: rgba(0,0,0,0.5); z-index: 9999;
+                align-items: center; justify-content: center;
+            ">
+                <div style="
+                    background: white; border-radius: 24px;
+                    padding: 40px 36px; width: 100%; max-width: 420px;
+                    box-shadow: 0 12px 48px rgba(0,0,0,0.2); text-align: center;
+                ">
+                    <h2 style="margin: 0 0 8px; font-size: 26px; color: #2c3e50;">Parent Access</h2>
+                    <p style="color: #6c757d; margin: 0 0 28px; font-size: 15px;">Please enter your credentials to continue</p>
+                    <input id="switch-parent-id" type="text" placeholder="Enter parent ID"
+                        style="width:100%;padding:14px 16px;border:2px solid #e9ecef;border-radius:12px;font-size:16px;box-sizing:border-box;outline:none;margin-bottom:12px;text-align:center;"/>
+                    <input id="switch-parent-pw" type="password" placeholder="Enter password"
+                        style="width:100%;padding:14px 16px;border:2px solid #e9ecef;border-radius:12px;font-size:16px;box-sizing:border-box;outline:none;margin-bottom:8px;text-align:center;"/>
+                    <div id="switch-parent-error" style="color:#dc3545;font-size:13px;min-height:20px;margin-bottom:16px;"></div>
+                    <div style="display:flex;gap:12px;">
+                        <button onclick="closeSwitchParentModal()" style="
+                            flex:1;padding:14px;background:#6c757d;color:white;
+                            border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;
+                        ">Cancel</button>
+                        <button onclick="doSwitchParent()" style="
+                            flex:1;padding:14px;background:#4a90d9;color:white;
+                            border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;
+                        ">Access</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- ── 3-Card Landing ── -->
@@ -869,7 +900,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-<script src="/assets/js/expert_preview.js?v=4" defer></script>
+<script src="/assets/js/expert_preview.js?v=5" defer></script>
 </body>
 </html>
 
