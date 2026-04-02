@@ -217,3 +217,29 @@ def test_pig_reveals_correct_answer_for_wrong_response():
     data = response.json()
     assert data["status"] == "wrong"
     assert data["expected"] == "chlorophyll"
+
+
+# parent sets access code, kids can sign in with it, wrong code is rejected
+def test_access_code_set_and_verify():
+    from datetime import datetime, timezone
+    from app.services.expert_auth_service import hash_password, verify_password
+    from app.services.sqlite_store import get_conn
+    parent_id = "_test_ac_roundtrip"
+    code = "xy42z"
+    now = datetime.now(timezone.utc).isoformat()
+    with get_conn() as conn:
+        conn.execute("DELETE FROM parents WHERE parent_id = ?", (parent_id,))
+        conn.execute(
+            """
+            INSERT INTO parents (parent_id, display_name, login_code_hash, login_code, is_active, created_at, updated_at)
+            VALUES (?, ?, ?, ?, 1, ?, ?)
+            """,
+            (parent_id, "Round Trip Parent", hash_password(code), code, now, now),
+        )
+        conn.commit()
+        row = conn.execute("SELECT login_code, login_code_hash FROM parents WHERE parent_id = ?", (parent_id,)).fetchone()
+        assert row["login_code"] == code
+        assert verify_password(code, row["login_code_hash"])
+        assert not verify_password("wrong", row["login_code_hash"])
+        conn.execute("DELETE FROM parents WHERE parent_id = ?", (parent_id,))
+        conn.commit()

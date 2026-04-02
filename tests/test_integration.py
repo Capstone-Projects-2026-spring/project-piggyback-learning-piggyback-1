@@ -220,3 +220,23 @@ def test_delete_child_endpoint():
 def test_delete_child_nonexistent_returns_404():
     resp = client.delete("/api/admin/children/999999")
     assert resp.status_code == 404
+
+
+# scoped report filters by interaction mode
+def test_get_child_report_scoped_filters_by_mode():
+    from app.services.report_service import get_child_report_scoped
+    from unittest.mock import patch
+
+    fake_attempts = [
+        {"video_id": "v1", "interaction_mode": "flexible", "percentage": 80, "total_retries": 0, "total": 2, "details": [], "watch_minutes": 5},
+        {"video_id": "v1", "interaction_mode": "strict",   "percentage": 60, "total_retries": 1, "total": 2, "details": [], "watch_minutes": 5},
+    ]
+    with patch("app.services.report_service._load_attempts", return_value=fake_attempts), \
+         patch("app.services.report_service._get_video_title", return_value="Test Video"):
+        strict_report = get_child_report_scoped("child_x", mode="strict")
+        assert strict_report["total_attempts"] == 1
+        assert strict_report["overall_score"] == 60
+
+        flexible_report = get_child_report_scoped("child_x", mode="flexible")
+        assert flexible_report["total_attempts"] == 1
+        assert flexible_report["overall_score"] == 80

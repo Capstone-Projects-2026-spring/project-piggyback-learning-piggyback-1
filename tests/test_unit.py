@@ -235,9 +235,46 @@ def test_parents_table_exists():
 def test_parents_table_has_correct_columns():
     with get_conn() as conn:
         cols = {row["name"] for row in conn.execute("PRAGMA table_info(parents)").fetchall()}
-        assert cols == {"parent_id", "display_name", "login_code_hash", "is_active", "created_at", "updated_at"}
+        assert cols == {"parent_id", "display_name", "login_code_hash", "login_code", "is_active", "created_at", "updated_at"}
 
 def test_children_has_parent_id_column():
     with get_conn() as conn:
         cols = {row["name"] for row in conn.execute("PRAGMA table_info(children)").fetchall()}
         assert "parent_id" in cols
+
+
+# login_code plain text column exists
+def test_parents_table_has_login_code_column():
+    with get_conn() as conn:
+        cols = {row["name"] for row in conn.execute("PRAGMA table_info(parents)").fetchall()}
+        assert "login_code" in cols
+
+
+#  upsert stores plain text code and valid hash 
+def test_upsert_login_code_stores_plain_and_hash():
+    from datetime import datetime, timezone
+    from app.services.expert_auth_service import hash_password, verify_password
+    parent_id = "_test_upsert_parent"
+    code = "abc99"
+    now = datetime.now(timezone.utc).isoformat()
+    with get_conn() as conn:
+        conn.execute("DELETE FROM parents WHERE parent_id = ?", (parent_id,))
+        conn.execute(
+            """
+            INSERT INTO parents (parent_id, display_name, login_code_hash, login_code, is_active, created_at, updated_at)
+            VALUES (?, ?, ?, ?, 1, ?, ?)
+            ON CONFLICT(parent_id) DO UPDATE SET
+                login_code_hash = excluded.login_code_hash,
+                login_code = excluded.login_code,
+                updated_at = excluded.updated_at
+            """,
+            (parent_id, "Test Parent", hash_password(code), code, now, now),
+        )
+        conn.commit()
+        row = conn.execute("SELECT login_code, login_code_hash FROM parents WHERE parent_id = ?", (parent_id,)).fetchone()
+        assert row["login_code"] == code
+        assert verify_password(code, row["login_code_hash"])
+        conn.execute("DELETE FROM parents WHERE parent_id = ?", (parent_id,))
+        conn.commit()
+
+
