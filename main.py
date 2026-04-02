@@ -176,32 +176,59 @@ async def learner_list_children_for_expert(expert_id: str):
 @app.post("/api/learners/parents/login")
 async def parent_login(request: Request):
     body = await request.json()
-    parent_id = (body.get("parent_id") or "").strip().lower()
-    login_code = (body.get("login_code") or "").strip()
+    code = (body.get("login_code") or body.get("parent_id") or "").strip()
 
-    if not parent_id or not login_code:
-        return JSONResponse({"success": False, "error": "Parent ID and login code are required."}, status_code=400)
+    if not code:
+        return JSONResponse({"success": False, "error": "Please enter your access code."}, status_code=400)
+
+    parent_id = None
+    display_name = None
 
     with get_conn() as conn:
-        parent = conn.execute(
-            "SELECT * FROM parents WHERE parent_id = ? AND is_active = 1", (parent_id,)
+        # Try plain text custom code first
+        row = conn.execute(
+            "SELECT * FROM parents WHERE login_code = ? AND is_active = 1", (code,)
         ).fetchone()
 
-    # If parent has a login_code_hash set, verify it. Otherwise allow login with just the parent_id.
-    if not parent:
-        return JSONResponse({"success": False, "error": "Invalid Login Code. Please try again."}, status_code=401)
-    if parent["login_code_hash"] and not verify_password(login_code, parent["login_code_hash"]):
+        if row:
+            parent_id = row["parent_id"]
+            display_name = row["display_name"]
+        else:
+            # Try matching by parent_id in parents table (no custom code set)
+            row = conn.execute(
+                "SELECT * FROM parents WHERE parent_id = ? AND is_active = 1", (code.lower(),)
+            ).fetchone()
+            if row:
+                # Only allow this if no custom code has been set
+                if not row["login_code"]:
+                    parent_id = row["parent_id"]
+                    display_name = row["display_name"]
+            else:
+                # Parent never saved a code — look up in experts table by expert_id
+                expert_row = conn.execute(
+                    "SELECT * FROM experts WHERE expert_id = ? AND is_active = 1", (code.lower(),)
+                ).fetchone()
+                if expert_row:
+                    parent_id = expert_row["expert_id"]
+                    display_name = expert_row["display_name"] or expert_row["expert_id"]
+
+    if not parent_id:
         return JSONResponse({"success": False, "error": "Invalid Login Code. Please try again."}, status_code=401)
 
     with get_conn() as conn:
         rows = conn.execute(
-            "SELECT * FROM children WHERE parent_id = ? AND is_active = 1", (parent_id,)
+            """
+            SELECT * FROM children
+            WHERE is_active = 1
+              AND (parent_id = ? OR (parent_id IS NULL AND expert_id = ?))
+            """,
+            (parent_id, parent_id),
         ).fetchall()
 
     children = [dict(r) for r in rows]
     return JSONResponse({
         "success": True,
-        "parent": {"parent_id": parent["parent_id"], "display_name": parent["display_name"]},
+        "parent": {"parent_id": parent_id, "display_name": display_name},
         "children": children
     })
 
