@@ -37,7 +37,7 @@ from app.services.expert_review_service import (
     save_expert_question_payload,
     save_final_questions_payload,
 )
-from app.services.question_generation_service import generate_persona_variants
+from app.services.personalize_quiz_service import generate_persona_variants
 #Stores expert login session in single cookie
 from starlette.middleware.sessions import SessionMiddleware
 
@@ -722,6 +722,7 @@ async def get_persona_variants(request: Request, payload: Dict[str, Any] = Body(
 
     best_question = payload.get("best_question")
     result = await asyncio.to_thread(generate_persona_variants, questions, best_question)
+    print (result)
     return JSONResponse(result)
 
 

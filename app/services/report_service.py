@@ -112,6 +112,11 @@ def get_child_report(child_id: str, limit: int = 10) -> Dict[str, Any]:
 
     # Total attempts
     total_attempts = len(enriched)
+    # Passive metrics
+    videos_watched = len(enriched)
+    total_watch_minutes = sum(
+        round(a.get("watch_minutes", 0)) for a in enriched
+    )
 
     # Aggregate retry metrics across all attempts
     total_retries = sum(a.get("total_retries", 0) for a in enriched)
@@ -139,8 +144,13 @@ def get_child_report(child_id: str, limit: int = 10) -> Dict[str, Any]:
         "child_id": child_id,
         "overall_score": overall_score,
         "total_attempts": total_attempts,
+        "total_correct": sum(a.get("questions_correct", 0) for a in enriched),
+        "total_wrong": sum(a.get("questions_wrong", 0) for a in enriched),
+        "total_questions_answered": sum(a.get("total", 0) for a in enriched),
         "total_retries": total_retries,
         "avg_retries_per_question": avg_retries_per_question,
         "top_categories": top_categories,
         "recent_videos": recent_videos,
+        "videos_watched": videos_watched,
+        "total_watch_minutes": total_watch_minutes,
     }

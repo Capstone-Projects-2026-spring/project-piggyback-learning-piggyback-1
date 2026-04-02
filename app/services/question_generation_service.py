@@ -631,7 +631,7 @@ def resolve_question_file_param(value: Optional[str]) -> Optional[Path]:
         return candidate
     return None
 
-
+'''
 def generate_persona_variants(
     questions: Dict[str, Any], best_question_text: Optional[str] = None
 ) -> Dict[str, Any]:
@@ -699,3 +699,4 @@ def generate_persona_variants(
     except Exception as exc:
         return {"success": False, "message": f"Persona generation failed: {exc}"}
 
+'''

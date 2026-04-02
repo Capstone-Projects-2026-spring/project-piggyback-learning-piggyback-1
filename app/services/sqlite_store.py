@@ -110,6 +110,13 @@ def init_db() -> None:
                 updated_at TEXT NOT NULL
             );
 
+            CREATE TABLE IF NOT EXISTS videos(
+                id TEXT PRIMARY KEY,
+                title TEXT NOT NULL,
+                thumbnail TEXT,
+                duration FLOAT DEFAULT 0
+            );
+
             CREATE TABLE IF NOT EXISTS video_assignments (
                 video_id TEXT PRIMARY KEY,
                 expert_id TEXT NULL,
@@ -140,7 +147,6 @@ def init_db() -> None:
             CREATE INDEX IF NOT EXISTS idx_video_expert_assignments_video_id
             ON video_expert_assignments (video_id);
 
-            
             CREATE INDEX IF NOT EXISTS idx_video_expert_assignments_expert_id
                 ON video_expert_assignments (expert_id);
 
@@ -155,7 +161,7 @@ def init_db() -> None:
                 updated_at
             FROM video_assignments
             WHERE expert_id IS NOT NULL;
-            
+
             CREATE TABLE IF NOT EXISTS children(
                 child_id TEXT PRIMARY KEY
                 CHECK(
@@ -193,6 +199,20 @@ def init_db() -> None:
             CREATE INDEX IF NOT EXISTS idx_parents_active
                 ON parents (is_active);
 
+            CREATE TABLE IF NOT EXISTS quiz_attempts(
+
+                attempt_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                video_id TEXT NOT NULL,
+                child_id TEXT NOT NULL,
+                interaction_mode TEXT,
+                timestamp TEXT,
+                total_questions INT,
+                correct INT,
+                incorrect INT,
+                percentage FLOAT,
+                FOREIGN KEY (video_id) REFERENCES video_assignments(video_id),
+                FOREIGN KEY (child_id) REFERENCES children(child_id)
+            );
 
             """
 
