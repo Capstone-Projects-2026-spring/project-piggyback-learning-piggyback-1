@@ -99,19 +99,9 @@
                 refreshAssignmentsBtn.addEventListener('click', () => loadExpertDashboard(true));
             }
 
-            const createChildForm = document.getElementById('create-child-form');
-            if (createChildForm) {
-                createChildForm.addEventListener('submit', handleCreateChild);
-            }
-
             const refreshChildrenBtn = document.getElementById('refresh-children-btn');
             if (refreshChildrenBtn) {
                 refreshChildrenBtn.addEventListener('click', () => loadChildrenDashboard(true));
-            }
-
-            const childrenFilterExpert = document.getElementById('children-filter-expert');
-            if (childrenFilterExpert) {
-                childrenFilterExpert.addEventListener('change', () => loadChildrenDashboard(false));
             }
 
             const includeInactive = document.getElementById('children-include-inactive');
@@ -830,93 +820,42 @@ function renderChildrenTable() {
     if (dirHeading) dirHeading.textContent = `Children Directory (${adminChildren.length})`;
 
     if (!adminChildren.length) {
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#9ca3af;padding:24px;">No children found for this filter.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#9ca3af;padding:24px;">No children found.</td></tr>';
         return;
     }
 
-    const expertLinkOptions = (adminExperts || []).map((expert) => `
-        <option value="${expert.expert_id}">
-            ${escapeHtml(expert.display_name || expert.expert_id)} (${expert.expert_id})${expert.is_active ? '' : ' [inactive]'}
-        </option>
-    `).join('');
+    tbody.innerHTML = adminChildren.map((child) => {
+        const parentLabel = child.expert_name
+            ? `${escapeHtml(child.expert_name)} (${escapeHtml(child.expert_id || '')})`
+            : child.expert_id
+                ? escapeHtml(child.expert_id)
+                : '<span style="color:#9ca3af;">Unassigned</span>';
 
-    tbody.innerHTML = adminChildren.map((child) => `
+        return `
         <tr data-child-id="${child.child_id}" data-active="${child.is_active ? '1' : '0'}">
             <td><span class="admin-child-id">${child.child_id}</span></td>
-            <td>
-                ${child.expert_id
-                    ? escapeHtml(child.expert_name || child.expert_id)
-                    : `<select class="admin-inline-select" data-role="child-link-expert">
-                        <option value="">Select expert...</option>
-                        ${expertLinkOptions}
-                    </select>`
-                }
-            </td>
-            <td><input type="text" class="admin-inline-input" data-role="child-first-name" value="${escapeHtml(child.first_name || '')}" /></td>
-            <td><input type="text" class="admin-inline-input" data-role="child-last-name" value="${escapeHtml(child.last_name || '')}" /></td>
-            <td>
-                <select class="admin-inline-select" data-role="child-icon-key">
-                    ${Object.keys(CHILD_ICON_EMOJI).map((icon) => `
-                        <option value="${icon}" ${icon === child.icon_key ? 'selected' : ''}>
-                            ${iconLabel(icon)}
-                        </option>
-                    `).join('')}
-                </select>
-            </td>
-            <td>
-                <select class="admin-inline-select" data-role="child-interaction-mode">
-                    <option value="flexible" ${child.interaction_mode === 'flexible' ? 'selected' : ''}>Flexible</option>
-                    <option value="strict" ${child.interaction_mode === 'strict' ? 'selected' : ''}>Strict</option>
-                    <option value="passive" ${child.interaction_mode === 'passive' ? 'selected' : ''}>Passive</option>
-                </select>
-            </td>
+            <td>${escapeHtml(child.first_name || '')}</td>
+            <td>${escapeHtml(child.last_name || '')}</td>
+            <td>${parentLabel}</td>
             <td><span class="admin-status-badge ${child.is_active ? 'status-active' : 'status-inactive'}">${child.is_active ? 'active' : 'inactive'}</span></td>
             <td class="admin-actions-cell">
-                <button type="button" class="admin-action-btn" data-action="save-child">💾 Save</button>
-                ${child.expert_id
-                    ? '<button type="button" class="admin-action-btn admin-action-unlink" data-action="unlink-child">🔗 Unlink</button>'
-                    : '<button type="button" class="admin-action-btn admin-action-link" data-action="link-child">🔗 Link</button>'
-                }
                 <button type="button" class="admin-action-btn admin-action-danger" data-action="toggle-child">
-                    ${child.is_active ? '👤 Deactivate' : '✅ Activate'}
+                    ${child.is_active ? 'Deactivate' : 'Activate'}
                 </button>
-                <button type="button" class="admin-action-btn admin-action-remove" data-action="delete-child">🗑 Remove</button>
+                <button type="button" class="admin-action-btn admin-action-remove" data-action="delete-child">Remove</button>
             </td>
-        </tr>
-    `).join('');
-
-    tbody.querySelectorAll('[data-action="save-child"]').forEach((btn) => {
-        btn.addEventListener('click', async (event) => {
-            const row = event.currentTarget.closest('tr');
-            await handleSaveChild(row);
-        });
-    });
+        </tr>`;
+    }).join('');
 
     tbody.querySelectorAll('[data-action="toggle-child"]').forEach((btn) => {
         btn.addEventListener('click', async (event) => {
-            const row = event.currentTarget.closest('tr');
-            await handleToggleChild(row);
-        });
-    });
-
-    tbody.querySelectorAll('[data-action="unlink-child"]').forEach((btn) => {
-        btn.addEventListener('click', async (event) => {
-            const row = event.currentTarget.closest('tr');
-            await handleUnlinkChild(row);
-        });
-    });
-
-    tbody.querySelectorAll('[data-action="link-child"]').forEach((btn) => {
-        btn.addEventListener('click', async (event) => {
-            const row = event.currentTarget.closest('tr');
-            await handleLinkChild(row);
+            await handleToggleChild(event.currentTarget.closest('tr'));
         });
     });
 
     tbody.querySelectorAll('[data-action="delete-child"]').forEach((btn) => {
         btn.addEventListener('click', async (event) => {
-            const row = event.currentTarget.closest('tr');
-            await handleDeleteChild(row);
+            await handleDeleteChild(event.currentTarget.closest('tr'));
         });
     });
 }
@@ -965,32 +904,6 @@ function applyUpdatedChildToUi(updatedChild) {
     renderChildrenTable();
 }
 
-async function handleCreateChild(event) {
-    event.preventDefault();
-    try {
-        const expert_id = (document.getElementById('child-expert-select')?.value || '').trim();
-        const first_name = (document.getElementById('child-first-name')?.value || '').trim();
-        const last_name = (document.getElementById('child-last-name')?.value || '').trim();
-        const icon_key = (document.getElementById('child-icon-key')?.value || '').trim().toLowerCase();
-        const interaction_mode = (document.getElementById('child-interaction-mode')?.value || 'flexible').trim().toLowerCase();
-
-        const res = await fetch('/api/admin/children', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ expert_id, first_name, last_name, icon_key, interaction_mode }),
-        });
-        const data = await res.json();
-        if (!res.ok || !data.success) {
-            throw new Error(data.detail || data.message || 'Failed to create child');
-        }
-
-        event.target.reset();
-        setAdminPanelStatus('child-admin-status', `Created child ${data.child.child_id}.`, 'success');
-        await loadChildrenDashboard(false);
-    } catch (error) {
-        setAdminPanelStatus('child-admin-status', error.message || 'Failed to create child', 'error');
-    }
-}
 
 async function handleSaveChild(row) {
     const childId = row?.dataset?.childId;
