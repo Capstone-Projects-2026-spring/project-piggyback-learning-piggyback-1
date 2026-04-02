@@ -78,6 +78,78 @@ def _compute_top_categories(attempts: List[Dict[str, Any]], window: int = 10) ->
     return categories[:3]
 
 
+def get_child_report_scoped(
+    child_id: str,
+    video_id: Optional[str] = None,
+    mode: Optional[str] = None,
+) -> Dict[str, Any]:
+    """
+    Return a report filtered by optional video_id and/or interaction_mode.
+    mode='all' (or None) means no mode filter.
+    """
+    downloads_dir = _get_downloads_dir()
+    all_attempts = _load_attempts(child_id, downloads_dir)
+
+    # Filter by video
+    if video_id:
+        all_attempts = [a for a in all_attempts if a.get("video_id") == video_id]
+
+    # Filter by mode (skip filter when mode is None or 'all')
+    if mode and mode != "all":
+        all_attempts = [a for a in all_attempts if a.get("interaction_mode") == mode]
+
+    if not all_attempts:
+        return {
+            "success": True,
+            "child_id": child_id,
+            "overall_score": 0,
+            "total_attempts": 0,
+            "total_retries": 0,
+            "avg_retries_per_question": 0.0,
+            "top_categories": [],
+            "recent_videos": [],
+            "videos_watched": 0,
+            "total_watch_minutes": 0,
+        }
+
+    enriched = [
+        {**a, "video_title": _get_video_title(a.get("video_id", ""), downloads_dir)}
+        for a in all_attempts
+    ]
+
+    percentages = [a.get("percentage", 0) for a in enriched]
+    overall_score = round(sum(percentages) / len(percentages)) if percentages else 0
+    total_retries = sum(a.get("total_retries", 0) for a in enriched)
+    total_questions_answered = sum(a.get("total", 0) for a in enriched)
+    avg_retries_per_question = round(
+        total_retries / total_questions_answered, 2
+    ) if total_questions_answered > 0 else 0.0
+
+    recent_videos = [
+        {
+            "video_id": a.get("video_id"),
+            "video_title": a.get("video_title"),
+            "percentage": a.get("percentage", 0),
+            "timestamp": a.get("timestamp"),
+            "interaction_mode": a.get("interaction_mode"),
+        }
+        for a in reversed(enriched[-6:])
+    ]
+
+    return {
+        "success": True,
+        "child_id": child_id,
+        "overall_score": overall_score,
+        "total_attempts": len(enriched),
+        "total_retries": total_retries,
+        "avg_retries_per_question": avg_retries_per_question,
+        "top_categories": _compute_top_categories(all_attempts),
+        "recent_videos": recent_videos,
+        "videos_watched": len(enriched),
+        "total_watch_minutes": sum(round(a.get("watch_minutes", 0)) for a in enriched),
+    }
+
+
 def get_child_report(child_id: str, limit: int = 10) -> Dict[str, Any]:
     """
     Return a full report payload for one child.
