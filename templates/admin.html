@@ -22,7 +22,7 @@
         </div>
         <div class="admin-tabs">
         <button type="button" class="admin-tab active" data-target="video-dashboard">Video Processing Dashboard</button>
-        <button type="button" class="admin-tab" data-target="assign-experts">Assign Videos - Experts</button>
+        <button type="button" class="admin-tab" data-target="assign-experts">Assign Videos - Parents</button>
         <button type="button" class="admin-tab" data-target="assign-children">Assign Conditions - Children</button>
         </div>
         <section id="video-dashboard" class="admin-section active">
@@ -228,10 +228,10 @@
     <div class="main-content">
 
         <div class="admin-card">
-            <h3 class="admin-card-title">Create Expert</h3>
+            <h3 class="admin-card-title">Create Parent</h3>
             <form id="create-expert-form" class="admin-form-row">
                 <div class="admin-field">
-                    <label for="new-expert-id">Expert ID</label>
+                    <label for="new-expert-id">Parent ID</label>
                     <input id="new-expert-id" type="text" placeholder="exp_amy" class="admin-input" required />
                 </div>
                 <div class="admin-field admin-field-grow">
@@ -243,7 +243,7 @@
                     <input id="new-expert-password" type="password" placeholder="••••••••" class="admin-input" required />
                 </div>
                 <div class="admin-field admin-field-btn">
-                    <button type="submit" class="btn-create">+ Create Expert</button>
+                    <button type="submit" class="btn-create">+ Create Parent</button>
                 </div>
             </form>
             <div id="expert-admin-status" class="status-message" style="display:none;"></div>
@@ -251,13 +251,13 @@
 
         <div class="admin-card">
             <div class="admin-card-header">
-                <h3 class="admin-card-title" id="active-experts-heading">Active Experts</h3>
+                <h3 class="admin-card-title" id="active-experts-heading">Active Parents</h3>
             </div>
             <div class="admin-table-wrap">
                 <table class="admin-table">
                     <thead>
                         <tr>
-                            <th>Expert ID</th>
+                            <th>Parent ID</th>
                             <th>Display Name</th>
                             <th>Status</th>
                             <th>Password Reset</th>
@@ -281,8 +281,8 @@
                         <tr>
                             <th>Video Title</th>
                             <th>Video ID</th>
-                            <th>Current Expert</th>
-                            <th>Assign To Expert</th>
+                            <th>Current Parent</th>
+                            <th>Assign To Parent</th>
                             <th style="text-align:right;">Actions</th>
                         </tr>
                     </thead>
@@ -300,12 +300,6 @@
             <div class="admin-card">
                 <h3 class="admin-card-title">Create Child</h3>
                 <form id="create-child-form" class="admin-form-row">
-                    <div class="admin-field">
-                        <label for="child-expert-select">Expert</label>
-                        <select id="child-expert-select" class="admin-input" required>
-                            <option value="">Select expert...</option>
-                        </select>
-                    </div>
                     <div class="admin-field admin-field-grow">
                         <label for="child-first-name">First Name</label>
                         <input id="child-first-name" type="text" placeholder="First Name" class="admin-input" maxlength="40" required />
@@ -355,10 +349,7 @@
                 <div class="admin-card-header">
                     <h3 class="admin-card-title" id="children-dir-heading">Children Directory</h3>
                     <div class="admin-card-controls">
-                        <span class="admin-control-label">Expert:</span>
-                        <select id="children-filter-expert" class="admin-filter-select">
-                            <option value="">All</option>
-                        </select>
+                        <span class="admin-control-label">Total: <span id="children-total-count">—</span></span>
                         <label class="admin-toggle-label">
                             <input type="checkbox" id="children-include-inactive" />
                             Show inactive
@@ -371,7 +362,7 @@
                         <thead>
                             <tr>
                                 <th>Child ID</th>
-                                <th>Expert</th>
+                                <th>Parent</th>
                                 <th>First Name</th>
                                 <th>Last Name</th>
                                 <th>Icon</th>
