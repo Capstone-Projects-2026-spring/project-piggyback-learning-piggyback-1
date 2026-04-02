@@ -455,8 +455,48 @@
             <div style="padding: 16px 24px;">
                 <button onclick="backToDashboard()" style="background:none;border:none;color:#6a1b9a;font-size:15px;font-weight:600;cursor:pointer;">← Back to Dashboard</button>
             </div>
-            <div style="padding: 24px; text-align:center; color:#6c757d;">
-                Parent Report coming soon.
+            <div style="padding: 0 24px 40px; max-width: 860px; margin: 0 auto;">
+
+                <!-- Filters row -->
+                <div style="background:white;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.08);padding:24px;margin-bottom:20px;">
+                    <h3 style="margin:0 0 18px;color:#2c3e50;">Filter Report</h3>
+                    <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;">
+                        <div style="display:flex;flex-direction:column;gap:6px;min-width:160px;">
+                            <label style="font-size:13px;font-weight:600;color:#495057;">Child</label>
+                            <select id="c3-child-select" style="padding:10px 14px;border:2px solid #e9ecef;border-radius:10px;font-size:14px;">
+                                <option value="">— Select Child —</option>
+                            </select>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:6px;min-width:140px;">
+                            <label style="font-size:13px;font-weight:600;color:#495057;">Mode</label>
+                            <select id="c3-mode-select" style="padding:10px 14px;border:2px solid #e9ecef;border-radius:10px;font-size:14px;">
+                                <option value="all">All Modes</option>
+                                <option value="flexible">Flexible</option>
+                                <option value="strict">Strict</option>
+                                <option value="passive">Passive</option>
+                            </select>
+                        </div>
+                        <div>
+                            <button id="c3-load-btn" onclick="card3LoadReport()" style="background:#6a1b9a;color:white;border:none;border-radius:10px;padding:12px 24px;font-size:15px;font-weight:600;cursor:pointer;" disabled>Load Report</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report output -->
+                <div id="c3-report-area"></div>
+
+                <!-- Login Code Settings -->
+                <div id="c3-login-code-section" style="display:none;background:white;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.08);padding:24px;margin-top:20px;">
+                    <h3 style="margin:0 0 16px;color:#2c3e50;">Login Code Settings</h3>
+                    <p style="font-size:14px;color:#6c757d;margin:0 0 16px;">Set a new login code for this parent. They will use it to access Piggyback.</p>
+                    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+                        <input id="c3-login-code-input" type="text" placeholder="New login code (min 4 chars)" maxlength="50"
+                            style="padding:10px 14px;border:2px solid #e9ecef;border-radius:10px;font-size:15px;outline:none;min-width:220px;"/>
+                        <button onclick="card3UpdateLoginCode()" style="background:#e91e8c;color:white;border:none;border-radius:10px;padding:12px 22px;font-size:15px;font-weight:600;cursor:pointer;">Update Code</button>
+                    </div>
+                    <div id="c3-login-code-status" style="margin-top:10px;font-size:14px;display:none;"></div>
+                </div>
+
             </div>
         </div>
 
@@ -469,6 +509,7 @@ function showDashboardSection(section) {
     document.getElementById('section-child-management').style.display = section === 'child-management' ? 'block' : 'none';
     document.getElementById('section-parent-report').style.display = section === 'parent-report' ? 'block' : 'none';
     if (section === 'child-management') loadCard2Children();
+    if (section === 'parent-report') card3Init();
 }
 
 function backToDashboard() {
@@ -514,6 +555,214 @@ async function loadCard2Children() {
         </table>`;
     } catch(e) {
         container.innerHTML = '<div style="color:#dc3545;padding:20px;">Failed to load children.</div>';
+    }
+}
+
+// ── Card 3: Parent Report ──────────────────────────────────────────────────
+const CATEGORY_META_C3 = {
+    character:  { label: 'Character',  icon: '👤' },
+    settings:   { label: 'Setting',    icon: '🏞️' },
+    feeling:    { label: 'Feeling',    icon: '💚' },
+    action:     { label: 'Action',     icon: '⚡' },
+    causal:     { label: 'Causal',     icon: '🔗' },
+    outcome:    { label: 'Outcome',    icon: '🎯' },
+    prediction: { label: 'Prediction', icon: '🔮' },
+};
+
+// child_id -> parent_id lookup, populated during card3Init
+const c3ChildParentMap = {};
+
+async function card3Init() {
+    const expertId = document.getElementById('card2-expert-id').value;
+    const childSel = document.getElementById('c3-child-select');
+    childSel.innerHTML = '<option value="">Loading...</option>';
+    document.getElementById('c3-load-btn').disabled = true;
+    document.getElementById('c3-report-area').innerHTML = '';
+    document.getElementById('c3-login-code-section').style.display = 'none';
+
+    try {
+        const res = await fetch(`/api/admin/children?expert_id=${encodeURIComponent(expertId)}`);
+        const data = await res.json();
+        if (!data.children || data.children.length === 0) {
+            childSel.innerHTML = '<option value="">No children found</option>';
+            return;
+        }
+        data.children.forEach(c => { c3ChildParentMap[c.child_id] = c.parent_id || null; });
+        childSel.innerHTML = '<option value="">— Select Child —</option>' +
+            data.children.map(c => `<option value="${c.child_id}">${ICON_EMOJI[c.icon_key] || '👤'} ${c.first_name} ${c.last_name} (${c.interaction_mode})</option>`).join('');
+    } catch(e) {
+        childSel.innerHTML = '<option value="">Failed to load</option>';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('c3-child-select').addEventListener('change', function() {
+        document.getElementById('c3-load-btn').disabled = !this.value;
+        document.getElementById('c3-report-area').innerHTML = '';
+        const parentId = this.value ? c3ChildParentMap[this.value] : null;
+        document.getElementById('c3-login-code-section').style.display = this.value && parentId ? 'block' : 'none';
+    });
+});
+
+async function card3LoadReport() {
+    const childId = document.getElementById('c3-child-select').value;
+    const mode = document.getElementById('c3-mode-select').value;
+    const area = document.getElementById('c3-report-area');
+    if (!childId) return;
+
+    area.innerHTML = '<div style="text-align:center;color:#6c757d;padding:30px;">Loading...</div>';
+    try {
+        const url = `/api/expert/report?child_id=${encodeURIComponent(childId)}&mode=${mode}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message || 'Failed to load');
+        area.innerHTML = card3RenderReport(data, mode);
+    } catch(e) {
+        area.innerHTML = `<div style="color:#dc3545;padding:20px;text-align:center;">Could not load report: ${e.message}</div>`;
+    }
+}
+
+function card3RenderReport(data, mode) {
+    const totalWatchMinutes = data.total_watch_minutes || 0;
+    const watchDisplay = totalWatchMinutes >= 60
+        ? `${Math.floor(totalWatchMinutes / 60)}h ${totalWatchMinutes % 60}m`
+        : `${totalWatchMinutes}m`;
+    const videosWatched = data.videos_watched || 0;
+
+    // Passive mode — watch time only, no grades
+    if (mode === 'passive') {
+        const videos = data.recent_videos || [];
+        const recentHtml = videos.length === 0 ? '' : `
+            <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:12px;">
+                <h4 style="margin:0 0 12px;color:#2c3e50;">Recent Videos</h4>
+                ${videos.map(v => `
+                    <div style="padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:13px;color:#2c3e50;">
+                        ${v.video_title || v.video_id}
+                    </div>`).join('')}
+            </div>`;
+        return `
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+                <div style="background:white;border-radius:12px;padding:24px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.08);">
+                    <div style="font-size:36px;font-weight:800;color:#6a1b9a;">${videosWatched}</div>
+                    <div style="font-size:13px;color:#6c757d;margin-top:4px;">Videos Watched</div>
+                </div>
+                <div style="background:white;border-radius:12px;padding:24px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.08);">
+                    <div style="font-size:36px;font-weight:800;color:#6a1b9a;">${watchDisplay}</div>
+                    <div style="font-size:13px;color:#6c757d;margin-top:4px;">Total Watch Time</div>
+                </div>
+            </div>
+            ${recentHtml}`;
+    }
+
+    const score = Math.round(data.overall_score || 0);
+    const scoreColor = score >= 80 ? '#4caf50' : score >= 60 ? '#ff9800' : '#f44336';
+    const attempts = data.total_attempts || 0;
+    const totalRetries = data.total_retries || 0;
+    const avgRetries = data.avg_retries_per_question != null ? Number(data.avg_retries_per_question).toFixed(1) : '0.0';
+
+    // Score card
+    const scoreHtml = `
+        <div style="background:${scoreColor};border-radius:12px;padding:24px;text-align:center;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.12);">
+            <div style="font-size:52px;font-weight:800;color:white;line-height:1;">${score}%</div>
+            <div style="font-size:15px;color:rgba(255,255,255,0.9);margin-top:4px;">Overall Score${mode !== 'all' ? ' · ' + mode + ' mode' : ''}</div>
+        </div>`;
+
+    // Stats row
+    const statsHtml = `
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:12px;">
+            <div style="background:white;border-radius:12px;padding:16px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.08);">
+                <div style="font-size:28px;font-weight:800;color:#6a1b9a;">${attempts}</div>
+                <div style="font-size:13px;color:#6c757d;">Quiz Attempts</div>
+            </div>
+            <div style="background:white;border-radius:12px;padding:16px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.08);">
+                <div style="font-size:28px;font-weight:800;color:#6a1b9a;">${totalRetries}</div>
+                <div style="font-size:13px;color:#6c757d;">Total Retries</div>
+            </div>
+            <div style="background:white;border-radius:12px;padding:16px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.08);">
+                <div style="font-size:28px;font-weight:800;color:#6a1b9a;">${avgRetries}</div>
+                <div style="font-size:13px;color:#6c757d;">Avg Retries/Q</div>
+            </div>
+            <div style="background:white;border-radius:12px;padding:16px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.08);">
+                <div style="font-size:28px;font-weight:800;color:#6a1b9a;">${watchDisplay}</div>
+                <div style="font-size:13px;color:#6c757d;">Watch Time</div>
+            </div>
+        </div>`;
+
+    // Categories
+    const cats = data.top_categories || [];
+    const catsHtml = cats.length === 0
+        ? '<p style="color:#6c757d;font-size:14px;">No category data yet.</p>'
+        : cats.map(cat => {
+            const meta = CATEGORY_META_C3[cat.type] || { label: cat.type, icon: '📌' };
+            return `
+                <div style="margin-bottom:14px;">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+                        <span style="font-size:14px;font-weight:600;color:#2c3e50;">${meta.icon} ${meta.label}</span>
+                        <span style="font-size:14px;color:#6c757d;">${cat.score}/100</span>
+                    </div>
+                    <div style="background:#e9ecef;border-radius:6px;height:10px;overflow:hidden;">
+                        <div style="height:100%;width:${cat.score}%;background:linear-gradient(90deg,#6a1b9a,#e91e8c);border-radius:6px;"></div>
+                    </div>
+                </div>`;
+        }).join('');
+
+    const categoryHtml = `
+        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:12px;">
+            <h4 style="margin:0 0 16px;color:#2c3e50;">Category Scores</h4>
+            ${catsHtml}
+        </div>`;
+
+    // Recent videos
+    const videos = data.recent_videos || [];
+    const videosHtml = videos.length === 0 ? '' : `
+        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:12px;">
+            <h4 style="margin:0 0 12px;color:#2c3e50;">Recent Sessions</h4>
+            ${videos.map(v => {
+                const pct = v.percentage || 0;
+                const col = pct >= 80 ? '#4caf50' : pct >= 60 ? '#ff9800' : '#f44336';
+                const modeTag = v.interaction_mode ? `<span style="font-size:11px;background:#f3e5f5;color:#6a1b9a;border-radius:4px;padding:2px 6px;margin-left:6px;">${v.interaction_mode}</span>` : '';
+                return `
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0f0;">
+                        <span style="font-size:13px;color:#2c3e50;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${v.video_title || v.video_id}${modeTag}</span>
+                        <span style="font-size:13px;font-weight:700;color:${col};flex-shrink:0;margin-left:12px;">${pct}%</span>
+                    </div>`;
+            }).join('')}
+        </div>`;
+
+    return scoreHtml + statsHtml + categoryHtml + videosHtml;
+}
+
+async function card3UpdateLoginCode() {
+    const childId = document.getElementById('c3-child-select').value;
+    const parentId = c3ChildParentMap[childId] || null;
+    const expertId = document.getElementById('card2-expert-id').value;
+    const code = document.getElementById('c3-login-code-input').value.trim();
+    const status = document.getElementById('c3-login-code-status');
+    status.style.display = 'none';
+
+    if (!parentId) { alert('Select a parent first.'); return; }
+    if (!code) { alert('Enter a new login code.'); return; }
+
+    try {
+        const res = await fetch(`/api/expert/parents/${encodeURIComponent(parentId)}/login-code`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ expert_id: expertId, login_code: code })
+        });
+        const data = await res.json();
+        status.style.display = 'block';
+        if (data.success) {
+            status.style.color = '#198754';
+            status.textContent = 'Login code updated successfully!';
+            document.getElementById('c3-login-code-input').value = '';
+        } else {
+            status.style.color = '#dc3545';
+            status.textContent = data.error || 'Failed to update.';
+        }
+    } catch(e) {
+        status.style.display = 'block';
+        status.style.color = '#dc3545';
+        status.textContent = 'Network error.';
     }
 }
 

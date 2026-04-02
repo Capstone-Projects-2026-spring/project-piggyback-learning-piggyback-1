@@ -213,6 +213,87 @@ async def learner_child_report(child_id: str):
     return JSONResponse(report)
 
 
+# ── Expert Card 3 APIs ────────────────────────────────────────────────────────
+
+@app.get("/api/expert/parents")
+async def expert_list_parents(expert_id: str):
+    """Return parents that have at least one active child assigned to this expert."""
+    expert_id = (expert_id or "").strip().lower()
+    if not expert_id:
+        return JSONResponse({"success": False, "error": "expert_id required"}, status_code=400)
+    with get_conn() as conn:
+        rows = conn.execute(
+            """
+            SELECT DISTINCT p.parent_id, p.display_name
+            FROM parents p
+            JOIN children c ON c.parent_id = p.parent_id
+            WHERE c.expert_id = ? AND c.is_active = 1 AND p.is_active = 1
+            ORDER BY p.display_name
+            """,
+            (expert_id,),
+        ).fetchall()
+    return JSONResponse({"success": True, "parents": [dict(r) for r in rows]})
+
+
+@app.get("/api/expert/parents/{parent_id}/children")
+async def expert_list_parent_children(parent_id: str, expert_id: str):
+    """Return active children under a parent that are assigned to this expert."""
+    expert_id = (expert_id or "").strip().lower()
+    if not expert_id:
+        return JSONResponse({"success": False, "error": "expert_id required"}, status_code=400)
+    with get_conn() as conn:
+        rows = conn.execute(
+            """
+            SELECT child_id, first_name, last_name, icon_key, interaction_mode, is_active
+            FROM children
+            WHERE parent_id = ? AND expert_id = ? AND is_active = 1
+            ORDER BY first_name
+            """,
+            (parent_id, expert_id),
+        ).fetchall()
+    return JSONResponse({"success": True, "children": [dict(r) for r in rows]})
+
+
+@app.put("/api/expert/parents/{parent_id}/login-code")
+async def expert_update_parent_login_code(parent_id: str, request: Request):
+    """Allow an expert to reset a parent's login code if they have a child under that parent."""
+    from app.services.expert_auth_service import hash_password
+    body = await request.json()
+    expert_id = (body.get("expert_id") or "").strip().lower()
+    new_code = (body.get("login_code") or "").strip()
+
+    if not expert_id or not new_code:
+        return JSONResponse({"success": False, "error": "expert_id and login_code are required."}, status_code=400)
+    if len(new_code) < 4:
+        return JSONResponse({"success": False, "error": "Login code must be at least 4 characters."}, status_code=400)
+
+    with get_conn() as conn:
+        count = conn.execute(
+            "SELECT COUNT(*) FROM children WHERE expert_id = ? AND parent_id = ? AND is_active = 1",
+            (expert_id, parent_id),
+        ).fetchone()[0]
+        if count == 0:
+            return JSONResponse({"success": False, "error": "Not authorized to update this parent's login code."}, status_code=403)
+
+        from datetime import datetime, timezone
+        now = datetime.now(timezone.utc).isoformat()
+        conn.execute(
+            "UPDATE parents SET login_code_hash = ?, updated_at = ? WHERE parent_id = ?",
+            (hash_password(new_code), now, parent_id),
+        )
+        conn.commit()
+
+    return JSONResponse({"success": True, "message": "Login code updated."})
+
+
+@app.get("/api/expert/report")
+async def expert_child_report(child_id: str, video_id: str = None, mode: str = "all"):
+    """Scoped report for a child, optionally filtered by video and interaction mode."""
+    from app.services.report_service import get_child_report_scoped
+    report = get_child_report_scoped(child_id, video_id=video_id or None, mode=mode)
+    return JSONResponse(report)
+
+
 @app.get("/api/learners/children/{child_id}/videos")
 async def learner_list_videos_for_child(child_id: str):
     # Child inherits expert video permissions (no child-video table in this phase).
