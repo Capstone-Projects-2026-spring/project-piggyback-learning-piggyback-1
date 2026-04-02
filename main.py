@@ -292,10 +292,11 @@ async def expert_access_code(request: Request):
     parent_id = identity["expert_id"]
     with get_conn() as conn:
         row = conn.execute(
-            "SELECT login_code_hash FROM parents WHERE parent_id = ?", (parent_id,)
+            "SELECT login_code_hash, login_code FROM parents WHERE parent_id = ?", (parent_id,)
         ).fetchone()
     has_custom_code = bool(row and row["login_code_hash"])
-    return JSONResponse({"parent_id": parent_id, "has_custom_code": has_custom_code})
+    plain_code = row["login_code"] if row and row["login_code"] else None
+    return JSONResponse({"parent_id": parent_id, "has_custom_code": has_custom_code, "login_code": plain_code})
 
 
 @app.put("/api/expert/my-login-code")
@@ -310,10 +311,18 @@ async def expert_update_own_login_code(request: Request):
         return JSONResponse({"success": False, "error": "Login code must be 5 characters or fewer."}, status_code=400)
 
     now = datetime.now(timezone.utc).isoformat()
+    code_hash = hash_password(new_code)
     with get_conn() as conn:
         conn.execute(
-            "UPDATE parents SET login_code_hash = ?, updated_at = ? WHERE parent_id = ?",
-            (hash_password(new_code), now, parent_id),
+            """
+            INSERT INTO parents (parent_id, display_name, login_code_hash, login_code, is_active, created_at, updated_at)
+            VALUES (?, ?, ?, ?, 1, ?, ?)
+            ON CONFLICT(parent_id) DO UPDATE SET
+                login_code_hash = excluded.login_code_hash,
+                login_code = excluded.login_code,
+                updated_at = excluded.updated_at
+            """,
+            (parent_id, identity["display_name"], code_hash, new_code, now, now),
         )
         conn.commit()
     return JSONResponse({"success": True})

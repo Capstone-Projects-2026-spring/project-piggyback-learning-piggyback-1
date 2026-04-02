@@ -41,6 +41,13 @@ def _migrate_add_interaction_mode(conn: sqlite3.Connection) -> None:
         )
         conn.commit()
         
+def _migrate_add_login_code_plain(conn: sqlite3.Connection) -> None:
+    cols = {row["name"] for row in conn.execute("PRAGMA table_info(parents)").fetchall()}
+    if "login_code" not in cols:
+        conn.execute("ALTER TABLE parents ADD COLUMN login_code TEXT NULL")
+        conn.commit()
+
+
 def _migrate_add_parent_id(conn: sqlite3.Connection) -> None:
     cols = {row["name"] for row in conn.execute("PRAGMA table_info(children)").fetchall()}
     if "parent_id" not in cols:
@@ -223,4 +230,5 @@ def init_db() -> None:
         _migrate_add_interaction_mode(conn)
         _migrate_drop_unique_name_index(conn)
         _migrate_add_parent_id(conn)
+        _migrate_add_login_code_plain(conn)
         conn.commit()

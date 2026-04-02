@@ -10,16 +10,19 @@
                 const res = await fetch('/api/expert/access-code');
                 const data = await res.json();
                 _accessCodeParentId = data.parent_id;
-                renderAccessCodeContent(data.has_custom_code, data.parent_id);
+                renderAccessCodeContent(data.has_custom_code, data.parent_id, data.login_code);
             } catch(e) {
                 content.innerHTML = '<span style="color:#dc3545;">Could not load access code.</span>';
             }
         }
 
-        function renderAccessCodeContent(hasCustomCode, parentId) {
+        function renderAccessCodeContent(hasCustomCode, parentId, savedCode) {
             const content = document.getElementById('access-code-content');
             const codeDisplay = hasCustomCode
-                ? `<div style="font-size:14px;color:#6c757d;margin-bottom:8px;">Custom access code is set.</div>`
+                ? savedCode
+                    ? `<div style="font-size:14px;color:#6c757d;margin-bottom:8px;">Access code updated. Kids sign in with:</div>
+                       <div style="font-size:28px;font-weight:800;color:#6a1b9a;letter-spacing:2px;">${savedCode}</div>`
+                    : `<div style="font-size:14px;color:#6c757d;margin-bottom:8px;">A custom access code is set.</div>`
                 : `<div style="font-size:14px;color:#6c757d;margin-bottom:8px;">No custom code set. Kids sign in with:</div>
                    <div style="font-size:28px;font-weight:800;color:#6a1b9a;letter-spacing:2px;">${parentId}</div>`;
 
@@ -58,7 +61,7 @@
                 });
                 const data = await res.json();
                 if (data.success) {
-                    renderAccessCodeContent(true, _accessCodeParentId);
+                    renderAccessCodeContent(true, _accessCodeParentId, code);
                 } else {
                     statusEl.style.color = '#dc3545';
                     statusEl.textContent = data.error || 'Failed to save.';
