@@ -1,4 +1,33 @@
 
+        async function openAccessCodeModal() {
+            const modal = document.getElementById('access-code-modal');
+            const content = document.getElementById('access-code-content');
+            modal.style.display = 'flex';
+            content.innerHTML = 'Loading...';
+            try {
+                const res = await fetch('/api/expert/access-code');
+                const data = await res.json();
+                if (data.has_custom_code) {
+                    content.innerHTML = `
+                        <div style="font-size:15px;color:#2c3e50;line-height:1.6;">
+                            A custom access code is set.<br>
+                            <span style="color:#6c757d;font-size:13px;">To update it, go to <strong>Card 3 → Parent Report → Login Code Settings</strong>.</span>
+                        </div>`;
+                } else {
+                    content.innerHTML = `
+                        <div style="font-size:14px;color:#6c757d;margin-bottom:8px;">No custom code set. Kids sign in with your Parent ID:</div>
+                        <div style="font-size:28px;font-weight:800;color:#6a1b9a;letter-spacing:2px;">${data.parent_id}</div>
+                        <div style="font-size:12px;color:#adb5bd;margin-top:8px;">You can set a custom code in Card 3 → Parent Report.</div>`;
+                }
+            } catch(e) {
+                content.innerHTML = '<span style="color:#dc3545;">Could not load access code.</span>';
+            }
+        }
+
+        function closeAccessCodeModal() {
+            document.getElementById('access-code-modal').style.display = 'none';
+        }
+
         function openSwitchParentModal() {
             document.getElementById('switch-parent-id').value = '';
             document.getElementById('switch-parent-pw').value = '';

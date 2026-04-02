@@ -24,6 +24,36 @@
                 color: #6a1b9a; cursor: pointer;
                 box-shadow: 0 2px 8px rgba(0,0,0,0.12); z-index: 999;
             ">Switch Parent</button>
+            <button onclick="openAccessCodeModal()" style="
+                position: fixed; top: 96px; right: 16px;
+                background: white; border: none; border-radius: 20px;
+                padding: 10px 18px; font-size: 14px; font-weight: 600;
+                color: #6a1b9a; cursor: pointer;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.12); z-index: 999;
+            ">Access Code</button>
+
+            <!-- Access Code Modal -->
+            <div id="access-code-modal" style="
+                display: none; position: fixed; inset: 0;
+                background: rgba(0,0,0,0.5); z-index: 9999;
+                align-items: center; justify-content: center;
+            " onclick="if(event.target===this)closeAccessCodeModal()">
+                <div style="
+                    background: white; border-radius: 24px;
+                    padding: 40px 36px; width: 100%; max-width: 400px;
+                    box-shadow: 0 12px 48px rgba(0,0,0,0.2); text-align: center;
+                ">
+                    <h2 style="margin: 0 0 8px; font-size: 24px; color: #2c3e50;">Kids Access Code</h2>
+                    <p style="color: #6c757d; font-size: 14px; margin: 0 0 24px;">Share this with your child to sign in on the learning screen.</p>
+                    <div id="access-code-content" style="color:#6c757d;padding:20px;">Loading...</div>
+                    <button onclick="closeAccessCodeModal()" style="
+                        margin-top: 24px; padding: 12px 32px;
+                        background: #6a1b9a; color: white;
+                        border: none; border-radius: 12px;
+                        font-size: 15px; font-weight: 600; cursor: pointer;
+                    ">Got it</button>
+                </div>
+            </div>
 
             <!-- Switch Parent Modal -->
             <div id="switch-parent-modal" style="
@@ -907,7 +937,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-<script src="/assets/js/expert_preview.js?v=5" defer></script>
+<script src="/assets/js/expert_preview.js?v=6" defer></script>
 </body>
 </html>
 

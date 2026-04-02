@@ -286,6 +286,18 @@ async def expert_update_parent_login_code(parent_id: str, request: Request):
     return JSONResponse({"success": True, "message": "Login code updated."})
 
 
+@app.get("/api/expert/access-code")
+async def expert_access_code(request: Request):
+    identity = require_expert_session(request)
+    parent_id = identity["expert_id"]
+    with get_conn() as conn:
+        row = conn.execute(
+            "SELECT login_code_hash FROM parents WHERE parent_id = ?", (parent_id,)
+        ).fetchone()
+    has_custom_code = bool(row and row["login_code_hash"])
+    return JSONResponse({"parent_id": parent_id, "has_custom_code": has_custom_code})
+
+
 @app.get("/api/expert/report")
 async def expert_child_report(child_id: str, video_id: str = None, mode: str = "all"):
     """Scoped report for a child, optionally filtered by video and interaction mode."""
