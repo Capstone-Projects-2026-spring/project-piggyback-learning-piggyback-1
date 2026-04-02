@@ -8,7 +8,7 @@
 <body data-selected-video-id="{{ (selected_video_id or '') | e }}">
     <div class="container">
         <div class="page-header">
-            <h1>Parent Dashboard</h1>
+            <h1>{{ expert_identity.display_name }}'s Dashboard</h1>
             <p>Choose what you'd like to manage today.</p>
             <button onclick="window.location.href='/'" style="
                 position: fixed; top: 16px; right: 16px;
