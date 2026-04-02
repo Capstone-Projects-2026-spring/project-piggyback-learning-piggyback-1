@@ -1,7 +1,7 @@
 
         async function switchExpert() {
             await fetch('/api/expert/logout', { method: 'POST' });
-            window.location.href = '/';
+            window.location.href = '/children';
         }
 
         let currentVideoId = null;

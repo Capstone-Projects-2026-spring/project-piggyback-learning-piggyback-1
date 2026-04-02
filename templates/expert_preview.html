@@ -537,24 +537,88 @@ async function loadCard2Children() {
             container.innerHTML = '<div style="text-align:center;color:#6c757d;padding:20px;">No children yet.</div>';
             return;
         }
+        const ICON_OPTIONS = Object.entries(ICON_EMOJI).map(([k,v]) => `<option value="${k}">${v} ${k}</option>`).join('');
+        const MODE_OPTIONS = `<option value="flexible">Flexible</option><option value="strict">Strict</option><option value="passive">Passive</option>`;
+
         container.innerHTML = `<table style="width:100%;border-collapse:collapse;">
             <thead><tr style="background:#f8f9fa;">
                 <th style="padding:10px;text-align:left;font-size:13px;color:#6c757d;">Icon</th>
                 <th style="padding:10px;text-align:left;font-size:13px;color:#6c757d;">Name</th>
-                <th style="padding:10px;text-align:left;font-size:13px;color:#6c757d;">ID</th>
+                <th style="padding:10px;text-align:left;font-size:13px;color:#6c757d;">Student ID</th>
                 <th style="padding:10px;text-align:left;font-size:13px;color:#6c757d;">Mode</th>
-                <th style="padding:10px;text-align:left;font-size:13px;color:#6c757d;">Status</th>
+                <th style="padding:10px;text-align:left;font-size:13px;color:#6c757d;">Actions</th>
             </tr></thead>
-            <tbody>${data.children.map(c => `<tr style="border-top:1px solid #f0f0f0;">
-                <td style="padding:10px;font-size:22px;">${ICON_EMOJI[c.icon_key] || '👤'}</td>
-                <td style="padding:10px;">${c.first_name} ${c.last_name}</td>
-                <td style="padding:10px;color:#6c757d;font-size:13px;">${c.child_id}</td>
-                <td style="padding:10px;font-size:13px;">${c.interaction_mode}</td>
-                <td style="padding:10px;font-size:13px;">${c.is_active ? '✅ Active' : '❌ Inactive'}</td>
+            <tbody>${data.children.map(c => `<tr style="border-top:1px solid #f0f0f0;" id="child-row-${c.child_id}">
+                <td style="padding:10px;">
+                    <select data-field="icon_key" style="padding:6px;border:1px solid #dee2e6;border-radius:8px;font-size:15px;">
+                        ${Object.entries(ICON_EMOJI).map(([k,v]) => `<option value="${k}" ${c.icon_key===k?'selected':''}>${v} ${k}</option>`).join('')}
+                    </select>
+                </td>
+                <td style="padding:10px;font-size:14px;font-weight:600;">${c.first_name} ${c.last_name}</td>
+                <td style="padding:10px;font-size:12px;color:#6c757d;font-family:monospace;">${c.child_id}</td>
+                <td style="padding:10px;">
+                    <select data-field="interaction_mode" style="padding:6px;border:1px solid #dee2e6;border-radius:8px;font-size:14px;">
+                        <option value="flexible" ${c.interaction_mode==='flexible'?'selected':''}>Flexible</option>
+                        <option value="strict" ${c.interaction_mode==='strict'?'selected':''}>Strict</option>
+                        <option value="passive" ${c.interaction_mode==='passive'?'selected':''}>Passive</option>
+                    </select>
+                </td>
+                <td style="padding:10px;display:flex;gap:8px;align-items:center;">
+                    <button onclick="card2SaveChild('${c.child_id}')" style="background:#6a1b9a;color:white;border:none;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;">Save</button>
+                    <button onclick="card2RemoveChild('${c.child_id}')" style="background:#dc3545;color:white;border:none;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;">Remove</button>
+                    <span id="child-status-${c.child_id}" style="font-size:12px;display:none;"></span>
+                </td>
             </tr>`).join('')}</tbody>
         </table>`;
     } catch(e) {
         container.innerHTML = '<div style="color:#dc3545;padding:20px;">Failed to load children.</div>';
+    }
+}
+
+async function card2SaveChild(childId) {
+    const row = document.getElementById(`child-row-${childId}`);
+    const status = document.getElementById(`child-status-${childId}`);
+    const icon_key = row.querySelector('[data-field="icon_key"]').value;
+    const interaction_mode = row.querySelector('[data-field="interaction_mode"]').value;
+    try {
+        const res = await fetch(`/api/admin/children/${encodeURIComponent(childId)}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ icon_key, interaction_mode })
+        });
+        const data = await res.json();
+        status.style.display = 'inline';
+        if (data.success) {
+            status.style.color = '#198754';
+            status.textContent = '✓ Saved';
+        } else {
+            status.style.color = '#dc3545';
+            status.textContent = data.detail || 'Failed';
+        }
+    } catch(e) {
+        status.style.display = 'inline';
+        status.style.color = '#dc3545';
+        status.textContent = 'Error';
+    }
+    setTimeout(() => { status.style.display = 'none'; }, 2000);
+}
+
+async function card2RemoveChild(childId) {
+    if (!confirm('Remove this child?')) return;
+    try {
+        const res = await fetch(`/api/admin/children/${encodeURIComponent(childId)}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ is_active: false })
+        });
+        const data = await res.json();
+        if (data.success) {
+            document.getElementById(`child-row-${childId}`).remove();
+        } else {
+            alert(data.detail || 'Could not remove child.');
+        }
+    } catch(e) {
+        alert('Network error.');
     }
 }
 
