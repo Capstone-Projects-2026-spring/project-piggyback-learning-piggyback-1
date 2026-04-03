@@ -87,6 +87,40 @@
             </div>
         </div>
 
+        <!-- Add Video Modal -->
+        <div id="add-video-modal" style="
+            display:none; position:fixed; inset:0;
+            background:rgba(0,0,0,0.5); z-index:9999;
+            align-items:center; justify-content:center;
+        " onclick="if(event.target===this)closeAddVideoModal()">
+            <div style="
+                background:white; border-radius:24px;
+                padding:40px 36px; width:100%; max-width:440px;
+                box-shadow:0 12px 48px rgba(0,0,0,0.2); text-align:center;
+            ">
+                <h2 style="margin:0 0 8px;font-size:24px;color:#2c3e50;">Add a Video</h2>
+                <p style="color:#6c757d;font-size:14px;margin:0 0 24px;">Select a processed video to add to your list.</p>
+                <select id="add-video-select" style="
+                    width:100%;padding:14px 16px;border:2px solid #e9ecef;
+                    border-radius:12px;font-size:15px;box-sizing:border-box;
+                    outline:none;margin-bottom:8px;
+                ">
+                    <option value="">Loading videos...</option>
+                </select>
+                <div id="add-video-status" style="color:#dc3545;font-size:13px;min-height:20px;margin-bottom:16px;"></div>
+                <div style="display:flex;gap:12px;">
+                    <button onclick="closeAddVideoModal()" style="
+                        flex:1;padding:14px;background:#6c757d;color:white;
+                        border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;
+                    ">Cancel</button>
+                    <button onclick="claimSelectedVideo()" style="
+                        flex:1;padding:14px;background:#6a1b9a;color:white;
+                        border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;
+                    ">Add</button>
+                </div>
+            </div>
+        </div>
+
         <!-- ── 3-Card Landing ── -->
         <div id="dashboard-cards" style="
             display: flex;
@@ -104,9 +138,9 @@
             " onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 8px 28px rgba(0,0,0,0.15)'"
                onmouseout="this.style.transform='';this.style.boxShadow='0 4px 20px rgba(0,0,0,0.10)'">
                 <div style="font-size:52px;margin-bottom:16px;">🎬</div>
-                <h3 style="margin:0 0 8px;font-size:20px;color:#2c3e50;">Question Review</h3>
-                <p style="color:#6c757d;font-size:14px;margin:0 0 24px;">Review and approve AI-generated questions for videos.</p>
-                <button style="background:#6a1b9a;color:white;border:none;border-radius:12px;padding:12px 24px;font-size:15px;font-weight:600;cursor:pointer;">Go to Review</button>
+                <h3 style="margin:0 0 8px;font-size:20px;color:#2c3e50;">My Videos</h3>
+                <p style="color:#6c757d;font-size:14px;margin:0 0 24px;">Manage your claimed videos and review their questions.</p>
+                <button style="background:#6a1b9a;color:white;border:none;border-radius:12px;padding:12px 24px;font-size:15px;font-weight:600;cursor:pointer;">Manage Videos</button>
             </div>
 
             <div onclick="showDashboardSection('child-management')" style="
@@ -174,10 +208,13 @@
             <div class="selection-card">
                 <div class="selection-header">
                     <div class="selection-text">
-                        <h2>Select a video to review</h2>
-                        <p class="selection-help">Pick a processed video from the downloads folder to preview and refine the AI-generated questions.</p>
+                        <h2>My Videos</h2>
+                        <p class="selection-help">Your claimed videos are listed below. Select one to review its questions.</p>
                     </div>
-                    <button class="btn" id="refresh-videos-btn" onclick="loadVideoList()">Refresh List</button>
+                    <div style="display:flex;gap:10px;">
+                        <button class="btn" id="refresh-videos-btn" onclick="loadVideoList()">Refresh List</button>
+                        <button class="btn" id="add-video-btn" onclick="openAddVideoModal()" style="background:#6a1b9a;color:white;">+ Add Video</button>
+                    </div>
                 </div>
                 <div id="video-card-list" class="video-card-list">
                     <div class="video-list-empty">Loading available videos...</div>
@@ -495,6 +532,7 @@
                                 <option value="peppa">🌟 Peppa Pig</option>
                                 <option value="mario">🎮 Mario</option>
                                 <option value="dino">🦕 Dino</option>
+                                <option value="empoleon">🐧 Empoleon</option>
                             </select>
                         </div>
                         <div>
@@ -590,7 +628,7 @@ function backToDashboard() {
 // ── Card 2: Child Management ──
 const ICON_EMOJI = {
     simba:'🦁',nemo:'🐠',walle:'🤖',moana:'👸',elsa:'❄️',spiderman:'🕷️',
-    mickey:'🐭',pooh:'🧸',chase:'🐾',spongebob:'🧽',turtle:'🐢',bluey:'🦸',
+    mickey:'🐭',pooh:'🧸',chase:'🐾',spongebob:'🧽',turtle:'🐢',bluey:'🦸',empoleon:'🐧',
     hellokitty:'🐱',mlp:'🧁',peppa:'🌟',mario:'🎮',dino:'🦕'
 };
 
@@ -937,7 +975,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-<script src="/assets/js/expert_preview.js?v=12" defer></script>
+<script src="/assets/js/expert_preview.js?v=13" defer></script>
 </body>
 </html>
 

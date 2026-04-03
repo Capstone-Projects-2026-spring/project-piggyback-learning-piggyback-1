@@ -358,24 +358,23 @@ async def api_admin_delete_child(child_id: str):
 def api_admin_list_video_assignments():
     videos = _collect_downloaded_videos(include_without_frames=True)
 
-    rows: List[Dict[str, Any]] = []
+    # Build a map of expert_id -> list of claimed video titles
+    claimed_by_expert: Dict[str, List[str]] = {}
     for video in videos:
         assigned_experts = list_experts_for_video(video["video_id"])
-        rows.append(
-            {
-                "video_id": video["video_id"],
-                "title": video.get("title") or video["video_id"],
-                "duration_formatted": video.get("duration_formatted"),
-                "has_frames": bool(video.get("has_frames")),
-                "has_questions": bool(video.get("has_questions")),
-                "assigned_experts": assigned_experts,
-            }
-        )
+        title = video.get("title") or video["video_id"]
+        for e in assigned_experts:
+            eid = e["expert_id"]
+            claimed_by_expert.setdefault(eid, []).append(title)
+
+    experts_with_videos = [
+        {**e, "claimed_videos": claimed_by_expert.get(e["expert_id"], [])}
+        for e in list_experts()
+    ]
 
     return {
         "success": True,
-        "experts": list_experts(),
-        "assignments": rows,
+        "experts": experts_with_videos,
     }
 
 
