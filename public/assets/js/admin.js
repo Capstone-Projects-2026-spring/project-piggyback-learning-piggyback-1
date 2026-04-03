@@ -4,7 +4,6 @@
         let expertDashboardLoaded = false;
         let childrenDashboardLoaded = false;
         let adminExperts = [];
-        let adminAssignments = [];
         let adminChildren = [];
         let currentStep = 1;
         let currentVideoId = null;
@@ -92,11 +91,6 @@
             const createExpertForm = document.getElementById('create-expert-form');
             if (createExpertForm) {
                 createExpertForm.addEventListener('submit', handleCreateExpert);
-            }
-
-            const refreshAssignmentsBtn = document.getElementById('refresh-assignments-btn');
-            if (refreshAssignmentsBtn) {
-                refreshAssignmentsBtn.addEventListener('click', () => loadExpertDashboard(true));
             }
 
             const refreshChildrenBtn = document.getElementById('refresh-children-btn');
@@ -339,7 +333,7 @@
                         });
                         // lazy-load experrt data only when that tab opens
                         if (targetId === 'assign-experts' && !expertDashboardLoaded){
-                            await loadExpertDashboard(false);
+                            await loadExpertDashboard();
                         }
                         if (targetId === 'assign-children' && !childrenDashboardLoaded) {
                             await loadChildrenDashboard(false);
@@ -471,7 +465,7 @@
     el.style.display = 'block';
 }
 
-async function loadExpertDashboard(showRefreshMessage = false) {
+async function loadExpertDashboard() {
     const res = await fetch('/api/admin/videos/assignments');
     const data = await res.json();
 
@@ -480,16 +474,10 @@ async function loadExpertDashboard(showRefreshMessage = false) {
     }
 
     adminExperts = Array.isArray(data.experts) ? data.experts : [];
-    adminAssignments = Array.isArray(data.assignments) ? data.assignments : [];
     expertDashboardLoaded = true;
 
     renderExpertTable();
-    renderAssignmentTable();
     renderChildrenExpertOptions();
-
-    if (showRefreshMessage) {
-        setAdminPanelStatus('assignment-admin-status', 'Assignments refreshed.', 'success');
-    }
 }
 
 function renderExpertTable() {
@@ -539,70 +527,6 @@ function renderExpertTable() {
 });
 }
 
-function renderAssignmentTable() {
-    const tbody = document.getElementById('assignment-list-tbody');
-    if (!tbody) return;
-
-    if (!adminAssignments.length) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#9ca3af;padding:24px;">No downloaded videos found.</td></tr>';
-        return;
-    }
-
-    const expertOptions = adminExperts
-        .map((expert) => `<option value="${expert.expert_id}">${expert.display_name} (${expert.expert_id})${expert.is_active ? '' : ' [inactive]'}</option>`)
-        .join('');
-
-    tbody.innerHTML = adminAssignments.map((row) => {
-    const assignedCount = (row.assigned_experts || []).length;
-    const chips = (row.assigned_experts || []).map((e) => `
-        <span class="admin-chip">
-            ${e.expert_name || e.expert_id}
-            <button type="button" class="admin-chip-remove"
-                data-action="remove-assignment"
-                data-video-id="${row.video_id}"
-                data-expert-id="${e.expert_id}">×</button>
-        </span>
-    `).join('');
-
-    return `
-        <tr data-video-id="${row.video_id}">
-            <td class="admin-video-title">${row.title || '—'}</td>
-            <td class="admin-id-cell">${row.video_id}</td>
-            <td>${assignedCount > 0
-                ? `<details><summary class="admin-expert-count">👁 ${assignedCount} expert(s)</summary><div class="admin-chips">${chips}</div></details>`
-                : '<span style="color:#9ca3af;">Unassigned</span>'
-            }</td>
-            <td>
-                <select class="admin-inline-select" data-role="assignment-expert">
-                    <option value="">-- select expert --</option>
-                    ${expertOptions}
-                </select>
-            </td>
-            <td class="admin-actions-cell">
-                <button type="button" class="btn-create btn-create-sm" data-action="add-assignment">+ Add</button>
-            </td>
-        </tr>
-    `;
-}).join('');
-
-// Add assignment
-    tbody.querySelectorAll('[data-action="add-assignment"]').forEach((btn) => {
-        btn.addEventListener('click', async (e) => {
-            const row = e.currentTarget.closest('tr');
-            await handleAddAssignment(row);
-        });
-    });
-
-    // Remove assignment
-    tbody.querySelectorAll('[data-action="remove-assignment"]').forEach((btn) => {
-        btn.addEventListener('click', async (e) => {
-            const videoId = e.currentTarget.dataset.videoId;
-            const expertId = e.currentTarget.dataset.expertId;
-            await handleRemoveAssignment(videoId, expertId);
-        });
-    });
-
-}
 
 async function handleCreateExpert(event) {
     event.preventDefault();
@@ -624,7 +548,7 @@ async function handleCreateExpert(event) {
 
     event.target.reset();
     setAdminPanelStatus('expert-admin-status', 'Expert created.', 'success');
-    await loadExpertDashboard(false);
+    await loadExpertDashboard();
 }
 
     async function handleSaveExpert(row) {
@@ -647,7 +571,7 @@ async function handleCreateExpert(event) {
         }
 
         setAdminPanelStatus('expert-admin-status', 'Expert updated.', 'success');
-        await loadExpertDashboard(false);
+        await loadExpertDashboard();
     }
 
     async function handleToggleExpert(row) {
@@ -671,7 +595,7 @@ async function handleCreateExpert(event) {
         }
 
         setAdminPanelStatus('expert-admin-status', isActive ? 'Expert deactivated.' : 'Expert activated.', 'success');
-        await loadExpertDashboard(false);
+        await loadExpertDashboard();
     }
     async function handleRemoveExpert(row) {
         const expertId = row.dataset.expertId;
@@ -684,7 +608,7 @@ async function handleCreateExpert(event) {
             }
 
             // Reload from backend so experts table, assignment table, and child expert dropdowns stay in sync.
-            await loadExpertDashboard(false);
+            await loadExpertDashboard();
             if (childrenDashboardLoaded) {
                 await loadChildrenDashboard(false);
             }
@@ -706,7 +630,7 @@ async function handleCreateExpert(event) {
     });
     const data = await res.json();
     if (!res.ok || !data.success) throw new Error(data.detail || 'Failed to add assignment');
-    await loadExpertDashboard(false);
+    await loadExpertDashboard();
 }
 
 async function handleRemoveAssignment(videoId, expertId) {
@@ -717,7 +641,7 @@ async function handleRemoveAssignment(videoId, expertId) {
     });
     const data = await res.json();
     if (!res.ok || !data.success) throw new Error(data.detail || 'Failed to remove assignment');
-    await loadExpertDashboard(false);
+    await loadExpertDashboard();
 }
 
 function escapeHtml(value) {
