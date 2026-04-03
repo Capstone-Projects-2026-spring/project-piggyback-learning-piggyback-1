@@ -30,6 +30,7 @@
             peppa:       '🌟',
             mario:       '🎮',
             dino:        '🦕',
+            empoleon:    '🐧',
         };
         const CHILD_ICON_NAME = {
             simba:       'Simba',
@@ -49,6 +50,7 @@
             peppa:       'Peppa Pig',
             mario:       'Mario & Luigi',
             dino:        'Dino (Cocomelon)',
+            empoleon:    'Empoleon',
         };
         
         // Initialize

@@ -76,6 +76,74 @@
             document.getElementById('access-code-modal').style.display = 'none';
         }
 
+        async function openAddVideoModal() {
+            const modal = document.getElementById('add-video-modal');
+            const select = document.getElementById('add-video-select');
+            const status = document.getElementById('add-video-status');
+            status.textContent = '';
+            select.innerHTML = '<option value="">Loading...</option>';
+            modal.style.display = 'flex';
+
+            try {
+                const res = await fetch('/api/expert/videos/available');
+                const data = await res.json();
+                const all = Array.isArray(data.videos) ? data.videos : [];
+                // Filter out already-claimed videos
+                const claimedIds = new Set((availableVideos || []).map(v => v.id));
+                const unclaimed = all.filter(v => !claimedIds.has(v.id));
+                if (!unclaimed.length) {
+                    select.innerHTML = '<option value="">No new videos to add</option>';
+                } else {
+                    select.innerHTML = '<option value="">-- Select a video --</option>' +
+                        unclaimed.map(v => `<option value="${v.id}">${v.title || v.id}</option>`).join('');
+                }
+            } catch {
+                select.innerHTML = '<option value="">Failed to load videos</option>';
+            }
+        }
+
+        function closeAddVideoModal() {
+            document.getElementById('add-video-modal').style.display = 'none';
+        }
+
+        async function unclaimVideo(videoId) {
+            if (!confirm('Remove this video from your list?')) return;
+            try {
+                const res = await fetch(`/api/expert/videos/${encodeURIComponent(videoId)}/unclaim`, { method: 'DELETE' });
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    alert(data.message || 'Failed to remove video.');
+                    return;
+                }
+                await loadVideoList();
+            } catch {
+                alert('Something went wrong. Try again.');
+            }
+        }
+
+        async function claimSelectedVideo() {
+            const videoId = document.getElementById('add-video-select').value;
+            const status = document.getElementById('add-video-status');
+            if (!videoId) {
+                status.textContent = 'Please select a video.';
+                return;
+            }
+            status.textContent = '';
+            try {
+                const res = await fetch(`/api/expert/videos/${encodeURIComponent(videoId)}/claim`, { method: 'POST' });
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    status.textContent = data.message || 'Failed to add video.';
+                    return;
+                }
+                closeAddVideoModal();
+                await loadVideoList();
+            } catch {
+                status.textContent = 'Something went wrong. Try again.';
+            }
+        }
+
+
         function openSwitchParentModal() {
             document.getElementById('switch-parent-id').value = '';
             document.getElementById('switch-parent-pw').value = '';
@@ -517,12 +585,18 @@
                             <span>Files: ${fileCount}</span>
                             <span>${questionText}</span>
                         </div>
-                        <!-- Link to re-edit finalized questions for this video -->
-                        <a href="/expert/edit/${video.id}"
-                           onclick="event.stopPropagation()"
-                           style="display:inline-block;margin-top:6px;font-size:.8rem;color:#2563eb;text-decoration:none;background:#eff6ff;border:1px solid #bfdbfe;padding:3px 10px;border-radius:4px">
-                           ✏ Change Questions
-                        </a>
+                        <div style="display:flex;gap:8px;margin-top:6px;align-items:center;">
+                            <a href="/expert/edit/${video.id}"
+                               onclick="event.stopPropagation()"
+                               style="font-size:.8rem;color:#2563eb;text-decoration:none;background:#eff6ff;border:1px solid #bfdbfe;padding:3px 10px;border-radius:4px">
+                               ✏ Change Questions
+                            </a>
+                            <button type="button"
+                               onclick="event.stopPropagation();unclaimVideo('${video.id}')"
+                               style="font-size:.8rem;color:#dc2626;background:#fef2f2;border:1px solid #fecaca;padding:3px 10px;border-radius:4px;cursor:pointer;">
+                               Remove
+                            </button>
+                        </div>
                     </div>
                 `;
 

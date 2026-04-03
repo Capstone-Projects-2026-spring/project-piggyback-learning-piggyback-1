@@ -222,6 +222,17 @@ def test_delete_child_nonexistent_returns_404():
     assert resp.status_code == 404
 
 
+# claim/unclaim flow without touching the database
+def test_claim_and_unclaim_video_api():
+    from unittest.mock import patch
+    with patch("main.add_video_assignment") as mock_add, \
+         patch("main.remove_video_assignment") as mock_remove:
+        mock_add("vid_api_claim", "exp_test", source="expert_claim")
+        mock_remove("vid_api_claim", "exp_test")
+        mock_add.assert_called_once_with("vid_api_claim", "exp_test", source="expert_claim")
+        mock_remove.assert_called_once_with("vid_api_claim", "exp_test")
+
+
 # scoped report filters by interaction mode
 def test_get_child_report_scoped_filters_by_mode():
     from app.services.report_service import get_child_report_scoped

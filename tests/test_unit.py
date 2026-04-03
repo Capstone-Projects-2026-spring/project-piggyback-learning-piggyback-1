@@ -207,6 +207,25 @@ def test_delete_child_nonexistent_returns_false():
     assert delete_child("999999") is False
 
 
+# Testing video claim / unclaim without hitting the database
+def test_claim_video_calls_add_assignment():
+    from unittest.mock import patch
+    with patch("app.services.expert_auth_service.add_video_assignment") as mock_add, \
+         patch("app.services.expert_auth_service.can_expert_access_video", return_value=True):
+        mock_add("vid_unit_claim", "testexpert1", source="expert_claim")
+        from app.services.expert_auth_service import can_expert_access_video
+        assert can_expert_access_video("testexpert1", "vid_unit_claim") is True
+        mock_add.assert_called_once_with("vid_unit_claim", "testexpert1", source="expert_claim")
+
+def test_unclaim_video_calls_remove_assignment():
+    from unittest.mock import patch
+    with patch("app.services.expert_auth_service.remove_video_assignment") as mock_remove, \
+         patch("app.services.expert_auth_service.can_expert_access_video", return_value=False):
+        mock_remove("vid_unit_claim", "testexpert1")
+        from app.services.expert_auth_service import can_expert_access_video
+        assert can_expert_access_video("testexpert1", "vid_unit_claim") is False
+        mock_remove.assert_called_once_with("vid_unit_claim", "testexpert1")
+
 # Testing hash_password and verify_password
 from app.services.expert_auth_service import hash_password, verify_password
 

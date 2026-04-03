@@ -7,6 +7,7 @@ import asyncio
 from datetime import datetime, timezone
 from app.services.sqlite_store import init_db, get_conn
 from app.services.expert_auth_service import (
+    add_video_assignment,
     authenticate_expert,
     can_expert_access_video,
     claim_video_for_expert,
@@ -16,6 +17,7 @@ from app.services.expert_auth_service import (
     get_expert,
     list_video_ids_for_expert,
     normalize_expert_id,
+    remove_video_assignment,
     verify_password,
 )
 from app.services.children_service import get_child, list_children
@@ -827,6 +829,31 @@ async def list_expert_videos(request: Request):
     return JSONResponse({"success": True, "videos": filtered})
 
 
+@app.get("/api/expert/videos/available")
+async def list_available_videos(request: Request):
+    """Return all processed videos with their title so parent can pick one to claim."""
+    try:
+        require_expert_session(request)
+    except HTTPException as exc:
+        return JSONResponse({"success": False, "message": exc.detail}, status_code=exc.status_code)
+
+    videos = []
+    if DOWNLOADS_DIR.exists():
+        for video_dir in sorted(DOWNLOADS_DIR.iterdir()):
+            if not video_dir.is_dir():
+                continue
+            meta_path = video_dir / "meta.json"
+            title = video_dir.name
+            if meta_path.exists():
+                try:
+                    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+                    title = meta.get("title") or title
+                except Exception:
+                    pass
+            videos.append({"id": video_dir.name, "title": title})
+    return JSONResponse({"success": True, "videos": videos})
+
+
 @app.post("/api/expert/videos/{video_id}/claim")
 async def claim_expert_video(request: Request, video_id: str):
     normalized_video_id = (video_id or "").strip()
@@ -839,19 +866,29 @@ async def claim_expert_video(request: Request, video_id: str):
     try:
         expert_identity = require_expert_session(request)
     except HTTPException as exc:
-        return JSONResponse(
-            {"success": False, "message": exc.detail}, status_code=exc.status_code
-        )
+        return JSONResponse({"success": False, "message": exc.detail}, status_code=exc.status_code)
 
     try:
-        claim_video_for_expert(expert_identity["expert_id"], normalized_video_id)
-    except RuntimeError as exc:
-        if str(exc) == "assignment_not_found":
-            return JSONResponse(
-                {"success": False, "message": "Video is not assigned to this expert"},
-                status_code=403,
-            )
+        add_video_assignment(normalized_video_id, expert_identity["expert_id"], source="expert_claim")
+    except Exception as exc:
         return JSONResponse({"success": False, "message": str(exc)}, status_code=400)
+
+    return JSONResponse({"success": True})
+
+
+@app.delete("/api/expert/videos/{video_id}/unclaim")
+async def unclaim_expert_video(request: Request, video_id: str):
+    normalized_video_id = (video_id or "").strip()
+    if not normalized_video_id:
+        return JSONResponse({"success": False, "message": "video_id is required"}, status_code=400)
+
+    try:
+        expert_identity = require_expert_session(request)
+    except HTTPException as exc:
+        return JSONResponse({"success": False, "message": exc.detail}, status_code=exc.status_code)
+
+    try:
+        remove_video_assignment(normalized_video_id, expert_identity["expert_id"])
     except Exception as exc:
         return JSONResponse({"success": False, "message": str(exc)}, status_code=400)
 

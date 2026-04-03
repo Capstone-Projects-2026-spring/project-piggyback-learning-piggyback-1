@@ -10,7 +10,7 @@ ALLOWED_CHILD_ICON_KEYS = (
     "pig", "fox", "owl", "cat", "bear", "rabbit", "lion", "penguin",
     "simba", "nemo", "walle", "moana", "elsa", "spiderman", "mickey",
     "pooh", "chase", "spongebob", "turtle", "bluey", "hellokitty",
-    "mlp", "peppa", "mario", "dino",
+    "mlp", "peppa", "mario", "dino", "empoleon",
 )
 
 MAX_CHILD_ID_RETRIES = 60
