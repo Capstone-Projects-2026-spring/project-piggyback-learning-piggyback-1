@@ -95,6 +95,11 @@
                 createExpertForm.addEventListener('submit', handleCreateExpert);
             }
 
+            const refreshParentsBtn = document.getElementById('refresh-parents-btn');
+            if (refreshParentsBtn) {
+                refreshParentsBtn.addEventListener('click', () => loadExpertDashboard());
+            }
+
             const refreshChildrenBtn = document.getElementById('refresh-children-btn');
             if (refreshChildrenBtn) {
                 refreshChildrenBtn.addEventListener('click', () => loadChildrenDashboard(true));
@@ -487,17 +492,23 @@ function renderExpertTable() {
     if (!tbody) return;
 
     const headingEl = document.getElementById('active-experts-heading');
-    if (headingEl) headingEl.textContent = `Active Experts (${adminExperts.length})`;
+    if (headingEl) headingEl.textContent = `Active Parents (${adminExperts.length})`;
 
     if (!adminExperts.length) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#9ca3af;padding:24px;">No experts yet.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#9ca3af;padding:24px;">No parents yet.</td></tr>';
         return;
     }
 
-    tbody.innerHTML = adminExperts.map((expert) => `
-        <tr data-expert-id="${expert.expert_id}" data-active="${expert.is_active ? '1' : '0'}">
-            <td class="admin-id-cell">${expert.expert_id}</td>
-            <td><input type="text" class="admin-inline-input" data-role="name" value="${expert.display_name || ''}" /></td>
+    tbody.innerHTML = adminExperts.map((expert) => {
+        const videos = Array.isArray(expert.claimed_videos) ? expert.claimed_videos : [];
+        const videoCountLabel = `${videos.length} video(s)`;
+        const videosHtml = videos.length
+            ? `<ul class="parent-inline-video-list">${videos.map((videoTitle) => `<li>${escapeHtml(videoTitle)}</li>`).join('')}</ul>`
+            : '<div class="parent-inline-video-none">No claimed videos.</div>';
+        return `
+        <tr class="parent-main-row" data-expert-id="${expert.expert_id}" data-active="${expert.is_active ? '1' : '0'}">
+            <td class="admin-id-cell">${escapeHtml(expert.expert_id)}</td>
+            <td><input type="text" class="admin-inline-input" data-role="name" value="${escapeHtml(expert.display_name || '')}" /></td>
             <td><span class="admin-status-badge ${expert.is_active ? 'status-active' : 'status-inactive'}">${expert.is_active ? 'active' : 'inactive'}</span></td>
             <td><input type="password" class="admin-inline-input" data-role="password" placeholder="New password" /></td>
             <td class="admin-actions-cell">
@@ -506,7 +517,20 @@ function renderExpertTable() {
                 <button type="button" class="admin-action-btn admin-action-remove" data-action="remove-expert">🗑 Remove</button>
             </td>
         </tr>
-    `).join('');
+        <tr class="parent-videos-inline-row">
+            <td colspan="5">
+                <div class="parent-inline-video-bubble">
+                    <div class="parent-inline-video-body">
+                        <div class="parent-inline-video-header">
+                            <strong>Claimed videos</strong>
+                            <span class="parent-inline-video-count">${videoCountLabel}</span>
+                        </div>
+                        ${videosHtml}
+                    </div>
+                </div>
+            </td>
+        </tr>`;
+    }).join('');
 
     tbody.querySelectorAll('[data-action="save-expert"]').forEach((btn) => {
         btn.addEventListener('click', async (e) => {
@@ -549,7 +573,7 @@ async function handleCreateExpert(event) {
     }
 
     event.target.reset();
-    setAdminPanelStatus('expert-admin-status', 'Expert created.', 'success');
+    setAdminPanelStatus('expert-admin-status', 'Parent created.', 'success');
     await loadExpertDashboard();
 }
 
@@ -572,7 +596,7 @@ async function handleCreateExpert(event) {
             throw new Error(data.detail || data.message || 'Failed to update expert');
         }
 
-        setAdminPanelStatus('expert-admin-status', 'Expert updated.', 'success');
+        setAdminPanelStatus('expert-admin-status', 'Parent updated.', 'success');
         await loadExpertDashboard();
     }
 
@@ -596,17 +620,17 @@ async function handleCreateExpert(event) {
             throw new Error(data.detail || data.message || 'Failed to toggle expert');
         }
 
-        setAdminPanelStatus('expert-admin-status', isActive ? 'Expert deactivated.' : 'Expert activated.', 'success');
+        setAdminPanelStatus('expert-admin-status', isActive ? 'Parent deactivated.' : 'Parent activated.', 'success');
         await loadExpertDashboard();
     }
     async function handleRemoveExpert(row) {
         const expertId = row.dataset.expertId;
-        if (!confirm(`Permanently remove expert "${expertId}"? This cannot be undone.`)) return;
+        if (!confirm(`Permanently remove parent "${expertId}"? This cannot be undone.`)) return;
         try {
             const resp = await fetch(`/api/admin/experts/${encodeURIComponent(expertId)}`, { method: 'DELETE' });
             const data = await resp.json().catch(() => ({}));
             if (!resp.ok || !data.success) {
-                throw new Error(data.detail || data.message || 'Failed to remove expert.');
+                throw new Error(data.detail || data.message || 'Failed to remove parent.');
             }
 
             // Reload from backend so experts table, assignment table, and child expert dropdowns stay in sync.
@@ -614,9 +638,9 @@ async function handleCreateExpert(event) {
             if (childrenDashboardLoaded) {
                 await loadChildrenDashboard(false);
             }
-            setAdminPanelStatus('expert-admin-status', `Expert "${expertId}" deleted.`, 'success');
+            setAdminPanelStatus('expert-admin-status', `Parent "${expertId}" deleted.`, 'success');
         } catch (error) {
-            setAdminPanelStatus('expert-admin-status', error.message || 'Failed to remove expert.', 'error');
+            setAdminPanelStatus('expert-admin-status', error.message || 'Failed to remove parent.', 'error');
         }
     }
     async function handleAddAssignment(row) {
