@@ -110,6 +110,38 @@
                 includeInactive.addEventListener('change', () => loadChildrenDashboard(false));
             }
 
+            const createChildForm = document.getElementById('create-child-form');
+            if (createChildForm) {
+                createChildForm.addEventListener('submit', handleCreateChild);
+            }
+
+        }
+
+        async function handleCreateChild(event) {
+            event.preventDefault();
+            try {
+                const expert_id = (document.getElementById('child-expert-select')?.value || '').trim();
+                const first_name = (document.getElementById('child-first-name')?.value || '').trim();
+                const last_name = (document.getElementById('child-last-name')?.value || '').trim();
+                const icon_key = (document.getElementById('child-icon-key')?.value || '').trim().toLowerCase();
+                const interaction_mode = (document.getElementById('child-interaction-mode')?.value || 'flexible').trim().toLowerCase();
+        
+                const res = await fetch('/api/admin/children', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ expert_id, first_name, last_name, icon_key, interaction_mode }),
+                });
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    throw new Error(data.detail || data.message || 'Failed to create child');
+                }
+        
+                event.target.reset();
+                setAdminPanelStatus('child-create-status', `Created child ${data.child.child_id} with ${interaction_mode} mode.`, 'success');
+                await loadChildrenDashboard(false);
+            } catch (error) {
+                setAdminPanelStatus('child-create-status', error.message || 'Failed to create child', 'error');
+            }
         }
         
         function updateStepDisplay() {
@@ -801,12 +833,17 @@ function renderChildrenTable() {
                 ? escapeHtml(child.expert_id)
                 : '<span style="color:#9ca3af;">Unassigned</span>';
 
+        const modeLabels = { flexible: 'Flexible', strict: 'Strict', passive: 'Passive' };
+        const modeColors = { flexible: '#2196f3', strict: '#f44336', passive: '#9c27b0' };
+        const mode = child.interaction_mode || 'flexible';
+        
         return `
         <tr data-child-id="${child.child_id}" data-active="${child.is_active ? '1' : '0'}">
             <td><span class="admin-child-id">${child.child_id}</span></td>
             <td>${escapeHtml(child.first_name || '')}</td>
             <td>${escapeHtml(child.last_name || '')}</td>
             <td>${parentLabel}</td>
+            <td><span style="background:${modeColors[mode]};color:white;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600;">${modeLabels[mode] || mode}</span></td>
             <td><span class="admin-status-badge ${child.is_active ? 'status-active' : 'status-inactive'}">${child.is_active ? 'active' : 'inactive'}</span></td>
             <td class="admin-actions-cell">
                 <button type="button" class="admin-action-btn admin-action-danger" data-action="toggle-child">

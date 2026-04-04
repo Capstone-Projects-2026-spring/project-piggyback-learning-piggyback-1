@@ -350,6 +350,7 @@
           <span aria-hidden="true">&#128269;</span>
         </button>
       </div>
+      <!--
       <button id="parent-report-btn" type="button" onclick="openParentReport()" style="
         background: linear-gradient(135deg, #6a1b9a, #e91e8c);
         color: white;
@@ -367,6 +368,7 @@
       ">
         📊 Parent Report
       </button>
+    -->
     </header>
 
     <!-- Parent Report Slide-in Panel -->
@@ -437,6 +439,19 @@
           </div>
           <div id="question-overlay" aria-hidden="true"></div>
           <div id="blocker" aria-hidden="true"></div>
+          <img id="companion-watcher" src="" alt="Companion watching" style="
+              display: none;
+              position: absolute;
+              bottom: 0;
+              right: 0;
+              width: 18%;
+              min-width: 80px;
+              max-width: 180px;
+              height: auto;
+              object-fit: contain;
+              z-index: 5;
+              pointer-events: none;
+          ">
           <div id="question-box" role="dialog" aria-live="assertive" aria-labelledby="question" aria-describedby="timestamp feedback">
             <div class="question-character">
               <video id="companion-video" src="/assets/Pig_updated.webm" autoplay loop muted playsinline></video>
@@ -1162,12 +1177,24 @@ function showCompanions() {
 }
 
 const COMPANION_EMOJI = { pig: '🐷', rabbit: '🐰', alligator: '🐊' };
+const COMPANION_WATCH_IMGS = {
+    pig:       '/assets/companions_watch/piggy_watch.png',
+    rabbit:    '/assets/companions_watch/bunny_watch.png',
+    alligator: '/assets/companions_watch/aligator_watch.png',
+};
 
 function showLibrary() {
     document.getElementById('screen-companions').style.display = 'none';
     document.getElementById('main-flow').style.display = '';
 
     const { selected_child, companion } = loadState();
+
+    // Show companion watcher on right side of video
+    const watcherEl = document.getElementById('companion-watcher');
+    if (watcherEl && COMPANION_WATCH_IMGS[companion]) {
+        watcherEl.src = COMPANION_WATCH_IMGS[companion];
+        watcherEl.style.display = 'block';
+    }
 
     // Update header: companion emoji + child's first name
     const emoji = COMPANION_EMOJI[companion] || '🐷';
