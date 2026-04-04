@@ -565,7 +565,7 @@
 
                 <!-- Filters row -->
                 <div style="background:white;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.08);padding:24px;margin-bottom:20px;">
-                    <h3 style="margin:0 0 18px;color:#2c3e50;">Filter Report</h3>
+                    <h3 style="margin:0 0 18px;color:#2c3e50;">Parental Report</h3>
                     <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;">
                         <div style="display:flex;flex-direction:column;gap:6px;min-width:160px;">
                             <label style="font-size:13px;font-weight:600;color:#495057;">Child</label>
@@ -573,6 +573,7 @@
                                 <option value="">— Select Child —</option>
                             </select>
                         </div>
+                        <!---
                         <div style="display:flex;flex-direction:column;gap:6px;min-width:140px;">
                             <label style="font-size:13px;font-weight:600;color:#495057;">Mode</label>
                             <select id="c3-mode-select" style="padding:10px 14px;border:2px solid #e9ecef;border-radius:10px;font-size:14px;">
@@ -582,6 +583,7 @@
                                 <option value="passive">Passive</option>
                             </select>
                         </div>
+                    -->
                         <div>
                             <button id="c3-load-btn" onclick="card3LoadReport()" style="background:#6a1b9a;color:white;border:none;border-radius:10px;padding:12px 24px;font-size:15px;font-weight:600;cursor:pointer;" disabled>Load Report</button>
                         </div>
@@ -632,6 +634,29 @@ const ICON_EMOJI = {
     hellokitty:'🐱',mlp:'🧁',peppa:'🌟',mario:'🎮',dino:'🦕'
 };
 
+const MODE_META = {
+    flexible: { label: 'Flexible', color: '#2196f3' },
+    strict:   { label: 'Strict',   color: '#f44336' },
+    passive:  { label: 'Passive',  color: '#9c27b0' }
+};
+
+function renderModeBadge(mode) {
+    const meta = MODE_META[mode] || { label: mode, color: '#2196f3' };
+
+    return `
+        <span style="
+            background:${meta.color};
+            color:white;
+            padding:3px 10px;
+            border-radius:12px;
+            font-size:12px;
+            font-weight:600;
+        ">
+            ${meta.label}
+        </span>
+    `;
+}
+
 async function loadCard2Children() {
     const expertId = document.getElementById('card2-expert-id').value;
     const container = document.getElementById('card2-children-list');
@@ -663,11 +688,7 @@ async function loadCard2Children() {
                 <td style="padding:10px;font-size:14px;font-weight:600;">${c.first_name} ${c.last_name}</td>
                 <td style="padding:10px;font-size:12px;color:#6c757d;font-family:monospace;">${c.child_id}</td>
                 <td style="padding:10px;">
-                    <select data-field="interaction_mode" style="padding:6px;border:1px solid #dee2e6;border-radius:8px;font-size:14px;">
-                        <option value="flexible" ${c.interaction_mode==='flexible'?'selected':''}>Flexible</option>
-                        <option value="strict" ${c.interaction_mode==='strict'?'selected':''}>Strict</option>
-                        <option value="passive" ${c.interaction_mode==='passive'?'selected':''}>Passive</option>
-                    </select>
+                    ${renderModeBadge(c.interaction_mode)}
                 </td>
                 <td style="padding:10px;display:flex;gap:8px;align-items:center;">
                     <button onclick="card2SaveChild('${c.child_id}')" style="background:#6a1b9a;color:white;border:none;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;">Save</button>
@@ -685,12 +706,11 @@ async function card2SaveChild(childId) {
     const row = document.getElementById(`child-row-${childId}`);
     const status = document.getElementById(`child-status-${childId}`);
     const icon_key = row.querySelector('[data-field="icon_key"]').value;
-    const interaction_mode = row.querySelector('[data-field="interaction_mode"]').value;
     try {
         const res = await fetch(`/api/admin/children/${encodeURIComponent(childId)}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ icon_key, interaction_mode })
+            body: JSON.stringify({ icon_key })
         });
         const data = await res.json();
         status.style.display = 'inline';
@@ -776,17 +796,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function card3LoadReport() {
     const childId = document.getElementById('c3-child-select').value;
-    const mode = document.getElementById('c3-mode-select').value;
+    const mode = 'all';
     const area = document.getElementById('c3-report-area');
     if (!childId) return;
 
     area.innerHTML = '<div style="text-align:center;color:#6c757d;padding:30px;">Loading...</div>';
     try {
-        const url = `/api/expert/report?child_id=${encodeURIComponent(childId)}&mode=${mode}`;
+        const url = `/api/expert/report?child_id=${encodeURIComponent(childId)}`;
         const res = await fetch(url);
         const data = await res.json();
         if (!data.success) throw new Error(data.message || 'Failed to load');
-        area.innerHTML = card3RenderReport(data, mode);
+        area.innerHTML = card3RenderReport(data, 'all');
     } catch(e) {
         area.innerHTML = `<div style="color:#dc3545;padding:20px;text-align:center;">Could not load report: ${e.message}</div>`;
     }
