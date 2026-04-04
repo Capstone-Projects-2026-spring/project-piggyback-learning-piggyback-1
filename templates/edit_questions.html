@@ -181,6 +181,7 @@
 const VIDEO_ID = "{{ video_id }}";
 let segmentsData = [];
 let segmentGenreIndex = {};  // tracks current genre index per segment
+let currentSegmentIndex = 0; // tracks which segment is currently shown
 
 const PERSONAS = ['bunny', 'alligator', 'pig'];
 const PERSONA_EMOJI  = { bunny: '🐰', alligator: '🐊', pig: '🐷' };
@@ -240,6 +241,11 @@ async function loadQuestions() {
 
 // ── Render all segments ────────────────────────────────────────────────────────
 function renderAll() {
+    currentSegmentIndex = 0;
+    renderCurrentSegment();
+}
+
+function renderCurrentSegment() {
     const container = document.getElementById('mainContainer');
     container.innerHTML = '';
 
@@ -248,61 +254,85 @@ function renderAll() {
         return;
     }
 
-    segmentsData.forEach((seg, si) => {
-        const block = document.createElement('div');
-        block.className = 'segment-block';
-        block.id = `seg-block-${si}`;
+    const si = currentSegmentIndex;
+    const seg = segmentsData[si];
 
-        // Blue collapsible header
-        const header = document.createElement('div');
-        header.className = 'segment-header-bar';
-        header.innerHTML = `
-            <div>
-                <div class="seg-title">Segment ${si + 1}</div>
-                <div class="seg-time">${formatTime(seg.start)} - ${formatTime(seg.end)}</div>
+    // Segment nav bar
+    const segNav = document.createElement('div');
+    segNav.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:16px;';
+    segNav.innerHTML = `
+        <button onclick="goToSegment(${si - 1})"
+            ${si === 0 ? 'disabled' : ''}
+            style="padding:6px 16px;border:1px solid #d1d5db;border-radius:7px;
+                   background:#fff;cursor:pointer;font-size:13px;
+                   opacity:${si === 0 ? '0.4' : '1'};">
+            ← Prev Segment
+        </button>
+        <span style="font-size:14px;font-weight:600;color:#374151;">
+            Segment ${si + 1} of ${segmentsData.length}
+        </span>
+        <button onclick="goToSegment(${si + 1})"
+            ${si === segmentsData.length - 1 ? 'disabled' : ''}
+            style="padding:6px 16px;border:1px solid #d1d5db;border-radius:7px;
+                   background:#fff;cursor:pointer;font-size:13px;
+                   opacity:${si === segmentsData.length - 1 ? '0.4' : '1'};">
+            Next Segment →
+        </button>
+    `;
+    container.appendChild(segNav);
+
+    const block = document.createElement('div');
+    block.className = 'segment-block';
+    block.id = `seg-block-${si}`;
+
+    const header = document.createElement('div');
+    header.className = 'segment-header-bar';
+    header.innerHTML = `
+        <div>
+            <div class="seg-title">Segment ${si + 1}</div>
+            <div class="seg-time">${formatTime(seg.start)} - ${formatTime(seg.end)}</div>
+        </div>
+    `;
+    block.appendChild(header);
+
+    const grid = document.createElement('div');
+    grid.className = 'persona-grid';
+    grid.id = `persona-grid-${si}`;
+
+    PERSONAS.forEach(persona => {
+        const col = document.createElement('div');
+        col.className = `persona-col ${persona}`;
+        col.innerHTML = `
+            <div class="persona-col-title ${persona}">
+                ${PERSONA_EMOJI[persona]} ${PERSONA_LABELS[persona]} Questions
             </div>
-            <button class="seg-close" onclick="toggleSegment(${si}, event)" title="Collapse">✕</button>
+            <div class="persona-cards-wrap" id="persona-cards-${si}-${persona}">
+                <div class="persona-placeholder">No questions yet.</div>
+            </div>
         `;
-        header.addEventListener('click', (e) => {
-            if (!e.target.classList.contains('seg-close')) toggleSegment(si, e);
-        });
-        block.appendChild(header);
-
-        // 3-column grid
-        const grid = document.createElement('div');
-        grid.className = 'persona-grid';
-        grid.id = `persona-grid-${si}`;
-
-        PERSONAS.forEach(persona => {
-            const col = document.createElement('div');
-            col.className = `persona-col ${persona}`;
-            col.innerHTML = `
-                <div class="persona-col-title ${persona}">
-                    ${PERSONA_EMOJI[persona]} ${PERSONA_LABELS[persona]} Questions
-                </div>
-                <div class="persona-cards-wrap" id="persona-cards-${si}-${persona}">
-                    <div class="persona-placeholder">No questions yet.</div>
-                </div>
-            `;
-            grid.appendChild(col);
-        });
-
-        // Generate button — shown when no variants exist yet
-        const hasVariants = seg.persona_variants && Object.keys(seg.persona_variants).length > 0;
-        if (!hasVariants) {
-            const genBar = document.createElement('div');
-            genBar.style.cssText = 'text-align:center;padding:16px 0 4px';
-            genBar.innerHTML = `<button class="btn-save" id="gen-btn-${si}" onclick="generateForSegment(${si})">✨ Generate Character Questions</button>`;
-            block.appendChild(genBar);
-        }
-
-        block.appendChild(grid);
-        container.appendChild(block);
-
-        if (hasVariants) {
-            _renderPersonaCards(si, seg.persona_variants);
-        }
+        grid.appendChild(col);
     });
+
+    const hasVariants = seg.persona_variants && Object.keys(seg.persona_variants).length > 0;
+    if (!hasVariants) {
+        const genBar = document.createElement('div');
+        genBar.style.cssText = 'text-align:center;padding:16px 0 4px';
+        genBar.innerHTML = `<button class="btn-save" id="gen-btn-${si}" onclick="generateForSegment(${si})">✨ Generate Character Questions</button>`;
+        block.appendChild(genBar);
+    }
+
+    block.appendChild(grid);
+    container.appendChild(block);
+
+    if (hasVariants) {
+        _renderPersonaCards(si, seg.persona_variants);
+    }
+}
+
+function goToSegment(si) {
+    if (si < 0 || si >= segmentsData.length) return;
+    currentSegmentIndex = si;
+    renderCurrentSegment();
 }
 
 // ── Generate persona variants for a segment (edit page) ───────────────────────
