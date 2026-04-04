@@ -180,6 +180,7 @@
 <script>
 const VIDEO_ID = "{{ video_id }}";
 let segmentsData = [];
+let segmentGenreIndex = {};  // tracks current genre index per segment
 
 const PERSONAS = ['bunny', 'alligator', 'pig'];
 const PERSONA_EMOJI  = { bunny: '🐰', alligator: '🐊', pig: '🐷' };
@@ -364,63 +365,136 @@ function toggleSegment(si, e) {
     if (grid) grid.style.display = grid.style.display === 'none' ? 'grid' : 'none';
 }
 
-// ── Render persona cards for a segment ────────────────────────────────────────
+// ── Genre order ───────────────────────────────────────────────────────────────
+const GENRE_ORDER = ['character','setting','feeling','action','causal','outcome','prediction'];
+
+// ── Render persona cards for a segment (paginated by genre) ───────────────────
 function _renderPersonaCards(si, variants) {
     const seg = segmentsData[si];
 
-    PERSONAS.forEach(persona => {
-        const wrap = document.getElementById(`persona-cards-${si}-${persona}`);
-        if (!wrap) return;
-        wrap.innerHTML = '';
+    // Collect all genres that exist across any persona, sorted by preferred order
+    const allGenreSet = new Set();
+    PERSONAS.forEach(p => Object.keys(variants[p] || {}).forEach(g => allGenreSet.add(g)));
+    const genres = GENRE_ORDER.filter(g => allGenreSet.has(g));
+    if (!genres.length) return;
 
-        const personaData = variants[persona] || {};
+    // Init index for this segment
+    if (segmentGenreIndex[si] === undefined) segmentGenreIndex[si] = 0;
+    // Clamp in case genres changed
+    segmentGenreIndex[si] = Math.max(0, Math.min(segmentGenreIndex[si], genres.length - 1));
 
-        const allEntries = Object.entries(personaData);
-        if (!allEntries.length) {
-            wrap.innerHTML = '<div class="persona-placeholder">No question generated.</div>';
-            return;
-        }
+    // ── Inject/update the nav bar above the grid ──────────────────────────────
+    const grid = document.getElementById(`persona-grid-${si}`);
+    let navBar = document.getElementById(`genre-nav-${si}`);
+    if (!navBar) {
+        navBar = document.createElement('div');
+        navBar.id = `genre-nav-${si}`;
+        navBar.style.cssText = `
+            display:flex; align-items:center; gap:10px;
+            flex-wrap:wrap; padding:12px 0 4px;
+        `;
+        grid.parentNode.insertBefore(navBar, grid);
+    }
 
-        allEntries.forEach(([type, data]) => {
-            if (!data || typeof data !== 'object') return;
+    function renderNav() {
+        const idx = segmentGenreIndex[si];
+        navBar.innerHTML = `
+            <span style="font-size:13px;font-weight:600;color:#374151;min-width:82px;">
+                Question ${idx + 1}
+            </span>
+            <div style="display:flex;gap:7px;align-items:center;">
+                ${genres.map((g, i) => `
+                    <button onclick="jumpGenre(${si},${i})" title="${g}"
+                        style="width:12px;height:12px;border-radius:50%;border:2px solid ${i===idx?'#2563eb':'#d1d5db'};
+                               cursor:pointer;padding:0;
+                               background:${i===idx?'#2563eb':'#e5e7eb'};
+                               transform:${i===idx?'scale(1.3)':'scale(1)'};
+                               transition:all 0.15s;">
+                    </button>`).join('')}
+            </div>
+            <span style="font-size:12px;font-weight:600;background:#ede9fe;color:#6d28d9;
+                         padding:3px 11px;border-radius:99px;">
+                ${genres[idx]}
+            </span>
+            <div style="margin-left:auto;display:flex;gap:6px;align-items:center;">
+                <button onclick="jumpGenre(${si},${Math.max(0,idx-1)})"
+                    ${idx===0?'disabled':''}
+                    style="padding:5px 14px;border:1px solid #d1d5db;border-radius:7px;
+                           background:#fff;cursor:pointer;font-size:13px;
+                           opacity:${idx===0?'0.4':'1'};">
+                    ← Prev
+                </button>
+                <button onclick="jumpGenre(${si},${Math.min(genres.length-1,idx+1)})"
+                    ${idx===genres.length-1?'disabled':''}
+                    style="padding:5px 14px;border:1px solid #d1d5db;border-radius:7px;
+                           background:#fff;cursor:pointer;font-size:13px;
+                           opacity:${idx===genres.length-1?'0.4':'1'};">
+                    Next →
+                </button>
+                <span style="font-size:12px;color:#9ca3af;">${idx+1} of ${genres.length}</span>
+            </div>
+        `;
+    }
 
-            // Each persona tracks its own independent winner via persona_winners[persona]
-            const winners  = seg.persona_winners || {};
-            const isWinner = winners[persona] === type;
+    function renderCards() {
+        const idx = segmentGenreIndex[si];
+        const currentGenre = genres[idx];
+        const winners = seg.persona_winners || {};
 
+        PERSONAS.forEach(persona => {
+            const wrap = document.getElementById(`persona-cards-${si}-${persona}`);
+            if (!wrap) return;
+            wrap.innerHTML = '';
+
+            const data = (variants[persona] || {})[currentGenre];
+            if (!data || typeof data !== 'object') {
+                wrap.innerHTML = '<div class="persona-placeholder">No question generated.</div>';
+                return;
+            }
+
+            const isWinner = winners[persona] === currentGenre;
             const card = document.createElement('div');
             card.className = 'persona-card' + (isWinner ? ' winner' : '');
-            card.id = `pcard-${si}-${persona}-${type}`;
+            card.id = `pcard-${si}-${persona}-${currentGenre}`;
 
             card.innerHTML = `
                 <div class="persona-card-header">
-                    <span class="type-badge">${type.replace(/_/g,' ')}</span>
+                    <span class="type-badge">${currentGenre.replace(/_/g,' ')}</span>
                     ${isWinner ? '<span class="winner-badge">⭐ Kids will see this one</span>' : ''}
                 </div>
                 <div class="persona-field">
                     <label>Question</label>
-                    <textarea id="pq_${si}_${persona}_${type}"
-                        onchange="syncPersonaData(${si},'${persona}','${type}','q',this.value)">${escHtml(data.q || '')}</textarea>
+                    <textarea id="pq_${si}_${persona}_${currentGenre}"
+                        onchange="syncPersonaData(${si},'${persona}','${currentGenre}','q',this.value)">${escHtml(data.q || '')}</textarea>
                 </div>
                 <div class="persona-field">
                     <label>Answer</label>
-                    <textarea id="pa_${si}_${persona}_${type}" rows="2"
-                        onchange="syncPersonaData(${si},'${persona}','${type}','a',this.value)">${escHtml(data.a || '')}</textarea>
+                    <textarea id="pa_${si}_${persona}_${currentGenre}" rows="2"
+                        onchange="syncPersonaData(${si},'${persona}','${currentGenre}','a',this.value)">${escHtml(data.a || '')}</textarea>
                 </div>
                 <div class="persona-card-actions">
-                    <button class="regen-link" id="pregen_${si}_${persona}_${type}"
-                        onclick="regenPersonaCard(${si},'${persona}','${type}')">
+                    <button class="regen-link" id="pregen_${si}_${persona}_${currentGenre}"
+                        onclick="regenPersonaCard(${si},'${persona}','${currentGenre}')">
                         🔄 Regenerate
                     </button>
                     ${isWinner
                         ? `<button class="unset-btn" onclick="unsetPersonaWinner(${si},'${persona}')">Unset</button>`
-                        : `<button class="set-winner-btn" onclick="setPersonaWinner(${si},'${persona}','${type}')">Set as kids question</button>`
+                        : `<button class="set-winner-btn" onclick="setPersonaWinner(${si},'${persona}','${currentGenre}')">Set as kids question</button>`
                     }
                 </div>
             `;
             wrap.appendChild(card);
         });
-    });
+    }
+
+    renderNav();
+    renderCards();
+}
+
+// Called by the prev and next buttons
+function jumpGenre(si, newIdx) {
+    segmentGenreIndex[si] = newIdx;
+    _renderPersonaCards(si, segmentsData[si].persona_variants);
 }
 
 // ── Per-persona independent winner selection ───────────────────────────────────
