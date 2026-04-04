@@ -63,11 +63,10 @@
         /* ── 3-column persona grid ── */
         .persona-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: 1fr;
             gap: 16px;
             margin-top: 14px;
         }
-        @media (max-width: 900px) { .persona-grid { grid-template-columns: 1fr; } }
 
         .persona-col { border-radius: 14px; padding: 18px 16px; }
         .persona-col.bunny     { background: #fdf2f8; border: 2px solid #ec4899; }
@@ -182,8 +181,9 @@ const VIDEO_ID = "{{ video_id }}";
 let segmentsData = [];
 let segmentGenreIndex = {};  // tracks current genre index per segment
 let currentSegmentIndex = 0; // tracks which segment is currently shown
+let currentPersonaIndex = 0; // tracks which persona (bunny/alligator/pig) is shown
 
-const PERSONAS = ['bunny', 'alligator', 'pig'];
+const PERSONAS = ['bunny', 'pig', 'alligator'];
 const PERSONA_EMOJI  = { bunny: '🐰', alligator: '🐊', pig: '🐷' };
 const PERSONA_LABELS = { bunny: 'Bunny', alligator: 'Alligator', pig: 'Pig' };
 
@@ -295,23 +295,51 @@ function renderCurrentSegment() {
     `;
     block.appendChild(header);
 
+    // Layout: animal selector on top, persona card below
+    const layout = document.createElement('div');
+    layout.style.cssText = 'display:flex;flex-direction:column;gap:16px;margin-top:14px;';
+
+    // Animal selector row (horizontal, above the card)
+    const animalSelector = document.createElement('div');
+    animalSelector.style.cssText = 'display:flex;gap:10px;align-items:center;';
+    PERSONAS.forEach((p, pi) => {
+        const isActive = pi === currentPersonaIndex;
+        const btn = document.createElement('button');
+        btn.onclick = () => { currentPersonaIndex = pi; renderCurrentSegment(); };
+        btn.title = PERSONA_LABELS[p];
+        btn.style.cssText = `
+            width:52px;height:52px;border-radius:50%;
+            font-size:24px;cursor:pointer;border:3px solid;
+            background:${isActive ? (p === 'bunny' ? '#fdf2f8' : p === 'pig' ? '#faf5ff' : '#f0fdf4') : '#fff'};
+            border-color:${isActive ? (p === 'bunny' ? '#ec4899' : p === 'pig' ? '#a855f7' : '#22c55e') : '#e5e7eb'};
+            transform:${isActive ? 'scale(1.15)' : 'scale(1)'};
+            transition:all 0.15s;
+            box-shadow:${isActive ? '0 2px 8px rgba(0,0,0,0.15)' : 'none'};
+        `;
+        btn.textContent = PERSONA_EMOJI[p];
+        animalSelector.appendChild(btn);
+    });
+
+    // 3-column grid
     const grid = document.createElement('div');
     grid.className = 'persona-grid';
     grid.id = `persona-grid-${si}`;
 
-    PERSONAS.forEach(persona => {
-        const col = document.createElement('div');
-        col.className = `persona-col ${persona}`;
-        col.innerHTML = `
-            <div class="persona-col-title ${persona}">
-                ${PERSONA_EMOJI[persona]} ${PERSONA_LABELS[persona]} Questions
-            </div>
-            <div class="persona-cards-wrap" id="persona-cards-${si}-${persona}">
-                <div class="persona-placeholder">No questions yet.</div>
-            </div>
-        `;
-        grid.appendChild(col);
-    });
+    const persona = PERSONAS[currentPersonaIndex];
+    const col = document.createElement('div');
+    col.className = `persona-col ${persona}`;
+    col.innerHTML = `
+        <div class="persona-col-title ${persona}">
+            ${PERSONA_EMOJI[persona]} ${PERSONA_LABELS[persona]} Questions
+        </div>
+        <div class="persona-cards-wrap" id="persona-cards-${si}-${persona}">
+            <div class="persona-placeholder">No questions yet.</div>
+        </div>
+    `;
+    grid.appendChild(col);
+
+    layout.appendChild(animalSelector);
+    layout.appendChild(grid);
 
     const hasVariants = seg.persona_variants && Object.keys(seg.persona_variants).length > 0;
     if (!hasVariants) {
@@ -321,7 +349,7 @@ function renderCurrentSegment() {
         block.appendChild(genBar);
     }
 
-    block.appendChild(grid);
+    block.appendChild(layout);
     container.appendChild(block);
 
     if (hasVariants) {
@@ -471,7 +499,8 @@ function _renderPersonaCards(si, variants) {
         const currentGenre = genres[idx];
         const winners = seg.persona_winners || {};
 
-        PERSONAS.forEach(persona => {
+        const activePersonas = [PERSONAS[currentPersonaIndex]];
+        activePersonas.forEach(persona => {
             const wrap = document.getElementById(`persona-cards-${si}-${persona}`);
             if (!wrap) return;
             wrap.innerHTML = '';
