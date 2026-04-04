@@ -343,6 +343,18 @@
           <span>Back to Library</span>
         </button>
         <span id="library-title" style="font-weight:600; font-size:16px; color:#2c3e50;"></span>
+        <button id="switch-companion-btn" type="button" onclick="switchCompanion()" style="
+            background: linear-gradient(135deg, #ffecd2, #fcb69f);
+            border: none;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #6a1b9a;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+            margin-left: 10px;
+        ">🔄 Switch Friend</button>
       </div>
       <div class="kids-search" role="search">
         <input id="kids-search" type="search" placeholder="Search Piggyback Kids" aria-label="Search for a video">
@@ -529,7 +541,7 @@
     </div>
   </main>
 
-<script src="/assets/js/children.js?v=4" defer></script>
+<script src="/assets/js/children.js?v=5" defer></script>
 
 <!-- Quiz Scoring System -->
 <script>
@@ -1317,20 +1329,31 @@ function showLibrary() {
     // Set the interaction mode on the body to enable CSS/JS logic
     document.body.dataset.interactionMode = selected_child.interaction_mode || 'flexible';
 
-    // Back button stops any playing video then returns to companion screen
+    // Back button stops any playing video then returns to video grid
     document.getElementById('back-button').onclick = () => {
         if (document.body.dataset.interactionMode === 'passive') {
             if (typeof savePassiveWatchSession === 'function') {
                 savePassiveWatchSession();
+            }
         }
-    }
-    if (window.__stopVideo) window.__stopVideo();
-    document.getElementById('main-flow').style.display = 'none';
-    showCompanions();
+        if (window.__stopVideo) window.__stopVideo();
+        document.getElementById('player-container').style.display = 'none';
+        document.getElementById('video-grid').style.display = 'grid';
+        document.getElementById('back-button').style.display = 'none';
+        const switchBtn = document.getElementById('switch-companion-btn');
+        if (switchBtn) switchBtn.style.display = '';
     };
 
     // Load only this child's assigned videos
     window.__loadScopedVideos(selected_child.child_id);
+}
+
+function switchCompanion() {
+    if (window.__stopVideo) window.__stopVideo();
+    document.getElementById('main-flow').style.display = 'none';
+    const corner = document.getElementById('companion-corner');
+    if (corner) corner.style.display = 'none';
+    showCompanions();
 }
 
 function showMainFlow() {

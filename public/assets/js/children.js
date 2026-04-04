@@ -940,6 +940,8 @@
       videoGrid.style.display = "none";
       document.getElementById("player-container").style.display = "flex";
       backButton.style.display = "inline-flex";
+      const switchBtn = document.getElementById('switch-companion-btn');
+      if (switchBtn) switchBtn.style.display = 'none';
       document.body.classList.add("watching-video");
       currentVideoMeta = video;
       // Start watch tracking immediately for passive users
@@ -2036,6 +2038,8 @@
       document.getElementById("player-container").style.display = "none";
       videoGrid.style.display = "grid";
       backButton.style.display = "none";
+      const switchBtnBack = document.getElementById('switch-companion-btn');
+      if (switchBtnBack) switchBtnBack.style.display = '';
       document.body.classList.remove("watching-video");
       hideEmbedFallback();
       hidePauseBlocker();
