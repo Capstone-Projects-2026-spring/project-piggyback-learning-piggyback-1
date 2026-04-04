@@ -356,11 +356,11 @@
       position: absolute;
       bottom: 0;
       right: 0;
-      width: 100%;
+      width: 50%;
       height: 52px;
       z-index: 23;
       pointer-events: auto;
-      background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
+      background: #000;
     }
 
     #yt-end-blocker {
@@ -658,6 +658,23 @@
     #video-container:-webkit-full-screen .video-floating-controls {
       top: 20px;
       right: 20px;
+    }
+
+    #video-container:fullscreen #companion-watcher,
+    #video-container:-webkit-full-screen #companion-watcher,
+    #video-container:fullscreen #companion-talker,
+    #video-container:-webkit-full-screen #companion-talker {
+      width: 12%;
+      max-width: 180px;
+      min-width: 100px;
+    }
+
+    #video-container:fullscreen #companion-bubble,
+    #video-container:-webkit-full-screen #companion-bubble {
+      bottom: 24%;
+      right: 13%;
+      font-size: 15px;
+      max-width: 200px;
     }
 
     .video-fullscreen-hitbox {

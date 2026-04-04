@@ -461,6 +461,13 @@
       if (!event) return;
       if (event.data === YT.PlayerState.PLAYING) {
         hidePauseBlocker();
+        // Reset companion back to watch mode
+        const watcher = document.getElementById('companion-watcher');
+        const talker = document.getElementById('companion-talker');
+        const bubble = document.getElementById('companion-bubble');
+        if (talker) talker.style.display = 'none';
+        if (bubble) bubble.style.display = 'none';
+        if (watcher && watcher.src) watcher.style.display = 'block';
         if (ytEndBlocker) {
           ytEndBlocker.style.display = "none";
         }
@@ -477,6 +484,7 @@
       if (event.data === YT.PlayerState.PAUSED) {
         if (!activeQuestion) {
           showPauseBlocker();
+          if (typeof window.triggerCompanionTalk === 'function') window.triggerCompanionTalk();
         } else {
           hidePauseBlocker();
         }

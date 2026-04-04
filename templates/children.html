@@ -449,9 +449,52 @@
               max-width: 180px;
               height: auto;
               object-fit: contain;
-              z-index: 5;
+              z-index: 6;
+              pointer-events: none;
+              transition: opacity 0.2s;
+          ">
+          <img id="companion-talker" src="" alt="Companion talking" style="
+              display: none;
+              position: absolute;
+              bottom: 0;
+              right: 0;
+              width: 18%;
+              min-width: 80px;
+              max-width: 180px;
+              height: auto;
+              object-fit: contain;
+              z-index: 7;
               pointer-events: none;
           ">
+          <div id="companion-bubble" style="
+              display: none;
+              position: absolute;
+              bottom: 22%;
+              right: 19%;
+              background: white;
+              border-radius: 16px;
+              padding: 8px 12px;
+              font-size: 13px;
+              font-weight: 600;
+              color: #2c3e50;
+              box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+              z-index: 8;
+              max-width: 160px;
+              text-align: center;
+              pointer-events: none;
+          ">
+              <span id="companion-bubble-text"></span>
+              <div style="
+                  position: absolute;
+                  bottom: -8px;
+                  right: 16px;
+                  width: 0;
+                  height: 0;
+                  border-left: 8px solid transparent;
+                  border-right: 8px solid transparent;
+                  border-top: 8px solid white;
+              "></div>
+          </div>
           <div id="question-box" role="dialog" aria-live="assertive" aria-labelledby="question" aria-describedby="timestamp feedback">
             <div class="question-character">
               <video id="companion-video" src="/assets/Pig_updated.webm" autoplay loop muted playsinline></video>
@@ -487,7 +530,7 @@
     </div>
   </main>
 
-<script src="/assets/js/children.js" defer></script>
+<script src="/assets/js/children.js?v=3" defer></script>
 
 <!-- Quiz Scoring System -->
 <script>
@@ -1182,6 +1225,70 @@ const COMPANION_WATCH_IMGS = {
     rabbit:    '/assets/companions_watch/bunny_watch.png',
     alligator: '/assets/companions_watch/aligator_watch.png',
 };
+const COMPANION_TALK_IMGS = {
+    pig:       '/assets/companions_talk/piggy_talk.png',
+    rabbit:    '/assets/companions_talk/bunny_talk.png',
+    alligator: '/assets/companions_talk/aligator_talk.png',
+};
+const COMPANION_BUBBLE_LINES = {
+    pig: [
+        "Ooh keep watching! 🐷",
+        "It's getting so good!",
+        "Don't miss this part!",
+        "This is my fave bit!",
+        "Stay with me! 🌟",
+    ],
+    rabbit: [
+        "Zoom zoom, keep going! 🐰",
+        "We're almost there!",
+        "Eyes on the screen!",
+        "So exciting, right?!",
+        "Don't stop now!",
+    ],
+    alligator: [
+        "Shhh, pay attention! 🐊",
+        "This part is important.",
+        "Stay sharp, keep watching!",
+        "Interesting... keep going.",
+        "Don't look away now!",
+    ],
+};
+
+let companionTalkTimer = null;
+
+window.triggerCompanionTalk = function() {
+    const { companion } = loadState();
+    if (!companion || !COMPANION_TALK_IMGS[companion]) return;
+
+    // Clear any running timer so pause always triggers fresh
+    if (companionTalkTimer) {
+        clearTimeout(companionTalkTimer);
+        companionTalkTimer = null;
+    }
+
+    const watcher = document.getElementById('companion-watcher');
+    const talker = document.getElementById('companion-talker');
+    const bubble = document.getElementById('companion-bubble');
+    const bubbleText = document.getElementById('companion-bubble-text');
+    if (!talker || !bubble || !bubbleText) return;
+
+    talker.src = COMPANION_TALK_IMGS[companion];
+    const lines = COMPANION_BUBBLE_LINES[companion] || COMPANION_BUBBLE_LINES.pig;
+    const line = lines[Math.floor(Math.random() * lines.length)];
+    bubbleText.textContent = line;
+
+    if (watcher) watcher.style.display = 'none';
+    talker.style.display = 'block';
+    bubble.style.display = 'block';
+
+    companionTalkTimer = setTimeout(() => {
+        talker.style.display = 'none';
+        bubble.style.display = 'none';
+        if (watcher) watcher.style.display = 'block';
+        companionTalkTimer = null;
+    }, 3000);
+}
+
 
 function showLibrary() {
     document.getElementById('screen-companions').style.display = 'none';
