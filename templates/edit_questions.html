@@ -257,30 +257,6 @@ function renderCurrentSegment() {
     const si = currentSegmentIndex;
     const seg = segmentsData[si];
 
-    // Segment nav bar
-    const segNav = document.createElement('div');
-    segNav.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:16px;';
-    segNav.innerHTML = `
-        <button onclick="goToSegment(${si - 1})"
-            ${si === 0 ? 'disabled' : ''}
-            style="padding:6px 16px;border:1px solid #d1d5db;border-radius:7px;
-                   background:#fff;cursor:pointer;font-size:13px;
-                   opacity:${si === 0 ? '0.4' : '1'};">
-            ← Prev Segment
-        </button>
-        <span style="font-size:14px;font-weight:600;color:#374151;">
-            Segment ${si + 1} of ${segmentsData.length}
-        </span>
-        <button onclick="goToSegment(${si + 1})"
-            ${si === segmentsData.length - 1 ? 'disabled' : ''}
-            style="padding:6px 16px;border:1px solid #d1d5db;border-radius:7px;
-                   background:#fff;cursor:pointer;font-size:13px;
-                   opacity:${si === segmentsData.length - 1 ? '0.4' : '1'};">
-            Next Segment →
-        </button>
-    `;
-    container.appendChild(segNav);
-
     const block = document.createElement('div');
     block.className = 'segment-block';
     block.id = `seg-block-${si}`;
@@ -291,6 +267,23 @@ function renderCurrentSegment() {
         <div>
             <div class="seg-title">Segment ${si + 1}</div>
             <div class="seg-time">${formatTime(seg.start)} - ${formatTime(seg.end)}</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+            <button onclick="goToSegment(${si - 1})"
+                ${si === 0 ? 'disabled' : ''}
+                style="padding:6px 14px;border:1px solid rgba(255,255,255,0.5);border-radius:7px;
+                       background:rgba(255,255,255,0.15);color:#fff;cursor:pointer;font-size:13px;
+                       opacity:${si === 0 ? '0.4' : '1'};">
+                ← Prev
+            </button>
+            <span style="font-size:13px;opacity:0.85;">${si + 1} of ${segmentsData.length}</span>
+            <button onclick="goToSegment(${si + 1})"
+                ${si === segmentsData.length - 1 ? 'disabled' : ''}
+                style="padding:6px 14px;border:1px solid rgba(255,255,255,0.5);border-radius:7px;
+                       background:rgba(255,255,255,0.15);color:#fff;cursor:pointer;font-size:13px;
+                       opacity:${si === segmentsData.length - 1 ? '0.4' : '1'};">
+                Next →
+            </button>
         </div>
     `;
     block.appendChild(header);
