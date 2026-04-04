@@ -109,11 +109,13 @@
 
     function setQuestionOverlay(active) {
       if (!questionOverlay) return;
+      const corner = document.getElementById('companion-corner');
       if (active) {
         questionOverlay.style.display = "block";
         requestAnimationFrame(() => {
           questionOverlay.style.opacity = "1";
         });
+        if (corner) corner.style.display = 'none';
       } else {
         questionOverlay.style.opacity = "0";
         setTimeout(() => {
@@ -121,6 +123,7 @@
             questionOverlay.style.display = "none";
           }
         }, 200);
+        if (corner) corner.style.display = 'flex';
       }
     }
 
