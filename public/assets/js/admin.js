@@ -156,19 +156,39 @@
         function updateButtonStates() {
             const extractBtn = document.getElementById('extract-frames-btn');
             const generateBtn = document.getElementById('generate-questions-btn');
-            
+            const nextBtn = document.getElementById('next-step-btn');
+
             if (extractBtn) {
                 extractBtn.disabled = !currentVideoId;
             }
-            
+
             if (generateBtn) {
                 generateBtn.disabled = !(currentVideoId && currentVideoHasFrames);
+            }
+
+            const hintEl = document.getElementById('next-step-hint');
+            const hintText = document.getElementById('next-step-hint-text');
+            if (nextBtn && hintEl && hintText) {
+                let hint = '';
+                if (currentStep === 1 && !currentVideoId) hint = 'Please download or select a video before moving on.';
+                else if (currentStep === 2 && !currentVideoHasFrames) hint = 'Please extract frames before moving on.';
+                hintText.textContent = hint;
+                hintEl.style.display = hint ? 'block' : 'none';
+                nextBtn.disabled = Boolean(hint);
             }
 
             updateVideoInfoPanel();
         }
         
         function nextStep() {
+            if (currentStep === 1 && !currentVideoId) {
+                alert('Please download or select a video before proceeding.');
+                return;
+            }
+            if (currentStep === 2 && !currentVideoHasFrames) {
+                alert('Please extract frames before proceeding.');
+                return;
+            }
             if (currentStep < 3) {
                 currentStep++;
                 updateStepDisplay();
