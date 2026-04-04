@@ -28,7 +28,6 @@
     text-align: center;
   }
   #screen-login .login-logo {
-    font-size: 64px;
     margin-bottom: 12px;
   }
   #screen-login h1 {
@@ -256,7 +255,7 @@
   <!-- ── Step 1: Parent Login ── -->
   <div id="screen-login">
     <div class="login-card">
-      <div class="login-logo">🐷</div>
+      <div class="login-logo"><img src="/assets/landing_pig_learners.png" alt="Piggyback" style="width:140px;height:140px;object-fit:contain;"></div>
       <h1>Piggyback Learning</h1>
       <p class="login-subtitle">Enter your Login Code to get started</p>
       <input id="login-code-input" type="text" placeholder="Login Code" maxlength="50" autocomplete="off">
@@ -296,6 +295,24 @@
         <div class="companion-desc">Curious and adventurous</div>
       </div>
     </div>
+  </div>
+
+  <!-- ── Companion Intro Overlay ── -->
+  <div id="companion-intro-overlay" style="
+      display: none;
+      position: fixed; inset: 0;
+      background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+      z-index: 9999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+  ">
+      <video id="companion-intro-video" playsinline
+          style="width:100vw; height:100vh; object-fit: cover; position: absolute; inset: 0;">
+      </video>
+      <p style="position: absolute; top: 20px; right: 24px; z-index: 1; color: white; font-size: 15px; font-weight: 600; text-shadow: 0 1px 4px rgba(0,0,0,0.4); margin: 0;">
+          Tap anywhere to skip
+      </p>
   </div>
 
   <!-- ── Steps 4-5: Main learning flow (hidden until login) ── -->
@@ -1109,11 +1126,37 @@ function showCompanions() {
         showProfiles();
     };
 
-    // Each card click saves companion and moves to library (Step 4)
+    const COMPANION_INTROS = {
+        pig: '/assets/companions_intro/piggy_intro.webm',
+    };
+
+    // Each card click saves companion, plays intro if available, then goes to library
     document.querySelectorAll('.companion-card').forEach(card => {
         card.onclick = () => {
-            saveState({ companion: card.dataset.companion, step: 'library' });
-            showLibrary();
+            const companion = card.dataset.companion;
+            saveState({ companion, step: 'library' });
+
+            const introSrc = COMPANION_INTROS[companion];
+            if (introSrc) {
+                const overlay = document.getElementById('companion-intro-overlay');
+                const video = document.getElementById('companion-intro-video');
+                video.src = introSrc;
+                overlay.style.display = 'flex';
+                document.getElementById('screen-companions').style.display = 'none';
+                video.play();
+
+                function proceed() {
+                    video.pause();
+                    video.src = '';
+                    overlay.style.display = 'none';
+                    overlay.removeEventListener('click', proceed);
+                    showLibrary();
+                }
+                video.onended = proceed;
+                overlay.addEventListener('click', proceed, { once: true });
+            } else {
+                showLibrary();
+            }
         };
     });
 }
