@@ -439,61 +439,60 @@
           </div>
           <div id="question-overlay" aria-hidden="true"></div>
           <div id="blocker" aria-hidden="true"></div>
-          <img id="companion-watcher" src="" alt="Companion watching" style="
+          <!-- Companion watcher/talker + bubble, always anchored bottom-right -->
+          <div id="companion-corner" style="
               display: none;
               position: absolute;
               bottom: 0;
               right: 0;
-              width: 18%;
-              min-width: 80px;
-              max-width: 180px;
-              height: auto;
-              object-fit: contain;
               z-index: 6;
               pointer-events: none;
-              transition: opacity 0.2s;
+              flex-direction: column;
+              align-items: center;
           ">
-          <img id="companion-talker" src="" alt="Companion talking" style="
-              display: none;
-              position: absolute;
-              bottom: 0;
-              right: 0;
-              width: 18%;
-              min-width: 80px;
-              max-width: 180px;
-              height: auto;
-              object-fit: contain;
-              z-index: 7;
-              pointer-events: none;
-          ">
-          <div id="companion-bubble" style="
-              display: none;
-              position: absolute;
-              bottom: 22%;
-              right: 19%;
-              background: white;
-              border-radius: 16px;
-              padding: 8px 12px;
-              font-size: 13px;
-              font-weight: 600;
-              color: #2c3e50;
-              box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-              z-index: 8;
-              max-width: 160px;
-              text-align: center;
-              pointer-events: none;
-          ">
-              <span id="companion-bubble-text"></span>
-              <div style="
-                  position: absolute;
-                  bottom: -8px;
-                  right: 16px;
-                  width: 0;
-                  height: 0;
-                  border-left: 8px solid transparent;
-                  border-right: 8px solid transparent;
-                  border-top: 8px solid white;
-              "></div>
+              <div id="companion-bubble" style="
+                  display: none;
+                  background: white;
+                  border-radius: 16px;
+                  padding: 8px 12px;
+                  font-size: 13px;
+                  font-weight: 600;
+                  color: #2c3e50;
+                  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                  max-width: 140px;
+                  text-align: center;
+                  margin-bottom: 6px;
+                  position: relative;
+              ">
+                  <span id="companion-bubble-text"></span>
+                  <div style="
+                      position: absolute;
+                      bottom: -8px;
+                      left: 50%;
+                      transform: translateX(-50%);
+                      width: 0;
+                      height: 0;
+                      border-left: 7px solid transparent;
+                      border-right: 7px solid transparent;
+                      border-top: 8px solid white;
+                  "></div>
+              </div>
+              <img id="companion-watcher" src="" alt="Companion watching" style="
+                  width: 18vw;
+                  min-width: 80px;
+                  max-width: 180px;
+                  height: auto;
+                  object-fit: contain;
+                  display: block;
+              ">
+              <img id="companion-talker" src="" alt="Companion talking" style="
+                  display: none;
+                  width: 18vw;
+                  min-width: 80px;
+                  max-width: 180px;
+                  height: auto;
+                  object-fit: contain;
+              ">
           </div>
           <div id="question-box" role="dialog" aria-live="assertive" aria-labelledby="question" aria-describedby="timestamp feedback">
             <div class="question-character">
@@ -1232,25 +1231,30 @@ const COMPANION_TALK_IMGS = {
 };
 const COMPANION_BUBBLE_LINES = {
     pig: [
-        "Ooh keep watching! 🐷",
+        "Ooh keep watching! ",
         "It's getting so good!",
         "Don't miss this part!",
         "This is my fave bit!",
-        "Stay with me! 🌟",
+        "Stay with me! ",
+        "Loving this!!!",
+        "OMG OMG I want to know what happen next!",
     ],
     rabbit: [
-        "Zoom zoom, keep going! 🐰",
+        "Zoom zoom, keep going!",
         "We're almost there!",
         "Eyes on the screen!",
         "So exciting, right?!",
         "Don't stop now!",
+        "Exciting stuff will come soon!!",
+        "I wanna see what happens next!!",
     ],
     alligator: [
-        "Shhh, pay attention! 🐊",
+        "Shhh, pay attention! ",
         "This part is important.",
         "Stay sharp, keep watching!",
         "Interesting... keep going.",
         "Don't look away now!",
+        "I want to see what happen next.",
     ],
 };
 
@@ -1298,9 +1302,11 @@ function showLibrary() {
 
     // Show companion watcher on right side of video
     const watcherEl = document.getElementById('companion-watcher');
+    const cornerEl = document.getElementById('companion-corner');
     if (watcherEl && COMPANION_WATCH_IMGS[companion]) {
         watcherEl.src = COMPANION_WATCH_IMGS[companion];
         watcherEl.style.display = 'block';
+        if (cornerEl) cornerEl.style.display = 'flex';
     }
 
     // Update header: companion emoji + child's first name

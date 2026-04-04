@@ -660,21 +660,9 @@
       right: 20px;
     }
 
-    #video-container:fullscreen #companion-watcher,
-    #video-container:-webkit-full-screen #companion-watcher,
-    #video-container:fullscreen #companion-talker,
-    #video-container:-webkit-full-screen #companion-talker {
-      width: 12%;
-      max-width: 180px;
-      min-width: 100px;
-    }
-
-    #video-container:fullscreen #companion-bubble,
-    #video-container:-webkit-full-screen #companion-bubble {
-      bottom: 24%;
-      right: 13%;
-      font-size: 15px;
-      max-width: 200px;
+    #video-container:fullscreen #companion-corner,
+    #video-container:-webkit-full-screen #companion-corner {
+      max-width: 220px;
     }
 
     .video-fullscreen-hitbox {
