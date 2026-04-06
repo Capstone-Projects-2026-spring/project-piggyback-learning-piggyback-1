@@ -210,6 +210,7 @@
         let availableVideos = [];
         let currentVideoLabel = '';
         const presetVideoId = (document.body.dataset.selectedVideoId || '').trim() || null;
+        const noAutoplay = new URLSearchParams(window.location.search).get('no_autoplay') === '1';
         let initialVideoLoadAttempted = false;
         let isLoadingVideo = false;
         let expertQuestions = {};
@@ -471,7 +472,14 @@
             }
 
         });
-        
+
+        // Pause video when page is restored from bfcache (e.g. navigating back from edit page)
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                pauseVideo();
+            }
+        });
+
         function initStepNavigation() {
             const stepElements = document.querySelectorAll('.step');
             stepElements.forEach(stepEl => {
@@ -4182,7 +4190,7 @@
             updateTimeDisplay();
             createTimelinePausePoints();
 
-            if (hasActivePlayer()) {
+            if (hasActivePlayer() && !noAutoplay) {
                 playVideo();
             }
 

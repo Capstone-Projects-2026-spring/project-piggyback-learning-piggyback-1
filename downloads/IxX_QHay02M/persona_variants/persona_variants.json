@@ -1,0 +1,100 @@
+{
+  "videoId": "IxX_QHay02M",
+  "segments": {
+    "00000-00059": {
+      "persona_variants": {
+        "pig": {
+          "character": {
+            "q": "Ooh! What animal do you see in this video?",
+            "a": "A cat"
+          },
+          "setting": {
+            "q": "Wow! Where is our cat friend hanging out in the video?",
+            "a": "In a colorful, swirling background"
+          },
+          "feeling": {
+            "q": "Ooh, how do you think the cat is feeling in all those amazing colors?",
+            "a": "Curious or surprised"
+          },
+          "action": {
+            "q": "What's the cat doing in the video? Can you tell me?",
+            "a": "Standing still"
+          },
+          "causal": {
+            "q": "Wow! Why do you think the background keeps changing colors like that?",
+            "a": "To make the video look magical or exciting"
+          },
+          "outcome": {
+            "q": "Ooh, what happens to the cat by the end of the video?",
+            "a": "The cat is surrounded by colorful lights"
+          },
+          "prediction": {
+            "q": "What do you think happens next to the cat? I'd love to hear your idea!",
+            "a": "The cat might explore the colorful place"
+          }
+        },
+        "bunny": {
+          "character": {
+            "q": "You've got this—what creature appears in the video?",
+            "a": "A cat"
+          },
+          "setting": {
+            "q": "I know you can spot this—where is the cat positioned in the video?",
+            "a": "In a colorful, swirling background"
+          },
+          "feeling": {
+            "q": "Here's a thoughtful one: what emotion do you think the cat experiences in that colorful environment?",
+            "a": "Curious or surprised"
+          },
+          "action": {
+            "q": "You're sharp—what behavior is the cat displaying throughout the video?",
+            "a": "Standing still"
+          },
+          "causal": {
+            "q": "I believe you can figure this out: what's the purpose of all those shifting colors in the background?",
+            "a": "To make the video look magical or exciting"
+          },
+          "outcome": {
+            "q": "By the video's conclusion, what occurs with the cat?",
+            "a": "The cat is surrounded by colorful lights"
+          },
+          "prediction": {
+            "q": "Based on what you've observed, what do you anticipate will transpire next?",
+            "a": "The cat might explore the colorful place"
+          }
+        },
+        "alligator": {
+          "character": {
+            "q": "Can you tell me what animal is in the video?",
+            "a": "A cat"
+          },
+          "setting": {
+            "q": "Where do you see the cat in this video?",
+            "a": "In a colorful, swirling background"
+          },
+          "feeling": {
+            "q": "How do you think the cat feels about all those pretty colors around it?",
+            "a": "Curious or surprised"
+          },
+          "action": {
+            "q": "What is the cat doing in the video? I'm proud of you for watching carefully!",
+            "a": "Standing still"
+          },
+          "causal": {
+            "q": "Why do you think the colors in the background keep changing?",
+            "a": "To make the video look magical or exciting"
+          },
+          "outcome": {
+            "q": "At the end of the video, what happens to the cat?",
+            "a": "The cat is surrounded by colorful lights"
+          },
+          "prediction": {
+            "q": "What do you think the cat will do next?",
+            "a": "The cat might explore the colorful place"
+          }
+        }
+      }
+    }
+  },
+  "updatedAt": "2026-04-06T18:16:54.525736+00:00"
+}

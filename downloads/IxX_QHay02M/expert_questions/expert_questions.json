@@ -1,0 +1,39 @@
+{
+  "video_id": "IxX_QHay02M",
+  "questions": [
+    {
+      "segment_start": 0.0,
+      "segment_end": 59.0,
+      "timestamp": 59.0,
+      "question_type": "character",
+      "question": "What character is display in the video?",
+      "answer": "Cat",
+      "skipped": false,
+      "skip_reason": "",
+      "updated_at": "2026-02-04T18:07:58.446949"
+    },
+    {
+      "segment_start": 0.0,
+      "segment_end": 119.0,
+      "timestamp": 119.0,
+      "question_type": "character",
+      "question": "How many times did the cat spin.",
+      "answer": "67 times",
+      "skipped": false,
+      "skip_reason": "",
+      "updated_at": "2026-02-04T20:35:05.503026"
+    },
+    {
+      "segment_start": 0.0,
+      "segment_end": 119.0,
+      "timestamp": 119.0,
+      "question_type": "Feelings",
+      "question": "What is the cat doing",
+      "answer": "Ion no ",
+      "skipped": false,
+      "skip_reason": "",
+      "updated_at": "2026-02-04T20:35:05.503026"
+    }
+
+  ]
+}
