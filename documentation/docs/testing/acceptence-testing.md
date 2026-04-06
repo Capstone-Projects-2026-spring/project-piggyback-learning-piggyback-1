@@ -1,51 +1,79 @@
 ---
 sidebar_position: 3
 ---
-# Acceptance test
 
-All acceptance tests are in `tests/test_acceptance.py` and use FastAPI's `TestClient` to simulate full user scenarios.
+# Acceptance Tests
 
-> Note: Automated tests simulate the grading step only. Speech-to-text input is tested manually (see Manual Tests section below).
-## Acceptance Test for Use Case 1 - Admin creates quiz
+All acceptance tests are in `tests/test_acceptance.py` and use FastAPI's `TestClient` to simulate complete user scenarios from start to finish.
 
-An admin logs in with the wrong password and receives a failure message.
+## How to Run
 
-**Details**
-- Runs `test_admin_can_login`
-- Passes if all tests pass.
+```bash
+pytest tests/test_acceptance.py -v
+```
 
-## Acceptance Test for Use Case 2 - Learner watches video and answers quiz
+## Overview
 
-A learner opens the app, selects a quiz, and answers a question correctly using voice.
+Acceptance tests cover full user flows — login, creating children, answering quizzes, setting access codes. They verify the app behaves correctly from the user's perspective.
 
-Upon opening the app, the config loads successfully.
-The learner speaks their answer and receives confirmation it is correct.
+---
 
-**Details**
-- Runs `test_student_loads_app_and_answers_correctly`
-- Passes if all tests pass.
+## Admin Flows
 
-## Acceptance Test for Use Case 3 - Learner answers a question using voice
+| Test | What it checks |
+|---|---|
+| `test_admin_can_login` | admin login with correct password succeeds; wrong password fails |
+| `test_admin_can_create_child_profile` | admin can create a child profile via API |
+| `test_admin_cannot_create_duplicate_child_under_same_expert` | duplicate child under same parent is rejected |
 
-A learner mispronounces their answer slightly but the system still accepts it using fuzzy matching.
+## Learner Flows
 
-The system records the learner's voice, transcribes it, and grades the answer.
-Even with a mispronunciation, the system correctly marks the answer as correct.
+| Test | What it checks |
+|---|---|
+| `test_learner_enters_expert_id_and_sees_children` | child login with parent ID returns children list |
+| `test_learner_cannot_see_inactive_child` | deactivated children are hidden from learner view |
+| `test_child_video_list_scoped_to_expert_assignments` | child only sees videos assigned to their parent |
+| `test_student_loads_app_and_answers_correctly` | full flow: load config → answer question → marked correct |
 
-**Details**
-- Runs `test_student_misspells_pikachu_and_still_gets_correct`
-- Runs `test_student_answers_spinning_cat_question`
-- Passes if all tests pass.
+## Quiz / Companion Behavior
+
+| Test | What it checks |
+|---|---|
+| `test_pig_reads_back_learners_spoken_answer` | companion reads back the learner's answer |
+| `test_pig_returns_almost_for_borderline_answer` | borderline answer returns "almost" feedback |
+| `test_pig_reveals_correct_answer_for_wrong_response` | wrong answer reveals the correct one |
+| `test_student_misspells_pikachu_and_still_gets_correct` | fuzzy matching accepts close-enough answers |
+| `test_student_answers_spinning_cat_question` | multi-word answer graded correctly |
+
+## Access Code
+
+| Test | What it checks |
+|---|---|
+| `test_access_code_set_and_verify` | parent sets access code; code is stored in plain text and hashed form |
+
+---
 
 ## Manual Tests
 
-These scenarios require a real browser and microphone and were tested manually.
+These require a real browser and cannot be automated.
 
-### Student speaks answer into microphone
-1. Open the app in a browser
-2. Navigate to a video with a quiz question
-3. Click the microphone button and say the answer out loud
-4. Observe that the speech is transcribed into the answer field
-5. Observe that the result shows "correct" or "wrong"
+### Child logs in and watches a video
+1. Go to the Kids screen
+2. Enter the parent's access code
+3. Select a child profile
+4. Select a video and start watching
+5. Confirm quiz questions appear at the right intervals
 
-**Observed Result:** Passed , speech was correctly transcribed and graded.
+### Parent sets access code
+1. Log in to the parent dashboard
+2. Click Access Code
+3. Set a code (max 5 characters)
+4. Log out and have a child log in with that code
+5. Confirm login succeeds
+
+### Parent claims a video
+1. Log in to the parent dashboard
+2. Go to My Videos
+3. Click Add Video and select a processed video
+4. Confirm it appears in the list
+5. Click Remove and confirm it disappears

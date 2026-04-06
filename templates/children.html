@@ -28,7 +28,6 @@
     text-align: center;
   }
   #screen-login .login-logo {
-    font-size: 64px;
     margin-bottom: 12px;
   }
   #screen-login h1 {
@@ -256,7 +255,7 @@
   <!-- ── Step 1: Parent Login ── -->
   <div id="screen-login">
     <div class="login-card">
-      <div class="login-logo">🐷</div>
+      <div class="login-logo"><img src="/assets/landing_pig_learners.png" alt="Piggyback" style="width:140px;height:140px;object-fit:contain;"></div>
       <h1>Piggyback Learning</h1>
       <p class="login-subtitle">Enter your Login Code to get started</p>
       <input id="login-code-input" type="text" placeholder="Login Code" maxlength="50" autocomplete="off">
@@ -298,6 +297,24 @@
     </div>
   </div>
 
+  <!-- ── Companion Intro Overlay ── -->
+  <div id="companion-intro-overlay" style="
+      display: none;
+      position: fixed; inset: 0;
+      background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+      z-index: 9999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+  ">
+      <video id="companion-intro-video" playsinline
+          style="width:100vw; height:100vh; object-fit: cover; position: absolute; inset: 0;">
+      </video>
+      <p style="position: absolute; top: 20px; right: 24px; z-index: 1; color: white; font-size: 15px; font-weight: 600; text-shadow: 0 1px 4px rgba(0,0,0,0.4); margin: 0;">
+          Tap anywhere to skip
+      </p>
+  </div>
+
   <!-- ── Steps 4-5: Main learning flow (hidden until login) ── -->
   <main class="kids-page" id="main-flow" style="display:none;">
   
@@ -326,6 +343,18 @@
           <span>Back to Library</span>
         </button>
         <span id="library-title" style="font-weight:600; font-size:16px; color:#2c3e50;"></span>
+        <button id="switch-companion-btn" type="button" onclick="switchCompanion()" style="
+            background: linear-gradient(135deg, #ffecd2, #fcb69f);
+            border: none;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #6a1b9a;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+            margin-left: 10px;
+        ">🔄 Switch Friend</button>
       </div>
       <div class="kids-search" role="search">
         <input id="kids-search" type="search" placeholder="Search Piggyback Kids" aria-label="Search for a video">
@@ -333,6 +362,7 @@
           <span aria-hidden="true">&#128269;</span>
         </button>
       </div>
+      <!--
       <button id="parent-report-btn" type="button" onclick="openParentReport()" style="
         background: linear-gradient(135deg, #6a1b9a, #e91e8c);
         color: white;
@@ -350,6 +380,7 @@
       ">
         📊 Parent Report
       </button>
+    -->
     </header>
 
     <!-- Parent Report Slide-in Panel -->
@@ -420,6 +451,61 @@
           </div>
           <div id="question-overlay" aria-hidden="true"></div>
           <div id="blocker" aria-hidden="true"></div>
+          <!-- Companion watcher/talker + bubble, always anchored bottom-right -->
+          <div id="companion-corner" style="
+              display: none;
+              position: absolute;
+              bottom: 0;
+              right: 0;
+              z-index: 6;
+              pointer-events: none;
+              flex-direction: column;
+              align-items: center;
+          ">
+              <div id="companion-bubble" style="
+                  display: none;
+                  background: white;
+                  border-radius: 16px;
+                  padding: 8px 12px;
+                  font-size: 13px;
+                  font-weight: 600;
+                  color: #2c3e50;
+                  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                  max-width: 140px;
+                  text-align: center;
+                  margin-bottom: 6px;
+                  position: relative;
+              ">
+                  <span id="companion-bubble-text"></span>
+                  <div style="
+                      position: absolute;
+                      bottom: -8px;
+                      left: 50%;
+                      transform: translateX(-50%);
+                      width: 0;
+                      height: 0;
+                      border-left: 7px solid transparent;
+                      border-right: 7px solid transparent;
+                      border-top: 8px solid white;
+                  "></div>
+              </div>
+              <img id="companion-watcher" src="" alt="Companion watching" style="
+                  width: 18vw;
+                  min-width: 80px;
+                  max-width: 180px;
+                  height: auto;
+                  object-fit: contain;
+                  display: block;
+              ">
+              <img id="companion-talker" src="" alt="Companion talking" style="
+                  display: none;
+                  width: 18vw;
+                  min-width: 80px;
+                  max-width: 180px;
+                  height: auto;
+                  object-fit: contain;
+              ">
+          </div>
           <div id="question-box" role="dialog" aria-live="assertive" aria-labelledby="question" aria-describedby="timestamp feedback">
             <div class="question-character">
               <video id="companion-video" src="/assets/Pig_updated.webm" autoplay loop muted playsinline></video>
@@ -455,7 +541,7 @@
     </div>
   </main>
 
-<script src="/assets/js/children.js" defer></script>
+<script src="/assets/js/children.js?v=5" defer></script>
 
 <!-- Quiz Scoring System -->
 <script>
@@ -1109,22 +1195,131 @@ function showCompanions() {
         showProfiles();
     };
 
-    // Each card click saves companion and moves to library (Step 4)
+    const COMPANION_INTROS = {
+        pig: '/assets/companions_intro/piggy_intro.webm',
+    };
+
+    // Each card click saves companion, plays intro if available, then goes to library
     document.querySelectorAll('.companion-card').forEach(card => {
         card.onclick = () => {
-            saveState({ companion: card.dataset.companion, step: 'library' });
-            showLibrary();
+            const companion = card.dataset.companion;
+            saveState({ companion, step: 'library' });
+
+            const introSrc = COMPANION_INTROS[companion];
+            if (introSrc) {
+                const overlay = document.getElementById('companion-intro-overlay');
+                const video = document.getElementById('companion-intro-video');
+                video.src = introSrc;
+                overlay.style.display = 'flex';
+                document.getElementById('screen-companions').style.display = 'none';
+                video.play();
+
+                function proceed() {
+                    video.pause();
+                    video.src = '';
+                    overlay.style.display = 'none';
+                    overlay.removeEventListener('click', proceed);
+                    showLibrary();
+                }
+                video.onended = proceed;
+                overlay.addEventListener('click', proceed, { once: true });
+            } else {
+                showLibrary();
+            }
         };
     });
 }
 
 const COMPANION_EMOJI = { pig: '🐷', rabbit: '🐰', alligator: '🐊' };
+const COMPANION_WATCH_IMGS = {
+    pig:       '/assets/companions_watch/piggy_watch.png',
+    rabbit:    '/assets/companions_watch/bunny_watch.png',
+    alligator: '/assets/companions_watch/aligator_watch.png',
+};
+const COMPANION_TALK_IMGS = {
+    pig:       '/assets/companions_talk/piggy_talk.png',
+    rabbit:    '/assets/companions_talk/bunny_talk.png',
+    alligator: '/assets/companions_talk/aligator_talk.png',
+};
+const COMPANION_BUBBLE_LINES = {
+    pig: [
+        "Ooh keep watching! ",
+        "It's getting so good!",
+        "Don't miss this part!",
+        "This is my fave bit!",
+        "Stay with me! ",
+        "Loving this!!!",
+        "OMG OMG I want to know what happen next!",
+    ],
+    rabbit: [
+        "Zoom zoom, keep going!",
+        "We're almost there!",
+        "Eyes on the screen!",
+        "So exciting, right?!",
+        "Don't stop now!",
+        "Exciting stuff will come soon!!",
+        "I wanna see what happens next!!",
+    ],
+    alligator: [
+        "Shhh, pay attention! ",
+        "This part is important.",
+        "Stay sharp, keep watching!",
+        "Interesting... keep going.",
+        "Don't look away now!",
+        "I want to see what happen next.",
+    ],
+};
+
+let companionTalkTimer = null;
+
+window.triggerCompanionTalk = function() {
+    const { companion } = loadState();
+    if (!companion || !COMPANION_TALK_IMGS[companion]) return;
+
+    // Clear any running timer so pause always triggers fresh
+    if (companionTalkTimer) {
+        clearTimeout(companionTalkTimer);
+        companionTalkTimer = null;
+    }
+
+    const watcher = document.getElementById('companion-watcher');
+    const talker = document.getElementById('companion-talker');
+    const bubble = document.getElementById('companion-bubble');
+    const bubbleText = document.getElementById('companion-bubble-text');
+    if (!talker || !bubble || !bubbleText) return;
+
+    talker.src = COMPANION_TALK_IMGS[companion];
+    const lines = COMPANION_BUBBLE_LINES[companion] || COMPANION_BUBBLE_LINES.pig;
+    const line = lines[Math.floor(Math.random() * lines.length)];
+    bubbleText.textContent = line;
+
+    if (watcher) watcher.style.display = 'none';
+    talker.style.display = 'block';
+    bubble.style.display = 'block';
+
+    companionTalkTimer = setTimeout(() => {
+        talker.style.display = 'none';
+        bubble.style.display = 'none';
+        if (watcher) watcher.style.display = 'block';
+        companionTalkTimer = null;
+    }, 3000);
+}
+
 
 function showLibrary() {
     document.getElementById('screen-companions').style.display = 'none';
     document.getElementById('main-flow').style.display = '';
 
     const { selected_child, companion } = loadState();
+
+    // Show companion watcher on right side of video
+    const watcherEl = document.getElementById('companion-watcher');
+    const cornerEl = document.getElementById('companion-corner');
+    if (watcherEl && COMPANION_WATCH_IMGS[companion]) {
+        watcherEl.src = COMPANION_WATCH_IMGS[companion];
+        watcherEl.style.display = 'block';
+        if (cornerEl) cornerEl.style.display = 'flex';
+    }
 
     // Update header: companion emoji + child's first name
     const emoji = COMPANION_EMOJI[companion] || '🐷';
@@ -1134,20 +1329,31 @@ function showLibrary() {
     // Set the interaction mode on the body to enable CSS/JS logic
     document.body.dataset.interactionMode = selected_child.interaction_mode || 'flexible';
 
-    // Back button stops any playing video then returns to companion screen
+    // Back button stops any playing video then returns to video grid
     document.getElementById('back-button').onclick = () => {
         if (document.body.dataset.interactionMode === 'passive') {
             if (typeof savePassiveWatchSession === 'function') {
                 savePassiveWatchSession();
+            }
         }
-    }
-    if (window.__stopVideo) window.__stopVideo();
-    document.getElementById('main-flow').style.display = 'none';
-    showCompanions();
+        if (window.__stopVideo) window.__stopVideo();
+        document.getElementById('player-container').style.display = 'none';
+        document.getElementById('video-grid').style.display = 'grid';
+        document.getElementById('back-button').style.display = 'none';
+        const switchBtn = document.getElementById('switch-companion-btn');
+        if (switchBtn) switchBtn.style.display = '';
     };
 
     // Load only this child's assigned videos
     window.__loadScopedVideos(selected_child.child_id);
+}
+
+function switchCompanion() {
+    if (window.__stopVideo) window.__stopVideo();
+    document.getElementById('main-flow').style.display = 'none';
+    const corner = document.getElementById('companion-corner');
+    if (corner) corner.style.display = 'none';
+    showCompanions();
 }
 
 function showMainFlow() {

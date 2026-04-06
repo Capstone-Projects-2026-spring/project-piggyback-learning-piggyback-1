@@ -109,11 +109,13 @@
 
     function setQuestionOverlay(active) {
       if (!questionOverlay) return;
+      const corner = document.getElementById('companion-corner');
       if (active) {
         questionOverlay.style.display = "block";
         requestAnimationFrame(() => {
           questionOverlay.style.opacity = "1";
         });
+        if (corner) corner.style.display = 'none';
       } else {
         questionOverlay.style.opacity = "0";
         setTimeout(() => {
@@ -121,6 +123,7 @@
             questionOverlay.style.display = "none";
           }
         }, 200);
+        if (corner) corner.style.display = 'flex';
       }
     }
 
@@ -461,6 +464,13 @@
       if (!event) return;
       if (event.data === YT.PlayerState.PLAYING) {
         hidePauseBlocker();
+        // Reset companion back to watch mode
+        const watcher = document.getElementById('companion-watcher');
+        const talker = document.getElementById('companion-talker');
+        const bubble = document.getElementById('companion-bubble');
+        if (talker) talker.style.display = 'none';
+        if (bubble) bubble.style.display = 'none';
+        if (watcher && watcher.src) watcher.style.display = 'block';
         if (ytEndBlocker) {
           ytEndBlocker.style.display = "none";
         }
@@ -477,6 +487,7 @@
       if (event.data === YT.PlayerState.PAUSED) {
         if (!activeQuestion) {
           showPauseBlocker();
+          if (typeof window.triggerCompanionTalk === 'function') window.triggerCompanionTalk();
         } else {
           hidePauseBlocker();
         }
@@ -929,6 +940,8 @@
       videoGrid.style.display = "none";
       document.getElementById("player-container").style.display = "flex";
       backButton.style.display = "inline-flex";
+      const switchBtn = document.getElementById('switch-companion-btn');
+      if (switchBtn) switchBtn.style.display = 'none';
       document.body.classList.add("watching-video");
       currentVideoMeta = video;
       // Start watch tracking immediately for passive users
@@ -2025,6 +2038,8 @@
       document.getElementById("player-container").style.display = "none";
       videoGrid.style.display = "grid";
       backButton.style.display = "none";
+      const switchBtnBack = document.getElementById('switch-companion-btn');
+      if (switchBtnBack) switchBtnBack.style.display = '';
       document.body.classList.remove("watching-video");
       hideEmbedFallback();
       hidePauseBlocker();

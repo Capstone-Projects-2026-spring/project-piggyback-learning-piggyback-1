@@ -9,7 +9,7 @@ from rapidfuzz import fuzz
 from typing import cast, Any, Dict
 from functools import lru_cache
 from app.settings import BASE_DIR, DOWNLOADS_DIR
-from app.services.clients import OPENAI_CLIENT, get_openai_client
+from app.services.clients import get_openai_client
 from app.services.quiz_scoring_service import save_quiz_result, get_child_scores
 
 
@@ -701,7 +701,7 @@ async def check_answer(payload: dict = Body(...)):
     # --- Borderline → escalate to AI ---
     if GRADING_CONFIG["use_ai"]:
         try:
-            client = OPENAI_CLIENT
+            client = get_openai_client()
             resp = client.chat.completions.create(
                 model=GRADING_CONFIG["ai_model"],
                 temperature=GRADING_CONFIG["ai_temperature"],

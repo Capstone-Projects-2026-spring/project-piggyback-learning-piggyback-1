@@ -354,13 +354,13 @@
 
     #yt-logo-blocker-bottom {
       position: absolute;
-      bottom: 8px;
-      right: 8px;
-      width: 150px;
-      height: 72px;
+      bottom: 0;
+      right: 0;
+      width: 50%;
+      height: 52px;
       z-index: 23;
       pointer-events: auto;
-      background: transparent;
+      background: #000;
     }
 
     #yt-end-blocker {
@@ -658,6 +658,11 @@
     #video-container:-webkit-full-screen .video-floating-controls {
       top: 20px;
       right: 20px;
+    }
+
+    #video-container:fullscreen #companion-corner,
+    #video-container:-webkit-full-screen #companion-corner {
+      max-width: 220px;
     }
 
     .video-fullscreen-hitbox {

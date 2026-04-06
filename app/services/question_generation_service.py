@@ -11,7 +11,7 @@ import pandas as pd
 from PIL import Image
 
 from app.settings import DOWNLOADS_DIR, GEMINI_API_KEY ,ANTHROPIC_API_KEY
-from app.services.clients import OPENAI_CLIENT, genai
+from app.services.clients import get_openai_client, genai
 
 import anthropic
 
@@ -123,7 +123,7 @@ def generate_questions_for_segment(
     """
     folder_name = str(DOWNLOADS_DIR / video_id)
     try:
-        client = OPENAI_CLIENT
+        client = get_openai_client()
     except Exception as e:
         print(f"Error creating OpenAI client: {e}")
         return None
@@ -673,7 +673,7 @@ def generate_persona_variants(
     )
 
     try:
-        response = OPENAI_CLIENT.chat.completions.create(
+        response = get_openai_client().chat.completions.create(
             model="gpt-4o-mini",
             max_tokens=2000,
             messages=[{"role": "user", "content": prompt}],

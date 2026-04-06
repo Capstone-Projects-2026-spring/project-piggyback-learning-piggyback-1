@@ -110,6 +110,38 @@
                 includeInactive.addEventListener('change', () => loadChildrenDashboard(false));
             }
 
+            const createChildForm = document.getElementById('create-child-form');
+            if (createChildForm) {
+                createChildForm.addEventListener('submit', handleCreateChild);
+            }
+
+        }
+
+        async function handleCreateChild(event) {
+            event.preventDefault();
+            try {
+                const expert_id = (document.getElementById('child-expert-select')?.value || '').trim();
+                const first_name = (document.getElementById('child-first-name')?.value || '').trim();
+                const last_name = (document.getElementById('child-last-name')?.value || '').trim();
+                const icon_key = (document.getElementById('child-icon-key')?.value || '').trim().toLowerCase();
+                const interaction_mode = (document.getElementById('child-interaction-mode')?.value || 'flexible').trim().toLowerCase();
+        
+                const res = await fetch('/api/admin/children', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ expert_id, first_name, last_name, icon_key, interaction_mode }),
+                });
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    throw new Error(data.detail || data.message || 'Failed to create child');
+                }
+        
+                event.target.reset();
+                setAdminPanelStatus('child-create-status', `Created child ${data.child.child_id} with ${interaction_mode} mode.`, 'success');
+                await loadChildrenDashboard(false);
+            } catch (error) {
+                setAdminPanelStatus('child-create-status', error.message || 'Failed to create child', 'error');
+            }
         }
         
         function updateStepDisplay() {
@@ -156,19 +188,39 @@
         function updateButtonStates() {
             const extractBtn = document.getElementById('extract-frames-btn');
             const generateBtn = document.getElementById('generate-questions-btn');
-            
+            const nextBtn = document.getElementById('next-step-btn');
+
             if (extractBtn) {
                 extractBtn.disabled = !currentVideoId;
             }
-            
+
             if (generateBtn) {
                 generateBtn.disabled = !(currentVideoId && currentVideoHasFrames);
+            }
+
+            const hintEl = document.getElementById('next-step-hint');
+            const hintText = document.getElementById('next-step-hint-text');
+            if (nextBtn && hintEl && hintText) {
+                let hint = '';
+                if (currentStep === 1 && !currentVideoId) hint = 'Please download or select a video before moving on.';
+                else if (currentStep === 2 && !currentVideoHasFrames) hint = 'Please extract frames before moving on.';
+                hintText.textContent = hint;
+                hintEl.style.display = hint ? 'block' : 'none';
+                nextBtn.disabled = Boolean(hint);
             }
 
             updateVideoInfoPanel();
         }
         
         function nextStep() {
+            if (currentStep === 1 && !currentVideoId) {
+                alert('Please download or select a video before proceeding.');
+                return;
+            }
+            if (currentStep === 2 && !currentVideoHasFrames) {
+                alert('Please extract frames before proceeding.');
+                return;
+            }
             if (currentStep < 3) {
                 currentStep++;
                 updateStepDisplay();
@@ -781,12 +833,17 @@ function renderChildrenTable() {
                 ? escapeHtml(child.expert_id)
                 : '<span style="color:#9ca3af;">Unassigned</span>';
 
+        const modeLabels = { flexible: 'Flexible', strict: 'Strict', passive: 'Passive' };
+        const modeColors = { flexible: '#2196f3', strict: '#f44336', passive: '#9c27b0' };
+        const mode = child.interaction_mode || 'flexible';
+        
         return `
         <tr data-child-id="${child.child_id}" data-active="${child.is_active ? '1' : '0'}">
             <td><span class="admin-child-id">${child.child_id}</span></td>
             <td>${escapeHtml(child.first_name || '')}</td>
             <td>${escapeHtml(child.last_name || '')}</td>
             <td>${parentLabel}</td>
+            <td><span style="background:${modeColors[mode]};color:white;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600;">${modeLabels[mode] || mode}</span></td>
             <td><span class="admin-status-badge ${child.is_active ? 'status-active' : 'status-inactive'}">${child.is_active ? 'active' : 'inactive'}</span></td>
             <td class="admin-actions-cell">
                 <button type="button" class="admin-action-btn admin-action-danger" data-action="toggle-child">
@@ -1247,9 +1304,12 @@ async function handleLinkChild(row) {
                             <h4 style="color: #155724; margin-bottom: 15px;">Questions Submitted Successfully!</h4>
                             <p style="color: #155724; margin-bottom: 10px;">Video: <strong>${videoTitle}</strong></p>
                             <p style="color: #155724; margin-bottom: 20px;">Your questions have been saved${previouslySaved ? ' and replaced the prior file' : ''}.</p>
-                            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                            <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
                                 <a href="${result.file_url}" class="btn btn-success" download>Download Questions JSON</a>
-                                <a href="/expert-preview?video=${currentVideoId}" class="btn btn-outline" target="_blank">Expert Preview</a>
+                                <button type="button" class="btn btn-outline" onclick="document.getElementById('whats-next-tip').style.display='block'">What's Next?</button>
+                            </div>
+                            <div id="whats-next-tip" style="display:none; margin-top:14px; padding:12px 16px; background:#e8f4fd; border:2px solid #90caf9; border-radius:10px; color:#1565c0; font-size:14px; font-weight:600;">
+                                📋 Click the <strong>🏠 Home</strong> button and go to the <strong>Parent Reviewer</strong> to approve and finalize the questions for learners.
                             </div>
                         </div>
                     `;
