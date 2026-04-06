@@ -1,5 +1,73 @@
 ---
 sidebar_position: 1
 ---
-# Introduction
 
+# Piggyback Learning
+
+Piggyback Learning is an educational web app that helps parents set up video-based quiz sessions for their kids. Parents claim YouTube videos, AI generates comprehension questions, and children watch and answer quizzes guided by animated companion characters.
+
+---
+
+## Who Uses It
+
+| Role | What They Do |
+|---|---|
+| **Admin** | Downloads YouTube videos, extracts frames, generates AI questions |
+| **Parent** | Logs in, claims videos, adds children, manages access code |
+| **Child** | Logs in with parent's code, picks their profile, watches videos and answers quizzes |
+
+---
+
+## How to Run
+
+**Requirements:** Python 3.12, FFmpeg
+
+```bash
+# 1. Create and activate virtual environment
+python -m venv .venv
+source .venv/bin/activate        # macOS/Linux
+.venv\Scripts\activate           # Windows
+
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. Set environment variables
+# Copy the variables from README.md into a .env file
+
+# 4. Start the server
+uvicorn main:app --reload
+
+# 5. Open the app
+# http://localhost:8000
+```
+
+---
+
+## Default Login Credentials
+
+| Role | ID / Password |
+|---|---|
+| Admin | password: `admin123` |
+| Parent | password: `expert123` (set your own ID on first login) |
+
+---
+
+## Running Tests
+
+```bash
+pytest tests/ -v
+```
+
+69 tests across unit, integration, and acceptance. See the Testing section for details.
+
+---
+
+## Key Features
+
+- YouTube video download and frame extraction pipeline
+- AI question generation (OpenAI, Gemini, or Claude)
+- Parent dashboard: claim videos, manage children, set access codes
+- Children login with a short parent-provided access code
+- Kids quiz player with animated companion characters (Bunny, Pig, Alligator)
+- Parent report showing per-child quiz scores and watch time
+- Admin panel for video processing and parent management
