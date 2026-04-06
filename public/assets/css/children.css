@@ -306,7 +306,7 @@
       max-width: 100%;
       border-radius: 24px;
       overflow: hidden;
-      background: #000;
+      background: transparent;
       transition: border-radius 0.2s ease;
     }
 
@@ -328,6 +328,7 @@
       display: block;
       position: relative;
       z-index: 1;
+      pointer-events: none;
     }
 
     #yt-logo-blocker {
@@ -358,7 +359,7 @@
       right: 0;
       width: 50%;
       height: 52px;
-      z-index: 23;
+      z-index: 5;
       pointer-events: auto;
       background: #000;
     }

@@ -3,6 +3,8 @@
 .env.txt
 pycache/
 downloads/
+!downloads/IxX_QHay02M/
+!downloads/IxX_QHay02M/**
 venv/
 .venv/
 *.py[cod]

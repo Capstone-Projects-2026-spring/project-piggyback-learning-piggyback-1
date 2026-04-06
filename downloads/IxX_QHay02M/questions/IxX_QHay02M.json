@@ -1,0 +1,227 @@
+{
+  "video_id": "IxX_QHay02M",
+  "submitted_at": "2026-04-06T16:51:02.944860",
+  "status": "submitted",
+  "segments": [
+    {
+      "start": 0,
+      "end": 29,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "What kind of animal do we see in the video?",
+            "a": "A cat.",
+            "rank": "4"
+          },
+          "setting": {
+            "q": "What color is the background behind the cat?",
+            "a": "Green.",
+            "rank": "6"
+          },
+          "feeling": {
+            "q": "Did the cat look calm or excited at the start of the video?",
+            "a": "Calm.",
+            "rank": "7"
+          },
+          "action": {
+            "q": "What did the cat's body do after it was standing still?",
+            "a": "It started to squash down and change shape.",
+            "rank": "1"
+          },
+          "causal": {
+            "q": "Why does the cat look like a blob instead of a cat at the end?",
+            "a": "Because its body squashed down and changed shape.",
+            "rank": "3"
+          },
+          "outcome": {
+            "q": "What did the cat look like at the end of this video part?",
+            "a": "It looked like a squashed blob.",
+            "rank": "2"
+          },
+          "prediction": {
+            "q": "What do you think might happen to the cat next?",
+            "a": "It will stay a blob.",
+            "rank": "5"
+          }
+        },
+        "best_question": "What did the cat's body do after it was standing still?"
+      }
+    },
+    {
+      "start": 30,
+      "end": 59,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "What animal do you see traveling in the video?",
+            "a": "A cat.",
+            "rank": "5"
+          },
+          "setting": {
+            "q": "Describe the colorful places the cat and rock travel through.",
+            "a": "They travel through colorful space, tunnels, and glowing rings.",
+            "rank": "2"
+          },
+          "feeling": {
+            "q": "How does the cat look as it floats and travels?",
+            "a": "The cat looks calm or neutral.",
+            "rank": "7"
+          },
+          "action": {
+            "q": "What is the cat doing in the video?",
+            "a": "The cat is floating and traveling.",
+            "rank": "1"
+          },
+          "causal": {
+            "q": "Why do the colors and patterns around the cat and rock change?",
+            "a": "Because they are moving through different parts of the colorful space or tunnels.",
+            "rank": "4"
+          },
+          "outcome": {
+            "q": "What happens to the cat after it travels through the blue tunnel?",
+            "a": "The cat is not shown anymore, and a rock appears.",
+            "rank": "3"
+          },
+          "prediction": {
+            "q": "What do you think will happen to the rock as it keeps traveling?",
+            "a": "It might go to another colorful place or land somewhere.",
+            "rank": "6"
+          }
+        },
+        "best_question": "What is the cat doing in the video?"
+      }
+    },
+    {
+      "start": 60,
+      "end": 89,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "What animal do you see at the very beginning of the video?",
+            "a": "A cat.",
+            "rank": "3"
+          },
+          "setting": {
+            "q": "Where does the rock appear to be flying in the middle of the video?",
+            "a": "In space with stars.",
+            "rank": "2"
+          },
+          "feeling": {
+            "q": "How does the cat look in the first picture?",
+            "a": "Calm / Looking at the camera.",
+            "rank": "7"
+          },
+          "action": {
+            "q": "What is the rock doing as the background changes?",
+            "a": "It is moving / flying.",
+            "rank": "1"
+          },
+          "causal": {
+            "q": "What happens to the background when the rock moves to a new place?",
+            "a": "The background changes color.",
+            "rank": "5"
+          },
+          "outcome": {
+            "q": "What color is the background at the very end of the video segment?",
+            "a": "Green.",
+            "rank": "4"
+          },
+          "prediction": {
+            "q": "What do you think the rock might do after the green screen appears?",
+            "a": "It might go to another place / something new might appear with it.",
+            "rank": "6"
+          }
+        },
+        "best_question": "What is the rock doing as the background changes?"
+      }
+    },
+    {
+      "start": 90,
+      "end": 119,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "What kind of animal is shown in the video?",
+            "a": "A cat.",
+            "rank": "6"
+          },
+          "setting": {
+            "q": "Where does the cat travel through after it appears?",
+            "a": "A colorful, bright tunnel or space.",
+            "rank": "4"
+          },
+          "feeling": {
+            "q": "How might the cat feel traveling through such a colorful and fast place?",
+            "a": "It might feel excited or amazed.",
+            "rank": "3"
+          },
+          "action": {
+            "q": "What is the main thing the cat does in this part of the video?",
+            "a": "It travels through a tunnel of colorful lights.",
+            "rank": "2"
+          },
+          "causal": {
+            "q": "Why do the lights around the cat change and move so fast?",
+            "a": "Because the cat is traveling quickly through a tunnel.",
+            "rank": "1"
+          },
+          "outcome": {
+            "q": "What is the cat doing at the very end of this video segment?",
+            "a": "It is still moving through the bright, colorful lights.",
+            "rank": "5"
+          },
+          "prediction": {
+            "q": "What do you think will happen to the cat next in its journey?",
+            "a": "It might arrive at a new place or see something different.",
+            "rank": "7"
+          }
+        },
+        "best_question": "Why do the lights around the cat change and move so fast?"
+      }
+    },
+    {
+      "start": 120,
+      "end": 134,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "What is the main shape or thing you see moving in the middle of the screen?",
+            "a": "A dark, blob-like shape.",
+            "rank": "4"
+          },
+          "setting": {
+            "q": "Where does the dark shape seem to be traveling?",
+            "a": "Through a colorful, glowing, and changing space.",
+            "rank": "3"
+          },
+          "feeling": {
+            "q": "What colors make the video feel exciting or calm?",
+            "a": "Bright colors like blue, pink, and yellow make it feel exciting.",
+            "rank": "6"
+          },
+          "action": {
+            "q": "What is the dark shape doing as it moves?",
+            "a": "It is moving forward through the colorful lights.",
+            "rank": "1"
+          },
+          "causal": {
+            "q": "What makes the background colors and shapes change so quickly?",
+            "a": "The video is designed to show many different colorful patterns.",
+            "rank": "7"
+          },
+          "outcome": {
+            "q": "What happens to the dark shape as it moves further into the bright light?",
+            "a": "It gets smaller and seems to go into the light.",
+            "rank": "2"
+          },
+          "prediction": {
+            "q": "What do you think the colorful lights will do next?",
+            "a": "They will keep changing and moving in new patterns.",
+            "rank": "5"
+          }
+        },
+        "best_question": "What is the dark shape doing as it moves?"
+      }
+    }
+  ]
+}

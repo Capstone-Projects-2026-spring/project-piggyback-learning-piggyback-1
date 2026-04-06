@@ -1,0 +1,80 @@
+{
+  "videoId": "IxX_QHay02M",
+  "timestamp": "2026-02-10T17:42:21.077Z",
+  "segments": [
+    {
+      "segmentIndex": 0,
+      "start": 0,
+      "end": 59,
+      "aiQuestions": [
+        {
+          "type": "character",
+          "question": "Who is the animal in the video?",
+          "answer": "A cat",
+          "trashed": false,
+          "modified": false,
+          "expert_ranking": 0,
+          "llm_ranking": 2
+        },
+        {
+          "type": "setting",
+          "question": "Where is the cat in the video?",
+          "answer": "In a colorful, swirling background",
+          "trashed": false,
+          "modified": false,
+          "expert_ranking": 0,
+          "llm_ranking": 4
+        },
+        {
+          "type": "feeling",
+          "question": "How do you think the cat feels in the colorful place?",
+          "answer": "Curious or surprised",
+          "trashed": false,
+          "modified": false,
+          "expert_ranking": 0,
+          "llm_ranking": 5
+        },
+        {
+          "type": "action",
+          "question": "What is the cat doing in the video?",
+          "answer": "Standing still",
+          "trashed": false,
+          "modified": false,
+          "expert_ranking": 0,
+          "llm_ranking": 3
+        },
+        {
+          "type": "causal",
+          "question": "Why do you think the background changes colors?",
+          "answer": "To make the video look magical or exciting",
+          "trashed": false,
+          "modified": false,
+          "expert_ranking": 0,
+          "llm_ranking": 6
+        },
+        {
+          "type": "outcome",
+          "question": "What happens to the cat at the end of the video?",
+          "answer": "The cat is surrounded by colorful lights",
+          "trashed": false,
+          "modified": false,
+          "expert_ranking": 0,
+          "llm_ranking": 1
+        },
+        {
+          "type": "prediction",
+          "question": "What do you think will happen next to the cat?",
+          "answer": "The cat might explore the colorful place",
+          "trashed": false,
+          "modified": false,
+          "expert_ranking": 0,
+          "llm_ranking": 7
+        }
+      ],
+      "aiOriginalBest": "prediction",
+      "approved": true
+    }
+  ],
+  "saved_at": "2026-02-10T17:42:21.080792",
+  "video_id": "IxX_QHay02M"
+}
