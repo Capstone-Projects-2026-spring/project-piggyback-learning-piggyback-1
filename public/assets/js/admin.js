@@ -1304,9 +1304,12 @@ async function handleLinkChild(row) {
                             <h4 style="color: #155724; margin-bottom: 15px;">Questions Submitted Successfully!</h4>
                             <p style="color: #155724; margin-bottom: 10px;">Video: <strong>${videoTitle}</strong></p>
                             <p style="color: #155724; margin-bottom: 20px;">Your questions have been saved${previouslySaved ? ' and replaced the prior file' : ''}.</p>
-                            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                            <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
                                 <a href="${result.file_url}" class="btn btn-success" download>Download Questions JSON</a>
-                                <a href="/expert-preview?video=${currentVideoId}" class="btn btn-outline" target="_blank">Expert Preview</a>
+                                <button type="button" class="btn btn-outline" onclick="document.getElementById('whats-next-tip').style.display='block'">What's Next?</button>
+                            </div>
+                            <div id="whats-next-tip" style="display:none; margin-top:14px; padding:12px 16px; background:#e8f4fd; border:2px solid #90caf9; border-radius:10px; color:#1565c0; font-size:14px; font-weight:600;">
+                                📋 Click the <strong>🏠 Home</strong> button and go to the <strong>Parent Reviewer</strong> to approve and finalize the questions for learners.
                             </div>
                         </div>
                     `;
