@@ -1,23 +1,42 @@
 ---
 sidebar_position: 4
 ---
+
 # Test Results
 
-All 20 tests passing as of 2026-03-01.
-
-## Full Test Run Output
+All 69 tests passing as of 2026-04-06.
 
 ```
-collected 20 items
+collected 69 items
 
 tests/test_acceptance.py::test_student_misspells_pikachu_and_still_gets_correct PASSED
 tests/test_acceptance.py::test_student_answers_spinning_cat_question PASSED
 tests/test_acceptance.py::test_admin_can_login PASSED
 tests/test_acceptance.py::test_student_loads_app_and_answers_correctly PASSED
+tests/test_acceptance.py::test_admin_can_create_child_profile PASSED
+tests/test_acceptance.py::test_learner_enters_expert_id_and_sees_children PASSED
+tests/test_acceptance.py::test_learner_cannot_see_inactive_child PASSED
+tests/test_acceptance.py::test_admin_cannot_create_duplicate_child_under_same_expert PASSED
+tests/test_acceptance.py::test_child_video_list_scoped_to_expert_assignments PASSED
+tests/test_acceptance.py::test_pig_reads_back_learners_spoken_answer PASSED
+tests/test_acceptance.py::test_pig_returns_almost_for_borderline_answer PASSED
+tests/test_acceptance.py::test_pig_reveals_correct_answer_for_wrong_response PASSED
+tests/test_acceptance.py::test_access_code_set_and_verify PASSED
 tests/test_integration.py::test_check_answer_correct PASSED
 tests/test_integration.py::test_get_config PASSED
 tests/test_integration.py::test_learner_can_fetch_video_list PASSED
 tests/test_integration.py::test_learner_can_fetch_questions_for_video PASSED
+tests/test_integration.py::test_admin_can_unlink_child_endpoint PASSED
+tests/test_integration.py::test_admin_can_relink_child_with_put PASSED
+tests/test_integration.py::test_learner_child_videos_empty_when_unlinked PASSED
+tests/test_integration.py::test_delete_expert_endpoint_unlinks_child_not_fail PASSED
+tests/test_integration.py::test_new_icon_keys_accepted_by_api PASSED
+tests/test_integration.py::test_invalid_icon_rejected_by_api PASSED
+tests/test_integration.py::test_duplicate_name_same_expert_allowed_via_api PASSED
+tests/test_integration.py::test_delete_child_endpoint PASSED
+tests/test_integration.py::test_delete_child_nonexistent_returns_404 PASSED
+tests/test_integration.py::test_claim_and_unclaim_video_api PASSED
+tests/test_integration.py::test_get_child_report_scoped_filters_by_mode PASSED
 tests/test_unit.py::test_time_to_seconds_mmss PASSED
 tests/test_unit.py::test_time_to_seconds_hhmmss PASSED
 tests/test_unit.py::test_time_to_seconds_bad_input PASSED
@@ -30,6 +49,35 @@ tests/test_unit.py::test_normalize_text_empty PASSED
 tests/test_unit.py::test_build_segments_standard PASSED
 tests/test_unit.py::test_build_segments_shorter_last PASSED
 tests/test_unit.py::test_build_segments_single PASSED
+tests/test_unit.py::test_add_assignment PASSED
+tests/test_unit.py::test_two_experts_same_video PASSED
+tests/test_unit.py::test_remove_assignment PASSED
+tests/test_unit.py::test_claim_is_idempotent PASSED
+tests/test_unit.py::test_generate_child_id_is_6_digit PASSED
+tests/test_unit.py::test_create_and_list_child PASSED
+tests/test_unit.py::test_same_name_different_experts_allowed PASSED
+tests/test_unit.py::test_duplicate_name_same_expert_now_allowed PASSED
+tests/test_unit.py::test_invalid_icon_rejected PASSED
+tests/test_unit.py::test_update_and_deactivate_child PASSED
+tests/test_unit.py::test_new_icon_keys_are_valid PASSED
+tests/test_unit.py::test_bad_icon_still_rejected PASSED
+tests/test_unit.py::test_normalize_child_id_strips_whitespace PASSED
+tests/test_unit.py::test_normalize_child_id_empty PASSED
+tests/test_unit.py::test_normalize_name_collapses_spaces PASSED
+tests/test_unit.py::test_normalize_name_empty PASSED
+tests/test_unit.py::test_normalize_icon_key_lowercases PASSED
+tests/test_unit.py::test_delete_child_removes_record PASSED
+tests/test_unit.py::test_delete_child_nonexistent_returns_false PASSED
+tests/test_unit.py::test_claim_video_calls_add_assignment PASSED
+tests/test_unit.py::test_unclaim_video_calls_remove_assignment PASSED
+tests/test_unit.py::test_hash_password_is_not_plaintext PASSED
+tests/test_unit.py::test_verify_password_correct PASSED
+tests/test_unit.py::test_verify_password_wrong PASSED
+tests/test_unit.py::test_parents_table_exists PASSED
+tests/test_unit.py::test_parents_table_has_correct_columns PASSED
+tests/test_unit.py::test_children_has_parent_id_column PASSED
+tests/test_unit.py::test_parents_table_has_login_code_column PASSED
+tests/test_unit.py::test_upsert_login_code_stores_plain_and_hash PASSED
 
-20 passed in 3.41s
+69 passed in 2.08s
 ```

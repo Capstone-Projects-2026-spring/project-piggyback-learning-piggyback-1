@@ -22,7 +22,7 @@ from app.services.expert_auth_service import (
 )
 from app.services.children_service import get_child, list_children
 from video_quiz_routes import router_video_quiz, router_api, refresh_kids_videos_json
-from app.services.clients import OPENAI_CLIENT
+from app.services.clients import get_openai_client
 from fastapi import (
     FastAPI,
     Form,
@@ -60,7 +60,7 @@ from app.settings import (
     EXPERT_QUESTION_TYPE_VALUES,
     SESSION_SECRET,
 )
-from app.services.clients import OPENAI_CLIENT
+from app.services.clients import get_openai_client
 
 
 app = FastAPI(title="Piggyback Learning")
@@ -740,7 +740,7 @@ async def regenerate_single_question(request: Request, video_id: str, payload: D
     )
 
     try:
-        response = OPENAI_CLIENT.chat.completions.create(
+        response = get_openai_client().chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role": "user", "content": prompt}],
             max_tokens=300,
@@ -932,7 +932,7 @@ async def synthesize_tts(payload: Dict[str, Any] = Body(...)):
     response_format = str(payload.get("format") or "mp3").strip() or "mp3"
 
     def _synthesize(voice_name: str) -> bytes:
-        with OPENAI_CLIENT.audio.speech.with_streaming_response.create(
+        with get_openai_client().audio.speech.with_streaming_response.create(
             model="gpt-4o-mini-tts",
             voice=voice_name,
             input=text,
