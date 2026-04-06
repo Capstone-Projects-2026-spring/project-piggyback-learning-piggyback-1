@@ -41,7 +41,6 @@ Key Python packages (see `requirements.txt` for pinned versions):
 | Role | Password |
 |---|---|
 | Admin | `admin123` |
-| Parent | `expert123` |
 
 These are the defaults when `ADMIN_PASSWORD` / `EXPERT_PASSWORD` are not set in `.env`.
 **Change these in production.**
