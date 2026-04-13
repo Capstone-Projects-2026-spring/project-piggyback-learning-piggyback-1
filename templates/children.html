@@ -93,16 +93,13 @@
     left: 16px;
     background: white;
     border-radius: 10px;
-    padding: 8px 14px;
-    font-size: 13px;
-    font-weight: 600;
+    padding: 10px 18px;
+    font-size: 18px;
+    font-weight: 700;
     color: #2c3e50;
     box-shadow: 0 2px 8px rgba(0,0,0,0.12);
   }
   #screen-profiles .back-to-login {
-    position: fixed;
-    top: 16px;
-    right: 16px;
     background: white;
     border: none;
     border-radius: 10px;
@@ -266,7 +263,15 @@
 
   <!-- ── Step 2: Child Profile Cards ── -->
   <div id="screen-profiles">
-    <button class="back-to-login" id="back-to-login-btn">← Switch Parent</button>
+    <div style="position:fixed; top:16px; right:16px; display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
+      <button class="back-to-login" id="back-to-login-btn">← Switch Parent</button>
+      <button onclick="window.location.href='/'" style="
+          background: white; border: none; border-radius: 10px;
+          padding: 8px 16px; font-size: 14px; font-weight: 600;
+          color: #6a1b9a; cursor: pointer;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      ">🏠 Home</button>
+    </div>
     <div class="expert-badge" id="expert-badge"></div>
     <h1>Who's Watching?</h1>
     <p class="profiles-subtitle" id="profiles-subtitle"></p>
@@ -286,7 +291,7 @@
       </div>
       <div class="companion-card" data-companion="rabbit">
         <img class="companion-img" src="/assets/companions/bunny.png" alt="Bunny">
-        <div class="companion-name">Judy the Bunny</div>
+        <div class="companion-name">Blossom the Bunny</div>
         <div class="companion-desc">Energetic and fun-loving</div>
       </div>
       <div class="companion-card" data-companion="alligator">
@@ -1196,7 +1201,9 @@ function showCompanions() {
     };
 
     const COMPANION_INTROS = {
-        pig: '/assets/companions_intro/piggy_intro.webm',
+        pig:       '/assets/companions_intro/piggy_intro.webm',
+        rabbit:    '/assets/companions_intro/Bunny_Intro.webm',
+        alligator: '/assets/companions_intro/Aligator_intro.webm',
     };
 
     // Each card click saves companion, plays intro if available, then goes to library
