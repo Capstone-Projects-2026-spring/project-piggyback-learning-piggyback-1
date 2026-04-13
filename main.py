@@ -129,8 +129,8 @@ if PUBLIC_ASSETS_DIR.exists():
 # -----------------------------
 @app.get("/", response_class=HTMLResponse)
 def home_page(request: Request):
-    """Home page with user type selection"""
-    return templates.TemplateResponse("home.html", {"request": request})
+    """Learner landing page"""
+    return templates.TemplateResponse("children.html", {"request": request})
 
 
 @app.get("/home", response_class=HTMLResponse)
