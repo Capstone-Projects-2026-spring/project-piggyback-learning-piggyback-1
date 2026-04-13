@@ -150,6 +150,11 @@ window.addEventListener('click', function(e) {
     }
 });
 
+// Auto-open parent login if coming from learner landing
+if (new URLSearchParams(window.location.search).get('mode') === 'parent') {
+    document.addEventListener('DOMContentLoaded', () => showPasswordModal('expert'));
+}
+
 // Close modal with Escape key
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
