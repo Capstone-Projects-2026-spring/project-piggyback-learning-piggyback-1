@@ -31,10 +31,21 @@
     margin-bottom: 12px;
   }
   #screen-login h1 {
-    font-size: 28px;
-    font-weight: 700;
-    color: #2c3e50;
+    font-size: 34px;
+    font-weight: 900;
     margin: 0 0 8px 0;
+    background: linear-gradient(135deg, #ff6f91, #ff9a3c, #ffdb3c, #4cd97b, #3cb9ff, #a56bff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 2px 6px rgba(255,120,80,0.25));
+    letter-spacing: 0.5px;
+    animation: shimmer 3s linear infinite;
+    background-size: 200% auto;
+  }
+  @keyframes shimmer {
+    0%   { background-position: 0% center; }
+    100% { background-position: 200% center; }
   }
   #screen-login .login-subtitle {
     color: #6c757d;
