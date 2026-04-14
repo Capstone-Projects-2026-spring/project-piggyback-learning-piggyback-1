@@ -519,7 +519,6 @@
         flex-direction: column;
         align-items: center;
         pointer-events: none;
-        animation: slideUpIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
     ">
         <div id="library-companion-bubble" style="
             background: white;
@@ -656,7 +655,7 @@
     </div>
   </main>
 
-<script src="/assets/js/children.js?v=6" defer></script>
+<script src="/assets/js/children.js?v=7" defer></script>
 
 <!-- Quiz Scoring System -->
 <script>
@@ -1473,10 +1472,10 @@ function showLibrary() {
     const libCompImg = document.getElementById('library-companion-img');
     if (libComp && libCompImg && COMPANION_WATCH_IMGS[companion]) {
         libCompImg.src = COMPANION_WATCH_IMGS[companion];
+        libComp.style.display = 'flex';
         libComp.style.animation = 'none';
         libComp.offsetHeight; // reflow to restart animation
-        libComp.style.animation = '';
-        libComp.style.display = 'flex';
+        libComp.style.animation = 'slideUpIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both';
     }
 
     // Update header: companion emoji + child's first name
@@ -1503,10 +1502,10 @@ function showLibrary() {
         // Re-show library companion greeter
         const libComp = document.getElementById('library-companion');
         if (libComp) {
+            libComp.style.display = 'flex';
             libComp.style.animation = 'none';
             libComp.offsetHeight;
-            libComp.style.animation = '';
-            libComp.style.display = 'flex';
+            libComp.style.animation = 'slideUpIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both';
         }
     };
 

@@ -948,6 +948,14 @@
       const libComp = document.getElementById('library-companion');
       if (libComp) libComp.style.display = 'none';
 
+      // Slide companion corner in from bottom when video starts
+      const corner = document.getElementById('companion-corner');
+      if (corner) {
+        corner.style.animation = 'none';
+        corner.offsetHeight;
+        corner.style.animation = 'slideUpIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both';
+      }
+
       // Auto-fullscreen (we're inside a click handler so gesture is valid)
       try {
         if (videoContainer && videoContainer.requestFullscreen) {
