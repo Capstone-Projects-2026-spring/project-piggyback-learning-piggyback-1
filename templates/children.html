@@ -246,6 +246,45 @@
   }
 
   /* ── Quiz scoring animation ── */
+  @keyframes cardShake {
+    0%,100% { transform: rotate(0deg) scale(1.07); }
+    20%      { transform: rotate(-4deg) scale(1.07); }
+    40%      { transform: rotate(4deg) scale(1.07); }
+    60%      { transform: rotate(-3deg) scale(1.07); }
+    80%      { transform: rotate(3deg) scale(1.07); }
+  }
+  .companion-card.talking {
+    animation: cardShake 0.5s ease-in-out infinite !important;
+  }
+  .companion-hover-bubble {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    border-radius: 14px;
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #2c3e50;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+    white-space: nowrap;
+    z-index: 20;
+    pointer-events: none;
+  }
+  .companion-hover-bubble::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 8px solid transparent;
+    border-top-color: white;
+  }
+  .companion-card:hover .companion-hover-bubble {
+    display: block;
+  }
   @keyframes slideUpIn {
     from { transform: translateY(120px); opacity: 0; }
     to   { transform: translateY(0);     opacity: 1; }
@@ -355,16 +394,19 @@
     <p class="companions-subtitle">Pick a friend to watch videos with you!</p>
     <div class="companions-grid">
       <div class="companion-card" data-companion="pig">
+        <div class="companion-hover-bubble">Pick me! I love videos! 🐷</div>
         <img class="companion-img" src="/assets/companions/pig.png" alt="Pig">
         <div class="companion-name">Pippa the Pig</div>
         <div class="companion-desc">Playful and loves stories</div>
       </div>
       <div class="companion-card" data-companion="rabbit">
+        <div class="companion-hover-bubble">Yay yay, choose me!! 🐰</div>
         <img class="companion-img" src="/assets/companions/bunny.png" alt="Bunny">
         <div class="companion-name">Blossom the Bunny</div>
         <div class="companion-desc">Energetic and fun-loving</div>
       </div>
       <div class="companion-card" data-companion="alligator">
+        <div class="companion-hover-bubble">Let's learn together! 🐊</div>
         <img class="companion-img" src="/assets/companions/aligator.png" alt="Alligator">
         <div class="companion-name">Ash the Alligator</div>
         <div class="companion-desc">Curious and adventurous</div>
@@ -1373,6 +1415,53 @@ function showCompanions() {
                 showLibrary();
             }
         };
+
+        // Hover: swap to talk image + shake
+        const HOVER_TALK_IMGS = {
+            pig:       '/assets/companions_talk/piggy_talk.png',
+            rabbit:    '/assets/companions_talk/bunny_talk.png',
+            alligator: '/assets/companions_talk/aligator_talk.png',
+        };
+        card.addEventListener('mouseenter', () => {
+            const companion = card.dataset.companion;
+            const img = card.querySelector('.companion-img');
+            if (img && HOVER_TALK_IMGS[companion]) {
+                img.dataset.origSrc = img.src;
+                img.src = HOVER_TALK_IMGS[companion];
+            }
+            card.classList.add('talking');
+
+            // Play companion's actual voice from their intro clip
+            if (COMPANION_INTROS[companion]) {
+                if (window.__hoverAudio) {
+                    window.__hoverAudio.pause();
+                    window.__hoverAudio.currentTime = 0;
+                }
+                const audio = new Audio(COMPANION_INTROS[companion]);
+                audio.currentTime = 0;
+                audio.volume = 1;
+                window.__hoverAudio = audio;
+                audio.play().catch(() => {});
+                // Stop after 3 seconds so it doesn't play the whole intro
+                setTimeout(() => {
+                    if (window.__hoverAudio === audio) {
+                        audio.pause();
+                        audio.currentTime = 0;
+                    }
+                }, 3000);
+            }
+        });
+        card.addEventListener('mouseleave', () => {
+            const img = card.querySelector('.companion-img');
+            if (img && img.dataset.origSrc) {
+                img.src = img.dataset.origSrc;
+            }
+            card.classList.remove('talking');
+            if (window.__hoverAudio) {
+                window.__hoverAudio.pause();
+                window.__hoverAudio.currentTime = 0;
+            }
+        });
     });
 }
 
