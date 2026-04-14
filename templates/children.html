@@ -22,8 +22,8 @@
     background: white;
     border-radius: 24px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-    padding: 48px 40px;
-    max-width: 420px;
+    padding: 64px 72px;
+    max-width: 560px;
     width: 100%;
     text-align: center;
   }
@@ -210,14 +210,16 @@
     cursor: pointer;
     box-shadow: 0 4px 16px rgba(0,0,0,0.10);
     transition: transform 0.15s, box-shadow 0.15s;
+    overflow: visible;
+    position: relative;
   }
   .companion-card:hover {
     transform: scale(1.07);
     box-shadow: 0 8px 24px rgba(0,0,0,0.18);
   }
   .companion-img {
-    width: 96px;
-    height: 96px;
+    width: 140px;
+    height: 140px;
     object-fit: contain;
     margin-bottom: 12px;
   }
@@ -291,7 +293,21 @@
         </div>
     </div>
     <div class="login-card">
-      <div class="login-logo"><img src="/assets/landing_pig_learners.png" alt="Piggyback" style="width:140px;height:140px;object-fit:contain;"></div>
+      <!-- pig logo -->
+      <div class="login-logo"><img src="/assets/landing_pig_learners.png" alt="Pig Logo" style="width:160px;height:160px;object-fit:contain;"></div>
+      <div style="position:relative;display:inline-block;margin-bottom:8px;">
+        <img src="/assets/CompanionTag.png" alt="Companion Tag" style="width:340px;object-fit:contain;display:block;">
+        <!-- bunny logo -->
+        <img src="/assets/bunny_logo.png" alt="" style="
+            position:absolute;
+            top: -155px;
+            right: -55px;
+            width: 155px;
+            object-fit: contain;
+            transform: rotate(12deg);
+            pointer-events: none;
+        ">
+      </div>
       <h1>Piggyback Learning</h1>
       <p class="login-subtitle">Enter your Login Code to get started</p>
       <input id="login-code-input" type="text" placeholder="Login Code" maxlength="50" autocomplete="off">
@@ -330,6 +346,16 @@
       </div>
       <div class="companion-card" data-companion="rabbit">
         <img class="companion-img" src="/assets/companions/bunny.png" alt="Bunny">
+        <img src="/assets/bunny_logo.png" alt="" style="
+            position: absolute;
+            top: 16px;
+            right: -28px;
+            width: 72px;
+            object-fit: contain;
+            transform: rotate(15deg);
+            pointer-events: none;
+            z-index: 10;
+        ">
         <div class="companion-name">Blossom the Bunny</div>
         <div class="companion-desc">Energetic and fun-loving</div>
       </div>
