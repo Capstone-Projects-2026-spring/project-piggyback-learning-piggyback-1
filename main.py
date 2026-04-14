@@ -134,9 +134,10 @@ def home_page(request: Request):
 
 
 @app.get("/home", response_class=HTMLResponse)
-def home_redirect(request: Request):
-    """Alternative home page route"""
-    return templates.TemplateResponse("home.html", {"request": request})
+def home_redirect():
+    """Redirect old home route to learner landing"""
+    from fastapi.responses import RedirectResponse
+    return RedirectResponse(url="/")
 
 
 @app.get("/children", response_class=HTMLResponse)

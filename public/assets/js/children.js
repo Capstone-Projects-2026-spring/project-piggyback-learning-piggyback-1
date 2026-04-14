@@ -943,6 +943,17 @@
       const switchBtn = document.getElementById('switch-companion-btn');
       if (switchBtn) switchBtn.style.display = 'none';
       document.body.classList.add("watching-video");
+
+      // Hide library companion greeter
+      const libComp = document.getElementById('library-companion');
+      if (libComp) libComp.style.display = 'none';
+
+      // Auto-fullscreen (we're inside a click handler so gesture is valid)
+      try {
+        if (videoContainer && videoContainer.requestFullscreen) {
+          videoContainer.requestFullscreen().catch(() => {});
+        }
+      } catch (_) {}
       currentVideoMeta = video;
       // Start watch tracking immediately for passive users
       if (document.body.dataset.interactionMode === 'passive') {

@@ -246,6 +246,10 @@
   }
 
   /* ── Quiz scoring animation ── */
+  @keyframes slideUpIn {
+    from { transform: translateY(120px); opacity: 0; }
+    to   { transform: translateY(0);     opacity: 1; }
+  }
   @keyframes fadeInOut {
       0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
       20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
@@ -505,6 +509,46 @@
     <!-- Video library -->
     <div id="video-grid"></div>
 
+    <!-- Library companion greeter (shown on grid, hidden during video) -->
+    <div id="library-companion" style="
+        display: none;
+        position: fixed;
+        bottom: 0;
+        right: 24px;
+        z-index: 200;
+        flex-direction: column;
+        align-items: center;
+        pointer-events: none;
+        animation: slideUpIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+    ">
+        <div id="library-companion-bubble" style="
+            background: white;
+            border-radius: 18px;
+            padding: 14px 20px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #2c3e50;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            max-width: 220px;
+            text-align: center;
+            margin-bottom: 8px;
+            position: relative;
+        ">
+            <span id="library-companion-bubble-text">Hi! Let's watch a video!</span>
+            <div style="
+                position: absolute;
+                bottom: -10px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 0; height: 0;
+                border-left: 10px solid transparent;
+                border-right: 10px solid transparent;
+                border-top: 10px solid white;
+            "></div>
+        </div>
+        <img id="library-companion-img" src="" alt="" style="width: 180px; height: 180px; object-fit: contain;">
+    </div>
+
     <!-- Quiz Player -->
     <div id="player-container">
       <div id="video-wrapper">
@@ -612,7 +656,7 @@
     </div>
   </main>
 
-<script src="/assets/js/children.js?v=5" defer></script>
+<script src="/assets/js/children.js?v=6" defer></script>
 
 <!-- Quiz Scoring System -->
 <script>
@@ -1424,6 +1468,17 @@ function showLibrary() {
         if (cornerEl) cornerEl.style.display = 'flex';
     }
 
+    // Show library companion greeter with slide-up animation
+    const libComp = document.getElementById('library-companion');
+    const libCompImg = document.getElementById('library-companion-img');
+    if (libComp && libCompImg && COMPANION_WATCH_IMGS[companion]) {
+        libCompImg.src = COMPANION_WATCH_IMGS[companion];
+        libComp.style.animation = 'none';
+        libComp.offsetHeight; // reflow to restart animation
+        libComp.style.animation = '';
+        libComp.style.display = 'flex';
+    }
+
     // Update header: companion emoji + child's first name
     const emoji = COMPANION_EMOJI[companion] || '🐷';
     document.getElementById('library-title').textContent =
@@ -1445,6 +1500,14 @@ function showLibrary() {
         document.getElementById('back-button').style.display = 'none';
         const switchBtn = document.getElementById('switch-companion-btn');
         if (switchBtn) switchBtn.style.display = '';
+        // Re-show library companion greeter
+        const libComp = document.getElementById('library-companion');
+        if (libComp) {
+            libComp.style.animation = 'none';
+            libComp.offsetHeight;
+            libComp.style.animation = '';
+            libComp.style.display = 'flex';
+        }
     };
 
     // Load only this child's assigned videos
@@ -1456,6 +1519,8 @@ function switchCompanion() {
     document.getElementById('main-flow').style.display = 'none';
     const corner = document.getElementById('companion-corner');
     if (corner) corner.style.display = 'none';
+    const libComp = document.getElementById('library-companion');
+    if (libComp) libComp.style.display = 'none';
     showCompanions();
 }
 
