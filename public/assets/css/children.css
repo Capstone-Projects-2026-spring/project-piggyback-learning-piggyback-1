@@ -108,10 +108,13 @@
       width: 100% !important;
       height: 100% !important;
       padding: 0 !important;
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
     }
     body.watching-video #video-container {
-      width: 100% !important;
-      height: 100% !important;
+      width: min(100%, calc((100vh - 104px) * 16 / 9)) !important;
+      height: auto !important;
       max-width: 100% !important;
       border-radius: 0 !important;
       display: block !important;
@@ -120,13 +123,17 @@
       border-radius: 0 !important;
       box-shadow: none !important;
       width: 100% !important;
-      height: 100% !important;
-      aspect-ratio: unset !important;
+      height: auto !important;
+      aspect-ratio: 16 / 9 !important;
     }
     body.watching-video #player iframe {
       width: 100% !important;
       height: 100% !important;
       border-radius: 0 !important;
+    }
+    /* Hide black overlay blockers in theatre mode — they're for fullscreen only */
+    body.watching-video #yt-logo-blocker-bottom {
+      display: none !important;
     }
 
     .kids-top-left {

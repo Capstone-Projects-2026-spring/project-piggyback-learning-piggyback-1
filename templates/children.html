@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <title>Kids Videos | Piggyback</title>
-  <link rel="stylesheet" href="/assets/css/children.css?v=2">
+  <link rel="stylesheet" href="/assets/css/children.css?v=4">
   
   <!-- Learner flow CSS -->
   <style>
@@ -1494,6 +1494,9 @@ function showLibrary() {
             }
         }
         if (window.__stopVideo) window.__stopVideo();
+        // Exit fullscreen if active
+        if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+        document.body.classList.remove('watching-video');
         document.getElementById('player-container').style.display = 'none';
         document.getElementById('video-grid').style.display = 'grid';
         document.getElementById('back-button').style.display = 'none';
