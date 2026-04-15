@@ -943,8 +943,13 @@
       const switchBtn = document.getElementById('switch-companion-btn');
       if (switchBtn) switchBtn.style.display = 'none';
       const coverBtn = document.getElementById('cover-btn');
-      if (coverBtn) coverBtn.style.display = 'inline-block';
-      document.body.classList.add("watching-video");
+      if (coverBtn) { coverBtn.style.display = 'inline-block'; coverBtn.textContent = '⛶ Show Bar'; }
+      window.scrollTo(0, 0);
+      // Enable cover mode automatically so the video fills 100vw × 100vh
+      // regardless of screen aspect ratio. Mac screens are 16:10 so the old
+      // 16:9 width-calc left black bars on the sides; cover mode sidesteps
+      // that entirely and lets YouTube handle the aspect ratio inside the iframe.
+      document.body.classList.add("watching-video", "cover-mode");
 
       // Hide library companion greeter
       const libComp = document.getElementById('library-companion');
