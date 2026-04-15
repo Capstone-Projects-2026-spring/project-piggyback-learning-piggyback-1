@@ -19,9 +19,9 @@
     padding: 24px;
   }
   #screen-login .login-card {
-    background: white;
+    background: linear-gradient(160deg, #dff4fc 0%, #eaf8ff 60%, #fce4f0 100%);
     border-radius: 24px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    box-shadow: 0 8px 32px rgba(100,180,220,0.18);
     padding: 64px 72px;
     max-width: 560px;
     width: 100%;
@@ -34,7 +34,7 @@
     font-size: 34px;
     font-weight: 900;
     margin: 0 0 8px 0;
-    background: linear-gradient(135deg, #ff6f91, #ff9a3c, #ffdb3c, #4cd97b, #3cb9ff, #a56bff);
+    background: linear-gradient(135deg, #3cb9ff, #f5a0c8, #3cb9ff, #f5a0c8, #3cb9ff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -71,16 +71,20 @@
     margin-top: 16px;
     width: 100%;
     padding: 14px;
-    background: #ff7043;
+    background: linear-gradient(135deg, #00c6e0, #0099b8);
     color: white;
     border: none;
     border-radius: 12px;
     font-size: 18px;
     font-weight: 700;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
   }
-  #screen-login .login-btn:hover { background: #e64a19; }
+  #screen-login .login-btn:hover { background: linear-gradient(135deg, #00b3cc, #007a99); transform: scale(1.02); }
   #screen-login .login-btn:disabled { background: #ccc; cursor: not-allowed; }
   #screen-login .login-error {
     margin-top: 14px;
@@ -351,7 +355,7 @@
       <img src="/assets/new_logo_noSkies.png" alt="Piggyback Learning Logo" style="width:280px;object-fit:contain;margin:16px 0;">
       <p class="login-subtitle">Enter your Login Code to get started</p>
       <input id="login-code-input" type="text" placeholder="Login Code" maxlength="50" autocomplete="off">
-      <button id="login-btn" class="login-btn">Let's Go! →</button>
+      <button id="login-btn" class="login-btn">Let's Go! <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
       <p id="login-error" class="login-error"></p>
     </div>
   </div>
