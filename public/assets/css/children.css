@@ -25,7 +25,7 @@
 
     body {
       font-family: "Nunito", "Baloo 2", "Comic Sans MS", Arial, sans-serif;
-      background: linear-gradient(180deg, #fef6ff 0%, #f2f9ff 45%, #ffffff 100%);
+      background: linear-gradient(160deg, #b8e4f7 0%, #d6eefc 50%, #f5c6d8 100%);
       margin: 0;
       min-height: 100vh;
       color: #1f2a3d;
@@ -47,13 +47,13 @@
     body::before {
       top: -60px;
       left: -40px;
-      background: #ffd870;
+      background: #f5c6d8;
     }
 
     body::after {
       bottom: -80px;
       right: -40px;
-      background: #7bd3ff;
+      background: #b8e4f7;
     }
 
     .kids-page {
