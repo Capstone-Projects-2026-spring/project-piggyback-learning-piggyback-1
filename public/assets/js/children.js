@@ -942,7 +942,33 @@
       backButton.style.display = "inline-flex";
       const switchBtn = document.getElementById('switch-companion-btn');
       if (switchBtn) switchBtn.style.display = 'none';
-      document.body.classList.add("watching-video");
+      const coverBtn = document.getElementById('cover-btn');
+      if (coverBtn) { coverBtn.style.display = 'inline-block'; coverBtn.textContent = '⛶ Show Bar'; }
+      window.scrollTo(0, 0);
+      // Enable cover mode automatically so the video fills 100vw × 100vh
+      // regardless of screen aspect ratio. Mac screens are 16:10 so the old
+      // 16:9 width-calc left black bars on the sides; cover mode sidesteps
+      // that entirely and lets YouTube handle the aspect ratio inside the iframe.
+      document.body.classList.add("watching-video", "cover-mode");
+
+      // Hide library companion greeter
+      const libComp = document.getElementById('library-companion');
+      if (libComp) libComp.style.display = 'none';
+
+      // Slide companion corner in from bottom when video starts
+      const corner = document.getElementById('companion-corner');
+      if (corner) {
+        corner.style.animation = 'none';
+        corner.offsetHeight;
+        corner.style.animation = 'slideUpIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both';
+      }
+
+      // Auto-fullscreen (we're inside a click handler so gesture is valid)
+      try {
+        if (videoContainer && videoContainer.requestFullscreen) {
+          videoContainer.requestFullscreen().catch(() => {});
+        }
+      } catch (_) {}
       currentVideoMeta = video;
       // Start watch tracking immediately for passive users
       if (document.body.dataset.interactionMode === 'passive') {

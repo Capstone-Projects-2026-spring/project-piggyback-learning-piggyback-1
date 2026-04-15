@@ -91,6 +91,17 @@ def download_youtube(url: str) -> Dict[str, Any]:
         cookies_file = (os.getenv("YTDLP_COOKIEFILE") or os.getenv("YTDLP_COOKIES_FILE") or "").strip()
         if cookies_file:
             ydl_opts["cookiefile"] = cookies_file
+        else:
+            # Auto-extract cookies from the browser the admin is logged into YouTube with.
+            # Try Chrome first, then Edge, then Firefox.
+            for browser in ("chrome", "edge", "firefox"):
+                try:
+                    with yt_dlp.YoutubeDL({"quiet": True, "cookiesfrombrowser": (browser,)}) as test_ydl:
+                        test_ydl.extract_info("https://www.youtube.com", download=False)
+                    ydl_opts["cookiesfrombrowser"] = (browser,)
+                    break
+                except Exception:
+                    continue
 
         if not has_ffmpeg:
             ydl_opts["compat_opts"] = ["no-sabr"]
@@ -169,6 +180,8 @@ def download_youtube(url: str) -> Dict[str, Any]:
 
         if cookies_file:
             subtitle_opts["cookiefile"] = cookies_file
+        elif "cookiesfrombrowser" in ydl_opts:
+            subtitle_opts["cookiesfrombrowser"] = ydl_opts["cookiesfrombrowser"]
 
         if used_player_client:
             subtitle_opts["extractor_args"] = {

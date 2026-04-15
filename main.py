@@ -129,14 +129,15 @@ if PUBLIC_ASSETS_DIR.exists():
 # -----------------------------
 @app.get("/", response_class=HTMLResponse)
 def home_page(request: Request):
-    """Home page with user type selection"""
-    return templates.TemplateResponse("home.html", {"request": request})
+    """Learner landing page"""
+    return templates.TemplateResponse("children.html", {"request": request})
 
 
 @app.get("/home", response_class=HTMLResponse)
-def home_redirect(request: Request):
-    """Alternative home page route"""
-    return templates.TemplateResponse("home.html", {"request": request})
+def home_redirect():
+    """Redirect old home route to learner landing"""
+    from fastapi.responses import RedirectResponse
+    return RedirectResponse(url="/")
 
 
 @app.get("/children", response_class=HTMLResponse)

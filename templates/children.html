@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <title>Kids Videos | Piggyback</title>
-  <link rel="stylesheet" href="/assets/css/children.css">
+  <link rel="stylesheet" href="/assets/css/children.css?v=9">
   
   <!-- Learner flow CSS -->
   <style>
@@ -15,15 +15,15 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    background: linear-gradient(160deg, #b8e4f7 0%, #d6eefc 40%, #f5c6d8 100%);
     padding: 24px;
   }
   #screen-login .login-card {
-    background: white;
+    background: linear-gradient(160deg, #dff4fc 0%, #eaf8ff 60%, #fce4f0 100%);
     border-radius: 24px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-    padding: 48px 40px;
-    max-width: 420px;
+    box-shadow: 0 8px 32px rgba(100,180,220,0.18);
+    padding: 64px 72px;
+    max-width: 560px;
     width: 100%;
     text-align: center;
   }
@@ -31,10 +31,21 @@
     margin-bottom: 12px;
   }
   #screen-login h1 {
-    font-size: 28px;
-    font-weight: 700;
-    color: #2c3e50;
+    font-size: 34px;
+    font-weight: 900;
     margin: 0 0 8px 0;
+    background: linear-gradient(135deg, #3cb9ff, #f5a0c8, #3cb9ff, #f5a0c8, #3cb9ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 2px 6px rgba(255,120,80,0.25));
+    letter-spacing: 0.5px;
+    animation: shimmer 3s linear infinite;
+    background-size: 200% auto;
+  }
+  @keyframes shimmer {
+    0%   { background-position: 0% center; }
+    100% { background-position: 200% center; }
   }
   #screen-login .login-subtitle {
     color: #6c757d;
@@ -60,16 +71,20 @@
     margin-top: 16px;
     width: 100%;
     padding: 14px;
-    background: #ff7043;
+    background: linear-gradient(135deg, #00c6e0, #0099b8);
     color: white;
     border: none;
     border-radius: 12px;
     font-size: 18px;
     font-weight: 700;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
   }
-  #screen-login .login-btn:hover { background: #e64a19; }
+  #screen-login .login-btn:hover { background: linear-gradient(135deg, #00b3cc, #007a99); transform: scale(1.02); }
   #screen-login .login-btn:disabled { background: #ccc; cursor: not-allowed; }
   #screen-login .login-error {
     margin-top: 14px;
@@ -84,7 +99,7 @@
     display: none;
     flex-direction: column;
     align-items: center;
-    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    background: linear-gradient(160deg, #b8e4f7 0%, #d6eefc 40%, #f5c6d8 100%);
     padding: 24px;
   }
   #screen-profiles .expert-badge {
@@ -113,10 +128,15 @@
   #screen-profiles .back-to-login:hover { background: #f3e5f5; }
   #screen-profiles h1 {
     font-size: 36px;
-    font-weight: 700;
-    color: #6a1b9a;
+    font-weight: 900;
     margin: 60px 0 8px 0;
     text-align: center;
+    background: linear-gradient(135deg, #3cb9ff, #f5a0c8, #6dd89a, #3cb9ff, #f5a0c8, #6dd89a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% auto;
+    animation: shimmer 3s linear infinite;
   }
   #screen-profiles .profiles-subtitle {
     color: #6c757d;
@@ -143,12 +163,32 @@
     width: 110px;
     height: 110px;
     border-radius: 22px;
-    background: linear-gradient(135deg, #e91e8c, #f06292);
+    background: linear-gradient(135deg, #a8dff7, #6cc8f0);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 56px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  }
+  .profile-card:nth-child(3n+1) .profile-icon {
+    background: linear-gradient(135deg, #a8dff7, #f7c5d8, #b8edcb, #a8dff7);
+    background-size: 300% 300%;
+    animation: cardShimmer 3s ease infinite;
+  }
+  .profile-card:nth-child(3n+2) .profile-icon {
+    background: linear-gradient(135deg, #f7c5d8, #b8edcb, #a8dff7, #f7c5d8);
+    background-size: 300% 300%;
+    animation: cardShimmer 3s ease infinite;
+  }
+  .profile-card:nth-child(3n+3) .profile-icon {
+    background: linear-gradient(135deg, #b8edcb, #a8dff7, #f7c5d8, #b8edcb);
+    background-size: 300% 300%;
+    animation: cardShimmer 3s ease infinite;
+  }
+  @keyframes cardShimmer {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
   .profile-card .profile-name {
     margin-top: 10px;
@@ -164,9 +204,12 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    background: linear-gradient(160deg, #b8e4f7 0%, #d6eefc 40%, #f5c6d8 100%);
     padding: 24px;
   }
+  .companion-card[data-companion="rabbit"] { background: linear-gradient(160deg, #daf3fc, #b8e4f7); }
+  .companion-card[data-companion="pig"]    { background: linear-gradient(160deg, #fde0e0, #f5b8b8); }
+  .companion-card[data-companion="alligator"] { background: linear-gradient(160deg, #d8f5e0, #b0e8be); }
   #screen-companions h1 {
     font-size: 32px;
     font-weight: 700;
@@ -210,14 +253,16 @@
     cursor: pointer;
     box-shadow: 0 4px 16px rgba(0,0,0,0.10);
     transition: transform 0.15s, box-shadow 0.15s;
+    overflow: visible;
+    position: relative;
   }
   .companion-card:hover {
     transform: scale(1.07);
     box-shadow: 0 8px 24px rgba(0,0,0,0.18);
   }
   .companion-img {
-    width: 96px;
-    height: 96px;
+    width: 140px;
+    height: 140px;
     object-fit: contain;
     margin-bottom: 12px;
   }
@@ -233,6 +278,49 @@
   }
 
   /* ── Quiz scoring animation ── */
+  @keyframes cardShake {
+    0%,100% { transform: rotate(0deg) scale(1.07); }
+    20%      { transform: rotate(-4deg) scale(1.07); }
+    40%      { transform: rotate(4deg) scale(1.07); }
+    60%      { transform: rotate(-3deg) scale(1.07); }
+    80%      { transform: rotate(3deg) scale(1.07); }
+  }
+  .companion-card.talking {
+    animation: cardShake 0.5s ease-in-out infinite !important;
+  }
+  .companion-hover-bubble {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    border-radius: 14px;
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #2c3e50;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+    white-space: nowrap;
+    z-index: 20;
+    pointer-events: none;
+  }
+  .companion-hover-bubble::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 8px solid transparent;
+    border-top-color: white;
+  }
+  .companion-card:hover .companion-hover-bubble {
+    display: block;
+  }
+  @keyframes slideUpIn {
+    from { transform: translateY(120px); opacity: 0; }
+    to   { transform: translateY(0);     opacity: 1; }
+  }
   @keyframes fadeInOut {
       0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
       20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
@@ -251,12 +339,51 @@
 
   <!-- ── Step 1: Parent Login ── -->
   <div id="screen-login">
+    <button onclick="document.getElementById('parent-login-modal').style.display='flex'" style="
+        position: fixed; top: 16px; left: 16px;
+        background: white; border: none; border-radius: 20px;
+        padding: 14px 24px; font-size: 17px; font-weight: 700;
+        color: #6a1b9a; cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        z-index: 10;
+    ">👨‍👩‍👧 I am a Parent</button>
+
+    <!-- Parent Login Modal -->
+    <div id="parent-login-modal" style="
+        display: none; position: fixed; inset: 0;
+        background: rgba(0,0,0,0.5); z-index: 1000;
+        align-items: center; justify-content: center;
+    ">
+        <div style="background: white; border-radius: 20px; padding: 40px 36px; width: 360px; max-width: 90vw; text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.2);">
+            <h2 style="margin: 0 0 6px; color: #2c3e50; font-size: 22px;">Parent Access</h2>
+            <p style="color: #6c757d; font-size: 14px; margin: 0 0 24px;">Enter your Parent ID and password</p>
+            <p id="parent-login-error" style="display:none; color:#dc3545; font-size:13px; margin-bottom:12px;"></p>
+            <input id="parent-modal-id" type="text" placeholder="Parent ID" style="
+                width: 100%; box-sizing: border-box; padding: 12px 16px; margin-bottom: 12px;
+                border: 2px solid #e9ecef; border-radius: 12px; font-size: 15px; outline: none;
+            ">
+            <input id="parent-modal-pw" type="password" placeholder="Password" style="
+                width: 100%; box-sizing: border-box; padding: 12px 16px; margin-bottom: 20px;
+                border: 2px solid #e9ecef; border-radius: 12px; font-size: 15px; outline: none;
+            ">
+            <div style="display: flex; gap: 12px;">
+                <button onclick="document.getElementById('parent-login-modal').style.display='none'" style="
+                    flex: 1; padding: 12px; border: 2px solid #e9ecef; border-radius: 12px;
+                    background: white; font-size: 15px; font-weight: 600; color: #6c757d; cursor: pointer;
+                ">Cancel</button>
+                <button onclick="submitParentLogin()" style="
+                    flex: 1; padding: 12px; border: none; border-radius: 12px;
+                    background: #6a1b9a; color: white; font-size: 15px; font-weight: 600; cursor: pointer;
+                ">Access</button>
+            </div>
+        </div>
+    </div>
     <div class="login-card">
-      <div class="login-logo"><img src="/assets/landing_pig_learners.png" alt="Piggyback" style="width:140px;height:140px;object-fit:contain;"></div>
       <h1>Piggyback Learning</h1>
+      <img src="/assets/new_logo_noSkies.png" alt="Piggyback Learning Logo" style="width:280px;object-fit:contain;margin:16px 0;">
       <p class="login-subtitle">Enter your Login Code to get started</p>
       <input id="login-code-input" type="text" placeholder="Login Code" maxlength="50" autocomplete="off">
-      <button id="login-btn" class="login-btn">Let's Go! →</button>
+      <button id="login-btn" class="login-btn">Let's Go! <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
       <p id="login-error" class="login-error"></p>
     </div>
   </div>
@@ -284,18 +411,21 @@
     <h1 id="companions-heading">Choose Your Companion</h1>
     <p class="companions-subtitle">Pick a friend to watch videos with you!</p>
     <div class="companions-grid">
-      <div class="companion-card" data-companion="pig">
-        <img class="companion-img" src="/assets/companions/pig.png" alt="Pig">
-        <div class="companion-name">Pippa the Pig</div>
-        <div class="companion-desc">Playful and loves stories</div>
-      </div>
       <div class="companion-card" data-companion="rabbit">
-        <img class="companion-img" src="/assets/companions/bunny.png" alt="Bunny">
+        <div class="companion-hover-bubble">Yay yay, choose me!! 🐰</div>
+        <img class="companion-img" src="/assets/companions/new_bunny.png" alt="Bunny">
         <div class="companion-name">Blossom the Bunny</div>
         <div class="companion-desc">Energetic and fun-loving</div>
       </div>
+      <div class="companion-card" data-companion="pig">
+        <div class="companion-hover-bubble">Pick me! I love videos! 🐷</div>
+        <img class="companion-img" src="/assets/companions/new_piggy.png" alt="Pig">
+        <div class="companion-name">Pippa the Pig</div>
+        <div class="companion-desc">Playful and loves stories</div>
+      </div>
       <div class="companion-card" data-companion="alligator">
-        <img class="companion-img" src="/assets/companions/aligator.png" alt="Alligator">
+        <div class="companion-hover-bubble">Let's learn together! 🐊</div>
+        <img class="companion-img" src="/assets/companions/new_gator.png" alt="Alligator">
         <div class="companion-name">Ash the Alligator</div>
         <div class="companion-desc">Curious and adventurous</div>
       </div>
@@ -436,8 +566,60 @@
       </div>
     </div>
 
+    <!-- Cover mode floating button -->
+    <button id="cover-btn" type="button" onclick="toggleCoverMode()" style="
+        display: none;
+        position: fixed;
+        top: 12px;
+        right: 60px;
+        z-index: 300;
+        background: rgba(0,0,0,0.45);
+        border: none; border-radius: 20px; padding: 6px 16px;
+        font-size: 13px; font-weight: 700; color: white;
+        cursor: pointer; backdrop-filter: blur(4px);
+    ">⛶ Cover</button>
+
     <!-- Video library -->
     <div id="video-grid"></div>
+
+    <!-- Library companion greeter (shown on grid, hidden during video) -->
+    <div id="library-companion" style="
+        display: none;
+        position: fixed;
+        bottom: 0;
+        right: 24px;
+        z-index: 200;
+        flex-direction: column;
+        align-items: center;
+        pointer-events: none;
+    ">
+        <div id="library-companion-bubble" style="
+            background: white;
+            border-radius: 18px;
+            padding: 14px 20px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #2c3e50;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            max-width: 220px;
+            text-align: center;
+            margin-bottom: 8px;
+            position: relative;
+        ">
+            <span id="library-companion-bubble-text">Hi! Let's watch a video!</span>
+            <div style="
+                position: absolute;
+                bottom: -10px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 0; height: 0;
+                border-left: 10px solid transparent;
+                border-right: 10px solid transparent;
+                border-top: 10px solid white;
+            "></div>
+        </div>
+        <img id="library-companion-img" src="" alt="" style="width: 180px; height: 180px; object-fit: contain;">
+    </div>
 
     <!-- Quiz Player -->
     <div id="player-container">
@@ -546,7 +728,7 @@
     </div>
   </main>
 
-<script src="/assets/js/children.js?v=5" defer></script>
+<script src="/assets/js/children.js?v=8" defer></script>
 
 <!-- Quiz Scoring System -->
 <script>
@@ -1135,6 +1317,36 @@ const CHILD_ICON_EMOJI = {
   penguin:     '🐧',
 };
 
+async function submitParentLogin() {
+    const expertId = document.getElementById('parent-modal-id').value.trim();
+    const password = document.getElementById('parent-modal-pw').value;
+    const errorEl = document.getElementById('parent-login-error');
+    errorEl.style.display = 'none';
+    if (!expertId || !password) {
+        errorEl.textContent = 'Please enter your Parent ID and password.';
+        errorEl.style.display = 'block';
+        return;
+    }
+    try {
+        const res = await fetch('/api/expert/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ expert_id: expertId, password })
+        });
+        const data = await res.json();
+        if (data.success) {
+            window.location.href = data.redirect || '/expert-preview';
+        } else {
+            errorEl.textContent = data.message || 'Incorrect ID or password.';
+            errorEl.style.display = 'block';
+            document.getElementById('parent-modal-pw').value = '';
+        }
+    } catch (e) {
+        errorEl.textContent = 'Connection error. Please try again.';
+        errorEl.style.display = 'block';
+    }
+}
+
 function goBackToLogin() {
     // Clear all session state so the next visit always starts at login
     sessionStorage.removeItem(STATE_KEY);
@@ -1234,6 +1446,53 @@ function showCompanions() {
                 showLibrary();
             }
         };
+
+        // Hover: swap to talk image + shake
+        const HOVER_TALK_IMGS = {
+            pig:       '/assets/companions_talk/piggy_talk.png',
+            rabbit:    '/assets/companions_talk/bunny_talk.png',
+            alligator: '/assets/companions_talk/aligator_talk.png',
+        };
+        card.addEventListener('mouseenter', () => {
+            const companion = card.dataset.companion;
+            const img = card.querySelector('.companion-img');
+            if (img && HOVER_TALK_IMGS[companion]) {
+                img.dataset.origSrc = img.src;
+                img.src = HOVER_TALK_IMGS[companion];
+            }
+            card.classList.add('talking');
+
+            // Play companion's actual voice from their intro clip
+            if (COMPANION_INTROS[companion]) {
+                if (window.__hoverAudio) {
+                    window.__hoverAudio.pause();
+                    window.__hoverAudio.currentTime = 0;
+                }
+                const audio = new Audio(COMPANION_INTROS[companion]);
+                audio.currentTime = 0;
+                audio.volume = 1;
+                window.__hoverAudio = audio;
+                audio.play().catch(() => {});
+                // Stop after 3 seconds so it doesn't play the whole intro
+                setTimeout(() => {
+                    if (window.__hoverAudio === audio) {
+                        audio.pause();
+                        audio.currentTime = 0;
+                    }
+                }, 3000);
+            }
+        });
+        card.addEventListener('mouseleave', () => {
+            const img = card.querySelector('.companion-img');
+            if (img && img.dataset.origSrc) {
+                img.src = img.dataset.origSrc;
+            }
+            card.classList.remove('talking');
+            if (window.__hoverAudio) {
+                window.__hoverAudio.pause();
+                window.__hoverAudio.currentTime = 0;
+            }
+        });
     });
 }
 
@@ -1328,6 +1587,17 @@ function showLibrary() {
         if (cornerEl) cornerEl.style.display = 'flex';
     }
 
+    // Show library companion greeter with slide-up animation
+    const libComp = document.getElementById('library-companion');
+    const libCompImg = document.getElementById('library-companion-img');
+    if (libComp && libCompImg && COMPANION_WATCH_IMGS[companion]) {
+        libCompImg.src = COMPANION_WATCH_IMGS[companion];
+        libComp.style.display = 'flex';
+        libComp.style.animation = 'none';
+        libComp.offsetHeight; // reflow to restart animation
+        libComp.style.animation = 'slideUpIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both';
+    }
+
     // Update header: companion emoji + child's first name
     const emoji = COMPANION_EMOJI[companion] || '🐷';
     document.getElementById('library-title').textContent =
@@ -1344,15 +1614,34 @@ function showLibrary() {
             }
         }
         if (window.__stopVideo) window.__stopVideo();
+        // Exit fullscreen if active
+        if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+        document.body.classList.remove('watching-video');
+        document.body.classList.remove('cover-mode');
+        const coverBtn = document.getElementById('cover-btn');
+        if (coverBtn) { coverBtn.style.display = 'none'; coverBtn.textContent = '⛶ Cover'; }
         document.getElementById('player-container').style.display = 'none';
         document.getElementById('video-grid').style.display = 'grid';
         document.getElementById('back-button').style.display = 'none';
         const switchBtn = document.getElementById('switch-companion-btn');
         if (switchBtn) switchBtn.style.display = '';
+        // Re-show library companion greeter
+        const libComp = document.getElementById('library-companion');
+        if (libComp) {
+            libComp.style.display = 'flex';
+            libComp.style.animation = 'none';
+            libComp.offsetHeight;
+            libComp.style.animation = 'slideUpIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both';
+        }
     };
 
     // Load only this child's assigned videos
     window.__loadScopedVideos(selected_child.child_id);
+}
+
+function toggleCoverMode() {
+    const isCover = document.body.classList.toggle('cover-mode');
+    document.getElementById('cover-btn').textContent = isCover ? '⛶ Show Bar' : '⛶ Cover';
 }
 
 function switchCompanion() {
@@ -1360,6 +1649,8 @@ function switchCompanion() {
     document.getElementById('main-flow').style.display = 'none';
     const corner = document.getElementById('companion-corner');
     if (corner) corner.style.display = 'none';
+    const libComp = document.getElementById('library-companion');
+    if (libComp) libComp.style.display = 'none';
     showCompanions();
 }
 
