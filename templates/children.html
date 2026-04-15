@@ -204,9 +204,12 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    background: linear-gradient(160deg, #b8e4f7 0%, #d6eefc 40%, #f5c6d8 100%);
     padding: 24px;
   }
+  .companion-card[data-companion="rabbit"] { background: linear-gradient(160deg, #daf3fc, #b8e4f7); }
+  .companion-card[data-companion="pig"]    { background: linear-gradient(160deg, #fde0e0, #f5b8b8); }
+  .companion-card[data-companion="alligator"] { background: linear-gradient(160deg, #d8f5e0, #b0e8be); }
   #screen-companions h1 {
     font-size: 32px;
     font-weight: 700;
@@ -408,21 +411,21 @@
     <h1 id="companions-heading">Choose Your Companion</h1>
     <p class="companions-subtitle">Pick a friend to watch videos with you!</p>
     <div class="companions-grid">
-      <div class="companion-card" data-companion="pig">
-        <div class="companion-hover-bubble">Pick me! I love videos! 🐷</div>
-        <img class="companion-img" src="/assets/companions/pig.png" alt="Pig">
-        <div class="companion-name">Pippa the Pig</div>
-        <div class="companion-desc">Playful and loves stories</div>
-      </div>
       <div class="companion-card" data-companion="rabbit">
         <div class="companion-hover-bubble">Yay yay, choose me!! 🐰</div>
-        <img class="companion-img" src="/assets/companions/bunny.png" alt="Bunny">
+        <img class="companion-img" src="/assets/companions/new_bunny.png" alt="Bunny">
         <div class="companion-name">Blossom the Bunny</div>
         <div class="companion-desc">Energetic and fun-loving</div>
       </div>
+      <div class="companion-card" data-companion="pig">
+        <div class="companion-hover-bubble">Pick me! I love videos! 🐷</div>
+        <img class="companion-img" src="/assets/companions/new_piggy.png" alt="Pig">
+        <div class="companion-name">Pippa the Pig</div>
+        <div class="companion-desc">Playful and loves stories</div>
+      </div>
       <div class="companion-card" data-companion="alligator">
         <div class="companion-hover-bubble">Let's learn together! 🐊</div>
-        <img class="companion-img" src="/assets/companions/aligator.png" alt="Alligator">
+        <img class="companion-img" src="/assets/companions/new_gator.png" alt="Alligator">
         <div class="companion-name">Ash the Alligator</div>
         <div class="companion-desc">Curious and adventurous</div>
       </div>
