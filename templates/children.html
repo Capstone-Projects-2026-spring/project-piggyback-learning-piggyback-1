@@ -1522,30 +1522,19 @@ const COMPANION_TALK_IMGS = {
 };
 const COMPANION_BUBBLE_LINES = {
     pig: [
-        "Ooh keep watching! ",
-        "It's getting so good!",
-        "Don't miss this part!",
-        "This is my fave bit!",
-        "Stay with me! ",
-        "Loving this!!!",
-        "OMG OMG I want to know what happen next!",
+        "Oh oh oh, keep watching!",
+        "This is getting so good!",
+        "Come on, press play!",
     ],
     rabbit: [
-        "Zoom zoom, keep going!",
-        "We're almost there!",
-        "Eyes on the screen!",
-        "So exciting, right?!",
-        "Don't stop now!",
-        "Exciting stuff will come soon!!",
-        "I wanna see what happens next!!",
+        "We are so close, keep going!",
+        "Eyes on the screen, let's go!",
+        "Don't stop now, press play!",
     ],
     alligator: [
-        "Shhh, pay attention! ",
-        "This part is important.",
-        "Stay sharp, keep watching!",
-        "Interesting... keep going.",
-        "Don't look away now!",
-        "I want to see what happen next.",
+        "Pay attention. This part matters.",
+        "Stay focused. Keep watching.",
+        "Press play. You are not done yet.",
     ],
 };
 
@@ -1567,6 +1556,19 @@ window.triggerCompanionTalk = function() {
     if (watcher) watcher.style.display = 'none';
     talker.style.display = 'block';
     bubble.style.display = 'block';
+
+    const COMPANION_HUME = { rabbit: 'blossom', pig: 'pippa', alligator: 'ash' };
+    const humeCompanion = COMPANION_HUME[companion] || '';
+    fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: line, companion: humeCompanion })
+    }).then(r => r.json()).then(data => {
+        if (data.success && data.audio) {
+            const audio = new Audio(`data:audio/${data.format};base64,${data.audio}`);
+            audio.play().catch(() => {});
+        }
+    }).catch(() => {});
 
     // stays looking at user until video resumes (PLAYING handler resets it)
 }
