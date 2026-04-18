@@ -50,11 +50,20 @@ def save_quiz_result(child_id: str, video_id: str, score_data: dict, session_id:
             None
         )
         if existing_index is not None:
-            # Accumulate watch_minutes, keep other fields updated
             existing = data["attempts"][existing_index]
-            attempt["watch_minutes"] = existing.get("watch_minutes", 0) + score_data.get("watch_minutes", 0)
-            attempt["timestamp"] = existing.get("timestamp", attempt["timestamp"])
-            data["attempts"][existing_index] = attempt
+            if score_data.get("checkpoint_only"):
+                # Only add watch time — preserve all quiz score fields
+                existing["watch_minutes"] = round(
+                    existing.get("watch_minutes", 0) + score_data.get("watch_minutes", 0), 2
+                )
+                data["attempts"][existing_index] = existing
+            else:
+                # Full save: accumulate watch_minutes, replace other fields
+                attempt["watch_minutes"] = round(
+                    existing.get("watch_minutes", 0) + score_data.get("watch_minutes", 0), 2
+                )
+                attempt["timestamp"] = existing.get("timestamp", attempt["timestamp"])
+                data["attempts"][existing_index] = attempt
         else:
             data["attempts"].append(attempt)
     else:

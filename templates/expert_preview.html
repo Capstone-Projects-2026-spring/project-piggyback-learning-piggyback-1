@@ -558,10 +558,8 @@
 
         <!-- ── Section: Parent Report ── -->
         <div id="section-parent-report" style="display:none;">
-            <div style="padding: 16px 24px;">
-                <button onclick="backToDashboard()" style="background:none;border:none;color:#6a1b9a;font-size:15px;font-weight:600;cursor:pointer;">← Back to Dashboard</button>
-            </div>
-            <div style="padding: 0 24px 40px; max-width: 860px; margin: 0 auto;">
+            <div style="max-width: 860px; padding: 16px 0 40px;">
+                <button onclick="backToDashboard()" style="background:none;border:none;color:#6a1b9a;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:16px;padding:0;">← Back to Dashboard</button>
 
                 <!-- Filters row -->
                 <div style="background:white;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.08);padding:24px;margin-bottom:20px;">
@@ -815,8 +813,8 @@ async function card3LoadReport() {
 function card3RenderReport(data, mode) {
     const totalWatchMinutes = data.total_watch_minutes || 0;
     const watchDisplay = totalWatchMinutes >= 60
-        ? `${Math.floor(totalWatchMinutes / 60)}h ${totalWatchMinutes % 60}m`
-        : `${totalWatchMinutes}m`;
+        ? `${Math.floor(totalWatchMinutes / 60)}h ${Math.round(totalWatchMinutes % 60)}m`
+        : `${totalWatchMinutes.toFixed ? totalWatchMinutes.toFixed(1) : totalWatchMinutes}m`;
     const videosWatched = data.videos_watched || 0;
 
     // Passive mode — watch time only, no grades

@@ -715,7 +715,7 @@
     </div>
   </main>
 
-<script src="/assets/js/children.js?v=8" defer></script>
+<script src="/assets/js/children.js?v=10" defer></script>
 
 <!-- Quiz Scoring System -->
 <script>
@@ -835,9 +835,10 @@ function showFinalScore() {
 async function saveScoreAndClose() {
     const childId = getChildId();
     const percentage = Math.round((quizScore.correct / quizScore.total) * 100);
-    if (quizScore.watchStartTime) {
-        const elapsed = (Date.now() - quizScore.watchStartTime) / 1000 / 60;
-        quizScore.watchMinutes = Math.round(elapsed);
+    {
+        let totalMs = quizScore.watchAccumulatedMs || 0;
+        if (quizScore.watchStartTime !== null) totalMs += Date.now() - quizScore.watchStartTime;
+        quizScore.watchMinutes = parseFloat((totalMs / 1000 / 60).toFixed(2));
     }
     try {
         const response = await fetch('/api/save-quiz-score', {
@@ -888,7 +889,7 @@ async function savePassiveWatchSession() {
     }
     if (totalMs <= 0) return;
 
-    quizScore.watchMinutes = Math.round(totalMs / 1000 / 60);
+    quizScore.watchMinutes = parseFloat((totalMs / 1000 / 60).toFixed(2));
 
     const childId = getChildId();
     try {
@@ -918,6 +919,34 @@ async function savePassiveWatchSession() {
         quizScore.watchMinutes = 0;
     } catch (error) {
         console.error('❌ Error saving passive session:', error);
+    }
+}
+
+// Checkpoint save — only adds watch time, never touches quiz score fields
+async function flushWatchTime() {
+    if (!quizScore.videoId) return;
+    let totalMs = quizScore.watchAccumulatedMs || 0;
+    if (quizScore.watchStartTime !== null) totalMs += Date.now() - quizScore.watchStartTime;
+    if (totalMs <= 0) return;
+
+    const minutes = parseFloat((totalMs / 1000 / 60).toFixed(2));
+    const childId = getChildId();
+    try {
+        await fetch('/api/save-quiz-score', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                child_id: childId,
+                video_id: quizScore.videoId,
+                session_id: quizScore.sessionId,
+                score_data: { watch_minutes: minutes, checkpoint_only: true }
+            })
+        });
+        // Reset accumulator so next checkpoint only counts new time
+        quizScore.watchAccumulatedMs = 0;
+        if (quizScore.watchStartTime !== null) quizScore.watchStartTime = Date.now();
+    } catch (e) {
+        console.error('watch checkpoint failed', e);
     }
 }
 
