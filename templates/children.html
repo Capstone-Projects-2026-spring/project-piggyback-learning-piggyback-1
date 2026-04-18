@@ -1527,8 +1527,8 @@ const COMPANION_BUBBLE_LINES = {
         "Come on, press play!",
     ],
     rabbit: [
-        "We are so close, keep going!",
         "Eyes on the screen, let's go!",
+        "Keep going, you are doing great!",
         "Don't stop now, press play!",
     ],
     alligator: [
@@ -1544,7 +1544,11 @@ const COMPANION_PAUSE_WAVS = {
         '/assets/voices/pause/piggy_pause_2.wav',
         '/assets/voices/pause/piggy_pause_3.wav',
     ],
-    rabbit: [],
+    rabbit: [
+        '/assets/voices/pause/bunny_pause_1.wav',
+        '/assets/voices/pause/bunny_pause_2.wav',
+        '/assets/voices/pause/bunny_pause_3.wav',
+    ],
     alligator: [
         '/assets/voices/pause/Aligator_pause_1.wav',
         '/assets/voices/pause/Aligator_pause_2.wav',
@@ -1622,6 +1626,24 @@ function showLibrary() {
     const emoji = COMPANION_EMOJI[companion] || '🐷';
     document.getElementById('library-title').textContent =
         `${emoji} ${selected_child.first_name}'s Videos`;
+
+    const COMPANION_PICK_WAVS = {
+        pig:       '/assets/voices/pick/piggy_pick.wav',
+        rabbit:    null,
+        alligator: null,
+    };
+    const COMPANION_PICK_TEXT = {
+        pig:       'Ooh ooh, pick one, pick one!',
+        rabbit:    'Which video are we watching today?',
+        alligator: 'Choose a video. Let\'s get started.',
+    };
+    const pickText = COMPANION_PICK_TEXT[companion] || '';
+    const libBubbleText = document.getElementById('library-companion-bubble-text');
+    if (libBubbleText && pickText) libBubbleText.textContent = pickText;
+    const pickWav = COMPANION_PICK_WAVS[companion];
+    if (pickWav) {
+        new Audio(pickWav).play().catch(() => {});
+    }
 
     // Set the interaction mode on the body to enable CSS/JS logic
     document.body.dataset.interactionMode = selected_child.interaction_mode || 'flexible';
