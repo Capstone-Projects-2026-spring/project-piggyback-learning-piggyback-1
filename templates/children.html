@@ -1556,6 +1556,8 @@ const COMPANION_PAUSE_WAVS = {
     ],
 };
 
+let companionPauseIndex = 0;
+
 window.triggerCompanionTalk = function() {
     const { companion } = loadState();
     if (!companion || !COMPANION_TALK_IMGS[companion]) return;
@@ -1568,7 +1570,9 @@ window.triggerCompanionTalk = function() {
 
     talker.src = COMPANION_TALK_IMGS[companion];
     const lines = COMPANION_BUBBLE_LINES[companion] || COMPANION_BUBBLE_LINES.pig;
-    const line = lines[Math.floor(Math.random() * lines.length)];
+    const idx = companionPauseIndex % lines.length;
+    companionPauseIndex++;
+    const line = lines[idx];
     bubbleText.textContent = line;
 
     if (watcher) watcher.style.display = 'none';
@@ -1577,7 +1581,7 @@ window.triggerCompanionTalk = function() {
 
     const pauseWavs = COMPANION_PAUSE_WAVS[companion] || [];
     if (pauseWavs.length > 0) {
-        const wav = pauseWavs[Math.floor(Math.random() * pauseWavs.length)];
+        const wav = pauseWavs[idx % pauseWavs.length];
         new Audio(wav).play().catch(() => {});
     } else {
         const COMPANION_HUME = { rabbit: 'blossom', pig: 'pippa', alligator: 'ash' };
