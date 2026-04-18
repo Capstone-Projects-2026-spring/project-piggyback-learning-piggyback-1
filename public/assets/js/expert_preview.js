@@ -407,7 +407,7 @@
                 initialVideoLoadAttempted = true;
                 const presetMeta = findVideoById(presetVideoId);
                 if (presetMeta) {
-                    await loadVideo(presetMeta.id, presetMeta.title);
+                    await loadVideo(presetMeta.id, presetMeta.title, noAutoplay);
                 } else {
                     showStatus(`Selected video "${presetVideoId}" not found in downloads.`, 'error');
                 }
@@ -519,7 +519,7 @@
             });
             
             // Resume video if returning to step 2 and it was playing before
-            if (step === 2 && hasActivePlayer() && !isVideoPaused) {
+            if (step === 2 && hasActivePlayer() && !isVideoPaused && !noAutoplay) {
                 // Only resume if we're not in a pause overlay
                 const pauseOverlay = document.getElementById('pause-overlay');
                 if (!pauseOverlay || !pauseOverlay.classList.contains('active')) {
@@ -3889,7 +3889,7 @@
             }
         }
 
-        async function loadVideo(videoIdParam = null, labelOverride = null) {
+        async function loadVideo(videoIdParam = null, labelOverride = null, suppressNavigate = false) {
             let videoId = videoIdParam;
             let displayLabel = labelOverride;
 
@@ -4016,7 +4016,13 @@
                 updateReviewButtonState();
                 updateProgress();
                 if (loadSucceeded) {
-                    unlockStep(2);
+                    if (suppressNavigate) {
+                        // Returning from edit page — unlock step 2 but stay on step 1
+                        if (2 > maxAvailableStep) maxAvailableStep = 2;
+                        updateStepAccess();
+                    } else {
+                        unlockStep(2);
+                    }
                 }
                 isLoadingVideo = false;
                 setVideoCardState(videoId, loadSucceeded ? 'selected' : 'idle');
