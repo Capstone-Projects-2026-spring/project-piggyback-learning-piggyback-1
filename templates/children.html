@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <title>Kids Videos | Piggyback</title>
-  <link rel="stylesheet" href="/assets/css/children.css?v=9">
+  <link rel="stylesheet" href="/assets/css/children.css?v=10">
   
   <!-- Learner flow CSS -->
   <style>
@@ -565,19 +565,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Cover mode floating button -->
-    <button id="cover-btn" type="button" onclick="toggleCoverMode()" style="
-        display: none;
-        position: fixed;
-        top: 12px;
-        right: 60px;
-        z-index: 300;
-        background: rgba(0,0,0,0.45);
-        border: none; border-radius: 20px; padding: 6px 16px;
-        font-size: 13px; font-weight: 700; color: white;
-        cursor: pointer; backdrop-filter: blur(4px);
-    ">⛶ Cover</button>
 
     <!-- Video library -->
     <div id="video-grid"></div>
@@ -1617,9 +1604,6 @@ function showLibrary() {
         // Exit fullscreen if active
         if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
         document.body.classList.remove('watching-video');
-        document.body.classList.remove('cover-mode');
-        const coverBtn = document.getElementById('cover-btn');
-        if (coverBtn) { coverBtn.style.display = 'none'; coverBtn.textContent = '⛶ Cover'; }
         document.getElementById('player-container').style.display = 'none';
         document.getElementById('video-grid').style.display = 'grid';
         document.getElementById('back-button').style.display = 'none';
@@ -1637,11 +1621,6 @@ function showLibrary() {
 
     // Load only this child's assigned videos
     window.__loadScopedVideos(selected_child.child_id);
-}
-
-function toggleCoverMode() {
-    const isCover = document.body.classList.toggle('cover-mode');
-    document.getElementById('cover-btn').textContent = isCover ? '⛶ Show Bar' : '⛶ Cover';
 }
 
 function switchCompanion() {
