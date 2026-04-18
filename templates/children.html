@@ -1549,17 +1549,9 @@ const COMPANION_BUBBLE_LINES = {
     ],
 };
 
-let companionTalkTimer = null;
-
 window.triggerCompanionTalk = function() {
     const { companion } = loadState();
     if (!companion || !COMPANION_TALK_IMGS[companion]) return;
-
-    // Clear any running timer so pause always triggers fresh
-    if (companionTalkTimer) {
-        clearTimeout(companionTalkTimer);
-        companionTalkTimer = null;
-    }
 
     const watcher = document.getElementById('companion-watcher');
     const talker = document.getElementById('companion-talker');
@@ -1576,12 +1568,7 @@ window.triggerCompanionTalk = function() {
     talker.style.display = 'block';
     bubble.style.display = 'block';
 
-    companionTalkTimer = setTimeout(() => {
-        talker.style.display = 'none';
-        bubble.style.display = 'none';
-        if (watcher) watcher.style.display = 'block';
-        companionTalkTimer = null;
-    }, 3000);
+    // stays looking at user until video resumes (PLAYING handler resets it)
 }
 
 
