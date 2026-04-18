@@ -942,6 +942,7 @@
       backButton.style.display = "inline-flex";
       const switchBtn = document.getElementById('switch-companion-btn');
       if (switchBtn) switchBtn.style.display = 'none';
+      window.scrollTo(0, 0);
       document.body.classList.add("watching-video");
 
       // Hide library companion greeter
