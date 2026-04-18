@@ -59,6 +59,8 @@ from app.settings import (
     EXPERT_QUESTION_TYPES,
     EXPERT_QUESTION_TYPE_VALUES,
     SESSION_SECRET,
+    HUME_API_KEY,
+    HUME_VOICE_IDS,
 )
 from app.services.clients import get_openai_client
 
@@ -916,12 +918,27 @@ async def get_persona_variants(request: Request, payload: Dict[str, Any] = Body(
 
 @app.post("/api/tts")
 async def synthesize_tts(payload: Dict[str, Any] = Body(...)):
-    """Generate speech audio via OpenAI TTS."""
     text = str(payload.get("text") or "").strip()
     if not text:
-        return JSONResponse(
-            {"success": False, "message": "text is required"}, status_code=400
-        )
+        return JSONResponse({"success": False, "message": "text is required"}, status_code=400)
+
+    # Use Hume when a companion is specified and API key is configured
+    companion = str(payload.get("companion") or "").lower()
+    voice_id = HUME_VOICE_IDS.get(companion) if companion else None
+    if voice_id and HUME_API_KEY:
+        import httpx
+        try:
+            async with httpx.AsyncClient(timeout=15) as client:
+                resp = await client.post(
+                    "https://api.hume.ai/v0/tts",
+                    headers={"X-Hume-Api-Key": HUME_API_KEY, "Content-Type": "application/json"},
+                    json={"utterances": [{"text": text, "voice": {"id": voice_id}}], "format": {"type": "mp3"}},
+                )
+                resp.raise_for_status()
+                audio_b64 = resp.json()["generations"][0]["audio"]
+            return JSONResponse({"success": True, "audio": audio_b64, "format": "mp3"})
+        except Exception as e:
+            return JSONResponse({"success": False, "message": str(e)}, status_code=502)
 
     voice = str(payload.get("voice") or "sage").strip() or "sage"
     raw_speed = payload.get("speed", 0.75)

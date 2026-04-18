@@ -715,7 +715,7 @@
     </div>
   </main>
 
-<script src="/assets/js/children.js?v=10" defer></script>
+<script src="/assets/js/children.js?v=11" defer></script>
 
 <!-- Quiz Scoring System -->
 <script>
@@ -1434,6 +1434,12 @@ function showCompanions() {
         alligator: '/assets/companions_intro/Aligator_intro.webm',
     };
 
+    const COMPANION_HELLO = {
+        rabbit:    '/assets/voices/Bunny_hello.wav',
+        pig:       '/assets/voices/piggy_hello.wav',
+        alligator: '/assets/voices/Aligator_hello.wav',
+    };
+
     // Each card click saves companion, plays intro if available, then goes to library
     document.querySelectorAll('.companion-card').forEach(card => {
         card.onclick = () => {
@@ -1478,24 +1484,15 @@ function showCompanions() {
             }
             card.classList.add('talking');
 
-            // Play companion's actual voice from their intro clip
-            if (COMPANION_INTROS[companion]) {
+            if (COMPANION_HELLO[companion]) {
                 if (window.__hoverAudio) {
                     window.__hoverAudio.pause();
                     window.__hoverAudio.currentTime = 0;
                 }
-                const audio = new Audio(COMPANION_INTROS[companion]);
-                audio.currentTime = 0;
+                const audio = new Audio(COMPANION_HELLO[companion]);
                 audio.volume = 1;
                 window.__hoverAudio = audio;
                 audio.play().catch(() => {});
-                // Stop after 3 seconds so it doesn't play the whole intro
-                setTimeout(() => {
-                    if (window.__hoverAudio === audio) {
-                        audio.pause();
-                        audio.currentTime = 0;
-                    }
-                }, 3000);
             }
         });
         card.addEventListener('mouseleave', () => {

@@ -28,6 +28,13 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "").strip()
 QUESTION_PROVIDER_DEFAULT = os.getenv("QUESTION_PROVIDER_DEFAULT", "openai").strip().lower()
 
+HUME_API_KEY = os.getenv("HUME_API_KEY", "").strip()
+HUME_VOICE_IDS = {
+    "blossom": os.getenv("HUME_VOICE_BLOSSOM", "").strip(),
+    "pippa":   os.getenv("HUME_VOICE_PIPPA", "").strip(),
+    "ash":     os.getenv("HUME_VOICE_ASH", "").strip(),
+}
+
 VIDEO_EXTENSIONS = (".mp4",".webm",".mkv",".mov")
 
 EXPERT_QUESTION_TYPES = [
