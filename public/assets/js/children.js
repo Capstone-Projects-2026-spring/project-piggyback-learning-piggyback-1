@@ -89,6 +89,7 @@
     let activeQuestion = false;
     let previousTime = 0;
     let maxAllowedTime = 0;
+    let lastWatchCheckpointAt = 0;
     let skipLockBypass = false;
     let totalQuestions = 0;
     let correctAnswers = 0;
@@ -477,11 +478,9 @@
         if (activeQuestion) {
           ytPlayer?.pauseVideo();
         }
-        // Start watch timer for passive users
-        if (document.body.dataset.interactionMode === 'passive' && typeof quizScore !== 'undefined') {
-            if (quizScore.watchStartTime === null) {
-                quizScore.watchStartTime = Date.now();
-            }
+        // Start watch timer
+        if (typeof quizScore !== 'undefined' && quizScore.watchStartTime === null) {
+            quizScore.watchStartTime = Date.now();
         }
       }
       if (event.data === YT.PlayerState.PAUSED) {
@@ -491,12 +490,10 @@
         } else {
           hidePauseBlocker();
         }
-        // Pause watch timer for passive users
-        if (document.body.dataset.interactionMode === 'passive' && typeof quizScore !== 'undefined') {
-            if (quizScore.watchStartTime !== null) {
-                quizScore.watchAccumulatedMs = (quizScore.watchAccumulatedMs || 0) + (Date.now() - quizScore.watchStartTime);
-                quizScore.watchStartTime = null;
-            }
+        // Accumulate watch time on pause
+        if (typeof quizScore !== 'undefined' && quizScore.watchStartTime !== null) {
+            quizScore.watchAccumulatedMs = (quizScore.watchAccumulatedMs || 0) + (Date.now() - quizScore.watchStartTime);
+            quizScore.watchStartTime = null;
         }
       }
       if (event.data === YT.PlayerState.ENDED) {
@@ -504,12 +501,12 @@
         if (ytEndBlocker) {
             ytEndBlocker.style.display = "flex";
         }
+        // Stop the timer before saving
+        if (typeof quizScore !== 'undefined' && quizScore.watchStartTime !== null) {
+            quizScore.watchAccumulatedMs = (quizScore.watchAccumulatedMs || 0) + (Date.now() - quizScore.watchStartTime);
+            quizScore.watchStartTime = null;
+        }
         if (document.body.dataset.interactionMode === 'passive') {
-            // Stop the timer before saving
-            if (typeof quizScore !== 'undefined' && quizScore.watchStartTime !== null) {
-                quizScore.watchAccumulatedMs = (quizScore.watchAccumulatedMs || 0) + (Date.now() - quizScore.watchStartTime);
-                quizScore.watchStartTime = null;
-            }
             if (typeof savePassiveWatchSession === 'function') {
                 savePassiveWatchSession();
             }
@@ -942,14 +939,8 @@
       backButton.style.display = "inline-flex";
       const switchBtn = document.getElementById('switch-companion-btn');
       if (switchBtn) switchBtn.style.display = 'none';
-      const coverBtn = document.getElementById('cover-btn');
-      if (coverBtn) { coverBtn.style.display = 'inline-block'; coverBtn.textContent = '⛶ Show Bar'; }
       window.scrollTo(0, 0);
-      // Enable cover mode automatically so the video fills 100vw × 100vh
-      // regardless of screen aspect ratio. Mac screens are 16:10 so the old
-      // 16:9 width-calc left black bars on the sides; cover mode sidesteps
-      // that entirely and lets YouTube handle the aspect ratio inside the iframe.
-      document.body.classList.add("watching-video", "cover-mode");
+      document.body.classList.add("watching-video");
 
       // Hide library companion greeter
       const libComp = document.getElementById('library-companion');
@@ -997,6 +988,7 @@
       retryCountMap.clear();
       previousTime = 0;
       maxAllowedTime = 0;
+      lastWatchCheckpointAt = 0;
       skipLockBypass = false;
 
       // Load matching questions (pass companion so backend can return persona-specific questions)
@@ -1084,15 +1076,25 @@
 
         // --- Question Triggers ---
         if (document.body.dataset.interactionMode === 'passive') {
-          // Autosave every 60 seconds of watch time
+          // Passive: use dedicated session save every 45s
           if (quizScore && quizScore.watchStartTime) {
             const elapsed = Math.floor((Date.now() - quizScore.watchStartTime) / 1000);
-            if (elapsed > 0 && elapsed % 60 === 0 && typeof savePassiveWatchSession === 'function') {
+            if (elapsed > 0 && elapsed % 45 === 0 && typeof savePassiveWatchSession === 'function') {
               savePassiveWatchSession();
             }
           }
           previousTime = currentTime;
           return;
+        }
+
+        // Active modes: checkpoint watch time every 45s
+        if (typeof flushWatchTime === 'function' && quizScore) {
+          const now = Date.now();
+          if (lastWatchCheckpointAt === 0) lastWatchCheckpointAt = now;
+          if (now - lastWatchCheckpointAt >= 45000) {
+            lastWatchCheckpointAt = now;
+            flushWatchTime();
+          }
         }
 
         for (const segment of segments) {
@@ -2055,9 +2057,9 @@
     // ===============================
     backButton.onclick = () => {
       if (document.body.dataset.interactionMode === 'passive') {
-        if (typeof savePassiveWatchSession === 'function') {
-          savePassiveWatchSession();
-        }
+        if (typeof savePassiveWatchSession === 'function') savePassiveWatchSession();
+      } else {
+        if (typeof flushWatchTime === 'function') flushWatchTime();
       }
       pauseVideo();
       clearInterval(checkInterval);
