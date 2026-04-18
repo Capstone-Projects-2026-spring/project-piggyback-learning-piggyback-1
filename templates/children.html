@@ -1522,8 +1522,8 @@ const COMPANION_TALK_IMGS = {
 };
 const COMPANION_BUBBLE_LINES = {
     pig: [
+        "This is getting so exciting!",
         "Oh oh oh, keep watching!",
-        "This is getting so good!",
         "Come on, press play!",
     ],
     rabbit: [
@@ -1536,6 +1536,16 @@ const COMPANION_BUBBLE_LINES = {
         "Stay focused. Keep watching.",
         "Press play. You are not done yet.",
     ],
+};
+
+const COMPANION_PAUSE_WAVS = {
+    pig: [
+        '/assets/voices/pause/piggy_pause_1.wav',
+        '/assets/voices/pause/piggy_pause_2.wav',
+        '/assets/voices/pause/piggy_pause_3.wav',
+    ],
+    rabbit: [],
+    alligator: [],
 };
 
 window.triggerCompanionTalk = function() {
@@ -1557,18 +1567,22 @@ window.triggerCompanionTalk = function() {
     talker.style.display = 'block';
     bubble.style.display = 'block';
 
-    const COMPANION_HUME = { rabbit: 'blossom', pig: 'pippa', alligator: 'ash' };
-    const humeCompanion = COMPANION_HUME[companion] || '';
-    fetch('/api/tts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: line, companion: humeCompanion })
-    }).then(r => r.json()).then(data => {
-        if (data.success && data.audio) {
-            const audio = new Audio(`data:audio/${data.format};base64,${data.audio}`);
-            audio.play().catch(() => {});
-        }
-    }).catch(() => {});
+    const pauseWavs = COMPANION_PAUSE_WAVS[companion] || [];
+    if (pauseWavs.length > 0) {
+        const wav = pauseWavs[Math.floor(Math.random() * pauseWavs.length)];
+        new Audio(wav).play().catch(() => {});
+    } else {
+        const COMPANION_HUME = { rabbit: 'blossom', pig: 'pippa', alligator: 'ash' };
+        fetch('/api/tts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: line, companion: COMPANION_HUME[companion] || '' })
+        }).then(r => r.json()).then(data => {
+            if (data.success && data.audio) {
+                new Audio(`data:audio/${data.format};base64,${data.audio}`).play().catch(() => {});
+            }
+        }).catch(() => {});
+    }
 
     // stays looking at user until video resumes (PLAYING handler resets it)
 }
