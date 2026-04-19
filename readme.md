@@ -42,7 +42,7 @@ Key Python packages (see `requirements.txt` for pinned versions):
 |---|---|
 | Admin | `admin123` |
 
-These are the defaults when `ADMIN_PASSWORD` / `EXPERT_PASSWORD` are not set in `.env`.
+These are the defaults when `ADMIN_PASSWORD` is not set in `.env`.
 **Change these in production.**
 
 ## Quickstart
@@ -136,7 +136,6 @@ ANTHROPIC_API_KEY="your_anthropic_key"
 GEMINI_API_KEY="your_gemini_key"
 YOUTUBE_API_KEY="your_youtube_key"
 ADMIN_PASSWORD="admin123"
-EXPERT_PASSWORD="expert123"
 # Optional: Netscape-format cookies file for restricted videos
 YTDLP_COOKIEFILE="C:\\path\\to\\cookies.txt"
 YTDLP_COOKIES_FILE="C:\\path\\to\\cookies.txt"
