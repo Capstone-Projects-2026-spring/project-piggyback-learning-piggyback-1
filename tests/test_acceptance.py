@@ -245,7 +245,7 @@ def test_access_code_set_and_verify():
         conn.commit()
 
 
-# ── New: parent report acceptance test ──
+#  New: parent report acceptance test 
 
 def test_parent_can_load_childs_report():
     # Full flow: expert sets up a child, expert report endpoint returns valid structure

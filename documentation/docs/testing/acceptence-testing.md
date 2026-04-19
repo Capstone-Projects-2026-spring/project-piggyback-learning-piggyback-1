@@ -51,6 +51,12 @@ Acceptance tests cover full user flows — login, creating children, answering q
 |---|---|
 | `test_access_code_set_and_verify` | parent sets access code; code is stored in plain text and hashed form |
 
+## Parent Report
+
+| Test | What it checks |
+|---|---|
+| `test_parent_can_load_childs_report` | expert creates a child; report endpoint returns valid structure even with no quiz history |
+
 ---
 
 ## Manual Tests
