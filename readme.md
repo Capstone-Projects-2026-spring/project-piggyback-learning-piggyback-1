@@ -142,6 +142,11 @@ ANTHROPIC_API_KEY="your_anthropic_key"
 GEMINI_API_KEY="your_gemini_key"
 YOUTUBE_API_KEY="your_youtube_key"
 ADMIN_PASSWORD="admin123"
+# Optional: Hume AI voice keys (for companion voices)
+HUME_API_KEY="your_hume_api_key"
+HUME_VOICE_BLOSSOM="your_blossom_voice_id"
+HUME_VOICE_PIPPA="your_pippa_voice_id"
+HUME_VOICE_ASH="your_ash_voice_id"
 # Optional: Netscape-format cookies file for restricted videos
 YTDLP_COOKIEFILE="C:\\path\\to\\cookies.txt"
 YTDLP_COOKIES_FILE="C:\\path\\to\\cookies.txt"
