@@ -557,52 +557,31 @@
         </div>
 
         <!-- ── Section: Parent Report ── -->
-        <div id="section-parent-report" style="display:none;">
-            <div style="max-width: 860px; padding: 16px 0 40px;">
-                <button onclick="backToDashboard()" style="background:none;border:none;color:#6a1b9a;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:16px;padding:0;">← Back to Dashboard</button>
-
-                <!-- Filters row -->
-                <div style="background:white;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.08);padding:24px;margin-bottom:20px;">
-                    <h3 style="margin:0 0 18px;color:#2c3e50;">Parental Report</h3>
-                    <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;">
-                        <div style="display:flex;flex-direction:column;gap:6px;min-width:160px;">
-                            <label style="font-size:13px;font-weight:600;color:#495057;">Child</label>
-                            <select id="c3-child-select" style="padding:10px 14px;border:2px solid #e9ecef;border-radius:10px;font-size:14px;">
-                                <option value="">— Select Child —</option>
-                            </select>
-                        </div>
-                        <!---
-                        <div style="display:flex;flex-direction:column;gap:6px;min-width:140px;">
-                            <label style="font-size:13px;font-weight:600;color:#495057;">Mode</label>
-                            <select id="c3-mode-select" style="padding:10px 14px;border:2px solid #e9ecef;border-radius:10px;font-size:14px;">
-                                <option value="all">All Modes</option>
-                                <option value="flexible">Flexible</option>
-                                <option value="strict">Strict</option>
-                                <option value="passive">Passive</option>
-                            </select>
-                        </div>
-                    -->
-                        <div>
-                            <button id="c3-load-btn" onclick="card3LoadReport()" style="background:#6a1b9a;color:white;border:none;border-radius:10px;padding:12px 24px;font-size:15px;font-weight:600;cursor:pointer;" disabled>Load Report</button>
-                        </div>
-                    </div>
+        <div id="section-parent-report" style="display:none;padding:0 0 40px;">
+            <!-- Compact header bar -->
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
+                <button onclick="backToDashboard()" style="background:none;border:none;color:#6a1b9a;font-size:14px;font-weight:600;cursor:pointer;padding:0;display:flex;align-items:center;gap:6px;">← Back to Dashboard</button>
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                    <select id="c3-child-select" style="padding:9px 14px;border:2px solid #e9ecef;border-radius:10px;font-size:14px;background:white;cursor:pointer;">
+                        <option value="">— Select Child —</option>
+                    </select>
+                    <button id="c3-load-btn" onclick="card3LoadReport()" style="background:#6a1b9a;color:white;border:none;border-radius:10px;padding:10px 22px;font-size:14px;font-weight:600;cursor:pointer;" disabled>Load Report</button>
                 </div>
+            </div>
 
-                <!-- Report output -->
-                <div id="c3-report-area"></div>
+            <!-- Report output -->
+            <div id="c3-report-area"></div>
 
-                <!-- Login Code Settings -->
-                <div id="c3-login-code-section" style="display:none;background:white;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.08);padding:24px;margin-top:20px;">
-                    <h3 style="margin:0 0 16px;color:#2c3e50;">Login Code Settings</h3>
-                    <p style="font-size:14px;color:#6c757d;margin:0 0 16px;">Set a new login code for this parent. They will use it to access Piggyback.</p>
-                    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
-                        <input id="c3-login-code-input" type="text" placeholder="New login code (min 4 chars)" maxlength="50"
-                            style="padding:10px 14px;border:2px solid #e9ecef;border-radius:10px;font-size:15px;outline:none;min-width:220px;"/>
-                        <button onclick="card3UpdateLoginCode()" style="background:#e91e8c;color:white;border:none;border-radius:10px;padding:12px 22px;font-size:15px;font-weight:600;cursor:pointer;">Update Code</button>
-                    </div>
-                    <div id="c3-login-code-status" style="margin-top:10px;font-size:14px;display:none;"></div>
+            <!-- Login Code Settings -->
+            <div id="c3-login-code-section" style="display:none;background:white;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.08);padding:24px;margin-top:20px;">
+                <h3 style="margin:0 0 16px;color:#2c3e50;">Login Code Settings</h3>
+                <p style="font-size:14px;color:#6c757d;margin:0 0 16px;">Set a new login code for this parent. They will use it to access Piggyback.</p>
+                <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+                    <input id="c3-login-code-input" type="text" placeholder="New login code (min 4 chars)" maxlength="50"
+                        style="padding:10px 14px;border:2px solid #e9ecef;border-radius:10px;font-size:15px;outline:none;min-width:220px;"/>
+                    <button onclick="card3UpdateLoginCode()" style="background:#e91e8c;color:white;border:none;border-radius:10px;padding:12px 22px;font-size:15px;font-weight:600;cursor:pointer;">Update Code</button>
                 </div>
-
+                <div id="c3-login-code-status" style="margin-top:10px;font-size:14px;display:none;"></div>
             </div>
         </div>
 
@@ -843,81 +822,101 @@ function card3RenderReport(data, mode) {
     }
 
     const score = Math.round(data.overall_score || 0);
-    const scoreColor = score >= 80 ? '#4caf50' : score >= 60 ? '#ff9800' : '#f44336';
+    const scoreGrad = score >= 80
+        ? 'linear-gradient(135deg,#43a047,#66bb6a)'
+        : score >= 60
+        ? 'linear-gradient(135deg,#fb8c00,#ffa726)'
+        : 'linear-gradient(135deg,#6a1b9a,#e91e8c)';
+    const scoreEmoji = score >= 80 ? '🌟' : score >= 60 ? '👍' : '💪';
     const attempts = data.total_attempts || 0;
     const totalRetries = data.total_retries || 0;
     const avgRetries = data.avg_retries_per_question != null ? Number(data.avg_retries_per_question).toFixed(1) : '0.0';
 
     // Score card
     const scoreHtml = `
-        <div style="background:${scoreColor};border-radius:12px;padding:24px;text-align:center;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.12);">
-            <div style="font-size:52px;font-weight:800;color:white;line-height:1;">${score}%</div>
-            <div style="font-size:15px;color:rgba(255,255,255,0.9);margin-top:4px;">Overall Score${mode !== 'all' ? ' · ' + mode + ' mode' : ''}</div>
+        <div style="background:${scoreGrad};border-radius:18px;padding:28px 24px;text-align:center;margin-bottom:14px;box-shadow:0 4px 20px rgba(106,27,154,0.18);">
+            <div style="font-size:15px;margin-bottom:6px;opacity:0.9;color:white;">${scoreEmoji} Overall Score</div>
+            <div style="font-size:68px;font-weight:900;color:white;line-height:1;letter-spacing:-2px;">${score}<span style="font-size:32px;font-weight:700;">%</span></div>
+            ${mode !== 'all' ? `<div style="margin-top:10px;display:inline-block;background:rgba(255,255,255,0.2);padding:4px 14px;border-radius:20px;font-size:12px;color:white;">${mode} mode</div>` : ''}
         </div>`;
 
-    // Stats row
+    // 2x2 stat grid
+    const statCard = (icon, value, label) => `
+        <div style="background:white;border-radius:12px;padding:16px 12px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+            <div style="font-size:20px;margin-bottom:4px;">${icon}</div>
+            <div style="font-size:26px;font-weight:800;color:#6a1b9a;line-height:1;">${value}</div>
+            <div style="font-size:11px;color:#9e9e9e;margin-top:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">${label}</div>
+        </div>`;
+
     const statsHtml = `
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:12px;">
-            <div style="background:white;border-radius:12px;padding:16px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.08);">
-                <div style="font-size:28px;font-weight:800;color:#6a1b9a;">${attempts}</div>
-                <div style="font-size:13px;color:#6c757d;">Quiz Attempts</div>
-            </div>
-            <div style="background:white;border-radius:12px;padding:16px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.08);">
-                <div style="font-size:28px;font-weight:800;color:#6a1b9a;">${totalRetries}</div>
-                <div style="font-size:13px;color:#6c757d;">Total Retries</div>
-            </div>
-            <div style="background:white;border-radius:12px;padding:16px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.08);">
-                <div style="font-size:28px;font-weight:800;color:#6a1b9a;">${avgRetries}</div>
-                <div style="font-size:13px;color:#6c757d;">Avg Retries/Q</div>
-            </div>
-            <div style="background:white;border-radius:12px;padding:16px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.08);">
-                <div style="font-size:28px;font-weight:800;color:#6a1b9a;">${watchDisplay}</div>
-                <div style="font-size:13px;color:#6c757d;">Watch Time</div>
-            </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            ${statCard('🎯', attempts, 'Quiz Attempts')}
+            ${statCard('🔄', totalRetries, 'Total Retries')}
+            ${statCard('📊', avgRetries, 'Avg Retries/Q')}
+            ${statCard('⏱️', watchDisplay, 'Watch Time')}
         </div>`;
 
-    // Categories
+    // Categories (full width)
     const cats = data.top_categories || [];
     const catsHtml = cats.length === 0
-        ? '<p style="color:#6c757d;font-size:14px;">No category data yet.</p>'
+        ? `<div style="text-align:center;padding:20px 0;">
+               <div style="font-size:28px;margin-bottom:6px;">📂</div>
+               <div style="color:#b0bec5;font-size:13px;">No category data yet — keep watching!</div>
+           </div>`
         : cats.map(cat => {
             const meta = CATEGORY_META_C3[cat.type] || { label: cat.type, icon: '📌' };
+            const barColor = cat.score >= 80 ? '#43a047' : cat.score >= 60 ? '#fb8c00' : '#6a1b9a';
             return `
                 <div style="margin-bottom:14px;">
-                    <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
-                        <span style="font-size:14px;font-weight:600;color:#2c3e50;">${meta.icon} ${meta.label}</span>
-                        <span style="font-size:14px;color:#6c757d;">${cat.score}/100</span>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+                        <span style="font-size:13px;font-weight:600;color:#2c3e50;">${meta.icon} ${meta.label}</span>
+                        <span style="font-size:13px;font-weight:700;color:${barColor};">${cat.score}%</span>
                     </div>
-                    <div style="background:#e9ecef;border-radius:6px;height:10px;overflow:hidden;">
-                        <div style="height:100%;width:${cat.score}%;background:linear-gradient(90deg,#6a1b9a,#e91e8c);border-radius:6px;"></div>
+                    <div style="background:#f0f0f0;border-radius:999px;height:8px;overflow:hidden;">
+                        <div style="height:100%;width:${cat.score}%;background:${barColor};border-radius:999px;"></div>
                     </div>
                 </div>`;
         }).join('');
 
-    const categoryHtml = `
-        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:12px;">
-            <h4 style="margin:0 0 16px;color:#2c3e50;">Category Scores</h4>
-            ${catsHtml}
-        </div>`;
-
     // Recent videos
     const videos = data.recent_videos || [];
-    const videosHtml = videos.length === 0 ? '' : `
-        <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:12px;">
-            <h4 style="margin:0 0 12px;color:#2c3e50;">Recent Sessions</h4>
-            ${videos.map(v => {
-                const pct = v.percentage || 0;
-                const col = pct >= 80 ? '#4caf50' : pct >= 60 ? '#ff9800' : '#f44336';
-                const modeTag = v.interaction_mode ? `<span style="font-size:11px;background:#f3e5f5;color:#6a1b9a;border-radius:4px;padding:2px 6px;margin-left:6px;">${v.interaction_mode}</span>` : '';
-                return `
-                    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0f0;">
-                        <span style="font-size:13px;color:#2c3e50;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${v.video_title || v.video_id}${modeTag}</span>
-                        <span style="font-size:13px;font-weight:700;color:${col};flex-shrink:0;margin-left:12px;">${pct}%</span>
-                    </div>`;
-            }).join('')}
-        </div>`;
+    const sessionsInner = videos.length === 0
+        ? `<div style="text-align:center;padding:20px 0;color:#b0bec5;font-size:13px;">No sessions yet.</div>`
+        : videos.map(v => {
+            const pct = v.percentage || 0;
+            const col = pct >= 80 ? '#43a047' : pct >= 60 ? '#fb8c00' : '#e53935';
+            const bg  = pct >= 80 ? '#f1f8f1' : pct >= 60 ? '#fff8f0' : '#fdf3f3';
+            const modeTag = v.interaction_mode
+                ? `<span style="font-size:10px;background:#f3e5f5;color:#6a1b9a;border-radius:10px;padding:2px 7px;margin-left:7px;font-weight:600;">${v.interaction_mode}</span>`
+                : '';
+            return `
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;margin-bottom:8px;border-radius:10px;background:#fafafa;border-left:4px solid ${col};">
+                    <span style="font-size:13px;color:#37474f;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:8px;">${v.video_title || v.video_id}${modeTag}</span>
+                    <span style="font-size:13px;font-weight:800;color:${col};flex-shrink:0;background:${bg};padding:3px 9px;border-radius:8px;">${pct}%</span>
+                </div>`;
+        }).join('');
 
-    return scoreHtml + statsHtml + categoryHtml + videosHtml;
+    // Layout: left col = score + stats | right col = sessions | bottom = categories
+    return `
+        <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:16px;margin-bottom:16px;align-items:start;">
+            <!-- Left: score + stats -->
+            <div>
+                ${scoreHtml}
+                ${statsHtml}
+            </div>
+            <!-- Right: recent sessions -->
+            <div style="background:white;border-radius:14px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,0.07);height:100%;box-sizing:border-box;">
+                <h4 style="margin:0 0 14px;color:#2c3e50;font-size:15px;font-weight:700;">🎬 Recent Sessions</h4>
+                <div style="max-height:380px;overflow-y:auto;">
+                    ${sessionsInner}
+                </div>
+            </div>
+        </div>
+        <!-- Categories full width -->
+        <div style="background:white;border-radius:14px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,0.07);">
+            <h4 style="margin:0 0 16px;color:#2c3e50;font-size:15px;font-weight:700;">📚 Category Scores</h4>
+            ${catsHtml}
+        </div>`;
 }
 
 async function card3UpdateLoginCode() {
