@@ -127,3 +127,25 @@ node -v  # optional
 ```
 
 Open `http://localhost:8000` in your browser.
+
+---
+
+## Running with Docker
+
+A `Dockerfile` is included as an alternative to the manual setup above. Docker handles Python, FFmpeg, and all dependencies automatically.
+
+### Build the image
+
+```bash
+docker build -t piggyback .
+```
+
+### Run the container
+
+```bash
+docker run -p 8000:8000 --env-file .env piggyback
+```
+
+Open `http://localhost:8000` in your browser.
+
+> Make sure your `.env` file is set up before running the container - the app needs API keys to work.
