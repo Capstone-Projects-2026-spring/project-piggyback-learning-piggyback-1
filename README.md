@@ -17,7 +17,7 @@ And they don't do it alone. They pick a companion:
 - 🐷 **Pippa the Pig** : your childhood best friend, warm and always by your side
 - 🐊 **Ash the Alligator** : the cool uncle, supportive and cheering you on every step
 
-And every session, parents get a real report — what was watched, how their child did, and where they struggled. Finally, a window into their child's screen time.
+And every session, parents get a real report - what was watched, how their child did, and where they struggled. Finally, a window into their child's screen time.
 
 ---
 
