@@ -1,82 +1,107 @@
+---
+sidebar_position: 6
+---
+
+# System Block Diagram
+
 ```mermaid
-%%{init: {"flowchart":{"defaultRenderer":"elk"}}}%%
-flowchart LR
+flowchart TD
+
+  subgraph USERS["Users"]
+    Child["Child"]
+    Parent["Parent"]
+    Admin["Admin"]
+  end
 
   subgraph FE["Frontend Web Interface"]
+    HomeUI["Home / Login Page"]
     KidsUI["Kids Interface"]
-    ExpertUI["Expert Review Interface"]
+    CompanionUI["Companion Selector"]
+    QuizUI["Quiz Player and Feedback"]
+    RewindUI["Rewind / Continue Control"]
+    ParentUI["Parent Dashboard"]
+    ReportUI["Parental Report"]
     AdminUI["Admin Control Panel"]
-    Companion["Companion Selector"]
-    QuizUI["Quiz and Feedback"]
-    Rewind["Rewind or Continue Control"]
-
-    KidsUI --> Companion
-    Companion --> QuizUI
-    QuizUI --> Rewind
+    ReviewUI["Question Review Interface"]
   end
 
-  subgraph BE["Backend FastAPI Server"]
+  subgraph BE["Backend - FastAPI Server"]
     API["FastAPI Application"]
-    KidsRoutes["Video and Quiz Routes"]
+    AuthService["Access Code Auth"]
     AdminRoutes["Admin Routes"]
-    WS["WebSocket Question Progress"]
-    Frames["Frame Extraction OpenCV"]
-    Parse["Transcript and Frame Parsing"]
-    AI["AI Question Generation"]
+    KidsRoutes["Video and Quiz Routes"]
+    ReportService["Report Service"]
+    WS["WebSocket - Question Progress"]
+    AnswerCheck["Answer Evaluation"]
     TTS["Text to Speech"]
-    Auth["Password and Access Control"]
-  end
-
-  subgraph STORE["Local Storage"]
-    Videos["Downloaded Videos and Metadata"]
-    FramesStore["Extracted Frames"]
-    AIQuestions["AI Generated Questions"]
-    ExpertNotes["Expert Annotations"]
-    FinalQ["Final Approved Questions"]
+    AIGen["AI Question Generation"]
+    FrameExt["Frame Extraction - OpenCV"]
   end
 
   subgraph EXT["External Services"]
-    YouTube["YouTube"]
     YTDLP["yt-dlp"]
+    YouTube["YouTube"]
     FFmpeg["FFmpeg"]
-    Node["Node JS Optional"]
-    OpenAI["OpenAI API"]
-    ENV["Environment Variables"]
+    OpenAI["OpenAI"]
+    Anthropic["Anthropic"]
+    Gemini["Gemini"]
+    Hume["Hume AI - Companion Voices"]
   end
 
-  Child["Child User"] --> KidsUI
-  Parent["Parent or Educator"] --> AdminUI
-  Admin["Admin or Expert"] --> AdminUI
-  Admin --> ExpertUI
+  subgraph STORE["Local Storage - SQLite and Files"]
+    DB["SQLite Database"]
+    Videos["Downloaded Videos"]
+    Frames["Extracted Frames"]
+    Questions["Final Questions"]
+    Results["Quiz Results"]
+  end
 
-  KidsUI --> API
+  Child --> HomeUI
+  Parent --> HomeUI
+  Admin --> HomeUI
+
+  HomeUI --> AuthService
+  AuthService --> DB
+
+  Child --> KidsUI
+  KidsUI --> CompanionUI
+  CompanionUI --> QuizUI
+  QuizUI --> AnswerCheck
+  QuizUI --> RewindUI
+  QuizUI --> TTS
+  TTS --> Hume
+
+  AnswerCheck --> Results
+  AnswerCheck --> OpenAI
+
+  Parent --> ParentUI
+  ParentUI --> ReviewUI
+  ParentUI --> ReportUI
+  ReportUI --> ReportService
+  ReportService --> DB
+  ReportService --> Results
+
+  ReviewUI --> Questions
+
+  Admin --> AdminUI
   AdminUI --> AdminRoutes
-  ExpertUI --> KidsRoutes
-
-  API --> KidsRoutes
-  API --> AdminRoutes
-  API --> TTS
-
-  AdminRoutes --> WS
   AdminRoutes --> YTDLP
-  AdminRoutes --> Frames
-  AdminRoutes --> Parse
-  AdminRoutes --> AI
+  AdminRoutes --> FrameExt
+  AdminRoutes --> AIGen
+  AdminRoutes --> WS
 
   YTDLP --> YouTube
   YTDLP --> FFmpeg
-  YTDLP --> Node
   YTDLP --> Videos
 
-  Frames --> FramesStore
-  Parse --> FramesStore
-  AI --> OpenAI
-  OpenAI --> AIQuestions
-  TTS --> OpenAI
+  FrameExt --> Videos
+  FrameExt --> Frames
 
-  KidsRoutes --> ExpertNotes
-  KidsRoutes --> FinalQ
+  AIGen --> OpenAI
+  AIGen --> Anthropic
+  AIGen --> Gemini
+  AIGen --> Questions
 
-  ENV --> API
-  ENV --> OpenAI
-  Auth --> API
+  KidsRoutes --> Questions
+  KidsRoutes --> DB
+```
