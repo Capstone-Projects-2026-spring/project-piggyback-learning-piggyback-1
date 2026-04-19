@@ -223,8 +223,8 @@ templates/
   admin.html
   children.html
   expert_preview.html
-  home.html
-  video_quiz.html
+  edit_questions.html
+  avatar_sample.html
 tests/
   conftest.py
   test_unit.py
