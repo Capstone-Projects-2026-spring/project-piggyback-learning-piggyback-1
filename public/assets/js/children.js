@@ -1245,16 +1245,21 @@
       feedbackUtterance = null;
     }
 
+    const COMPANION_HUME_NAME = { rabbit: 'blossom', pig: 'pippa', alligator: 'ash' };
+
     async function requestTTS(text) {
       const trimmed = text?.trim();
       if (!trimmed) {
         throw new Error("No text provided for TTS.");
       }
+      const rawCompanion = (typeof loadState === 'function' ? loadState().companion : '') || '';
+      const companion = COMPANION_HUME_NAME[rawCompanion] || '';
       const res = await fetch("/api/tts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           text: trimmed,
+          companion,
           voice: TTS_DEFAULTS.voice,
           speed: TTS_DEFAULTS.speed,
           format: TTS_DEFAULTS.format
