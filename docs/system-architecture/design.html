@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.9.2">
 <title data-rh="true">Design | Project Piggyback Learning Piggyback 1</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://Capstone-Projects-2026-spring.github.io/project-piggyback-learning-piggyback-1/docs/system-architecture/design"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Design | Project Piggyback Learning Piggyback 1"><meta data-rh="true" name="description" content="Purpose"><meta data-rh="true" property="og:description" content="Purpose"><link data-rh="true" rel="icon" href="/project-piggyback-learning-piggyback-1/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://Capstone-Projects-2026-spring.github.io/project-piggyback-learning-piggyback-1/docs/system-architecture/design"><link data-rh="true" rel="alternate" href="https://Capstone-Projects-2026-spring.github.io/project-piggyback-learning-piggyback-1/docs/system-architecture/design" hreflang="en"><link data-rh="true" rel="alternate" href="https://Capstone-Projects-2026-spring.github.io/project-piggyback-learning-piggyback-1/docs/system-architecture/design" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"System Architecture","item":"https://Capstone-Projects-2026-spring.github.io/project-piggyback-learning-piggyback-1/docs/category/system-architecture"},{"@type":"ListItem","position":2,"name":"Design","item":"https://Capstone-Projects-2026-spring.github.io/project-piggyback-learning-piggyback-1/docs/system-architecture/design"}]}</script><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script><link rel="stylesheet" href="/project-piggyback-learning-piggyback-1/assets/css/styles.7aa687c6.css">
-<script src="/project-piggyback-learning-piggyback-1/assets/js/runtime~main.79f086bd.js" defer="defer"></script>
+<script src="/project-piggyback-learning-piggyback-1/assets/js/runtime~main.5d54908b.js" defer="defer"></script>
 <script src="/project-piggyback-learning-piggyback-1/assets/js/main.fdca1115.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -13,176 +13,154 @@
 </defs></svg>
 <script>!function(){var t=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return window.localStorage.getItem("theme")}catch(t){}}();document.documentElement.setAttribute("data-theme",t||"light"),document.documentElement.setAttribute("data-theme-choice",t||"light")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><div role="region" aria-label="Skip to main content"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="theme-layout-navbar navbar navbar--fixed-top"><div class="navbar__inner"><div class="theme-layout-navbar-left navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/project-piggyback-learning-piggyback-1/"><div class="navbar__logo"><img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Temple_T_logo.svg" alt="My Site Logo" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Temple_T_logo.svg" alt="My Site Logo" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">Project Piggyback Learning Piggyback 1</b></a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/project-piggyback-learning-piggyback-1/docs/intro">Documentation</a><a class="navbar__item navbar__link" href="/project-piggyback-learning-piggyback-1/tutorial/Intro">Docusaurus Tutorial</a></div><div class="theme-layout-navbar-right navbar__items navbar__items--right"><a href="https://github.com/Capstone-Projects-2026-spring/project-piggyback-learning-piggyback-1" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="system mode" aria-label="Switch between dark and light mode (currently system mode)"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_g3eP lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_g3eP darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_g3eP systemToggleIcon_QzmC"><path fill="currentColor" d="m12 21c4.971 0 9-4.029 9-9s-4.029-9-9-9-9 4.029-9 9 4.029 9 9 9zm4.95-13.95c1.313 1.313 2.05 3.093 2.05 4.95s-0.738 3.637-2.05 4.95c-1.313 1.313-3.093 2.05-4.95 2.05v-14c1.857 0 3.637 0.737 4.95 2.05z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="theme-layout-main main-wrapper mainWrapper_z2l0"><div class="docsWrapper_hBAB"><button aria-label="Scroll back to top" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type="button"></button><div class="docRoot_UBD9"><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class="sidebarViewport_aRkj"><div class="sidebar_njMd"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/project-piggyback-learning-piggyback-1/docs/intro"><span title="Piggyback Learning" class="linkLabel_WmDU">Piggyback Learning</span></a></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="categoryLink_byQd menu__link menu__link--sublist" href="/project-piggyback-learning-piggyback-1/docs/category/requirements-specification"><span title="Requirements Specification" class="categoryLinkLabel_W154">Requirements Specification</span></a><button aria-label="Expand sidebar category &#x27;Requirements Specification&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="categoryLink_byQd menu__link menu__link--sublist menu__link--active" href="/project-piggyback-learning-piggyback-1/docs/category/system-architecture"><span title="System Architecture" class="categoryLinkLabel_W154">System Architecture</span></a><button aria-label="Collapse sidebar category &#x27;System Architecture&#x27;" aria-expanded="true" type="button" class="clean-btn menu__caret"></button></div><ul class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/project-piggyback-learning-piggyback-1/docs/system-architecture/design"><span title="Design" class="linkLabel_WmDU">Design</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/project-piggyback-learning-piggyback-1/docs/system-architecture/development-environment"><span title="Development Environment" class="linkLabel_WmDU">Development Environment</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/project-piggyback-learning-piggyback-1/docs/system-architecture/class-diagrams"><span title="Class Diagrams" class="linkLabel_WmDU">Class Diagrams</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/project-piggyback-learning-piggyback-1/docs/system-architecture/version-control"><span title="Version Control" class="linkLabel_WmDU">Version Control</span></a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/project-piggyback-learning-piggyback-1/docs/system-architecture/sequence-diagrams"><span title="Sequence Diagrams" class="linkLabel_WmDU">Sequence Diagrams</span></a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="categoryLink_byQd menu__link menu__link--sublist" href="/project-piggyback-learning-piggyback-1/docs/category/api-specification"><span title="API Specification" class="categoryLinkLabel_W154">API Specification</span></a><button aria-label="Expand sidebar category &#x27;API Specification&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="categoryLink_byQd menu__link menu__link--sublist" href="/project-piggyback-learning-piggyback-1/docs/category/test-procedures"><span title="Test Procedures" class="categoryLinkLabel_W154">Test Procedures</span></a><button aria-label="Expand sidebar category &#x27;Test Procedures&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li></ul></nav></div></div></aside><main class="docMainContainer_TBSr"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_VOVn"><div class="docItemContainer_Djhp"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label="Breadcrumbs"><ul class="breadcrumbs"><li class="breadcrumbs__item"><a aria-label="Home page" class="breadcrumbs__link" href="/project-piggyback-learning-piggyback-1/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_YNFT"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li class="breadcrumbs__item"><a class="breadcrumbs__link" href="/project-piggyback-learning-piggyback-1/docs/category/system-architecture"><span>System Architecture</span></a></li><li class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link">Design</span></li></ul></nav><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">On this page</button></div><div class="theme-doc-markdown markdown"><header><h1>Design</h1></header>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="purpose">Purpose<a href="#purpose" class="hash-link" aria-label="Direct link to Purpose" title="Direct link to Purpose" translate="no">​</a></h2>
-<p>This document describes the <strong>software architecture</strong> for Piggyback Learning and shows how our requirements map to the design. It focuses on the <strong>components, their responsibilities, interfaces, and data flow</strong> (high-level).</p>
+<p>This document describes the software architecture for Piggyback Learning and shows how our requirements map to the design. It focuses on the components, their responsibilities, interfaces, and data flow at a high level.</p>
 <blockquote>
-<p>Note: our <strong>system block diagram</strong> and <strong>sequence diagrams</strong> are documented on their dedicated pages, and are referenced here rather than duplicated.</p>
+<p>Note: the system block diagram and sequence diagrams are documented on their dedicated pages and are referenced here rather than duplicated.</p>
 </blockquote>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="architecture-overview-high-level">Architecture Overview (High-Level)<a href="#architecture-overview-high-level" class="hash-link" aria-label="Direct link to Architecture Overview (High-Level)" title="Direct link to Architecture Overview (High-Level)" translate="no">​</a></h2>
-<p>Piggyback Learning is a <strong>web application</strong> with a FastAPI backend that serves pages and APIs for three user experiences:</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="architecture-overview">Architecture Overview<a href="#architecture-overview" class="hash-link" aria-label="Direct link to Architecture Overview" title="Direct link to Architecture Overview" translate="no">​</a></h2>
+<p>Piggyback Learning is a web application with a FastAPI backend that serves pages and APIs for three user types:</p>
 <ul>
-<li class=""><strong>Child</strong>: search/select a video, watch it, answer questions, receive feedback.</li>
-<li class=""><strong>Expert</strong>: review AI-generated questions, approve/edit/skip, and record “best question” feedback.</li>
-<li class=""><strong>Admin</strong>: manage configuration and monitor outputs (basic access-controlled routes).</li>
+<li class=""><strong>Child:</strong> logs in with a parent access code, picks a profile and companion, watches videos, and answers quiz questions by voice.</li>
+<li class=""><strong>Parent:</strong> logs in with a personal access code, reviews AI-generated questions, manages their child&#x27;s profile and interaction mode, and views progress reports.</li>
+<li class=""><strong>Admin:</strong> downloads YouTube videos, generates AI questions, and manages parent accounts.</li>
 </ul>
-<p>We keep the architecture intentionally simple (≤ 7 components) and integrate external tools/services where appropriate (YouTube extraction, FFmpeg, OpenAI/Gemini).</p>
-<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="related-diagrams">Related diagrams<a href="#related-diagrams" class="hash-link" aria-label="Direct link to Related diagrams" title="Direct link to Related diagrams" translate="no">​</a></h3>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="related-diagrams">Related Diagrams<a href="#related-diagrams" class="hash-link" aria-label="Direct link to Related Diagrams" title="Direct link to Related Diagrams" translate="no">​</a></h3>
 <ul>
-<li class="">System Block Diagram: see <code>System Architecture → system-block-diagram</code></li>
-<li class="">Sequence Diagrams (use cases): see <code>System Architecture → Sequence Diagrams</code></li>
-<li class="">Class diagrams: see <code>System Architecture → Class Diagrams</code></li>
+<li class="">System Block Diagram: see <code>Requirements - System Block Diagram</code></li>
+<li class="">Sequence Diagrams: see <code>System Architecture - Sequence Diagrams</code></li>
+<li class="">Class Diagrams: see <code>System Architecture - Class Diagrams</code></li>
 </ul>
 <hr>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="design-entities-checklist-friendly">Design Entities (Checklist-Friendly)<a href="#design-entities-checklist-friendly" class="hash-link" aria-label="Direct link to Design Entities (Checklist-Friendly)" title="Direct link to Design Entities (Checklist-Friendly)" translate="no">​</a></h2>
-<p>Below are the primary design entities with identification, purpose, function, dependencies, interfaces, processing, and data.</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="design-entities">Design Entities<a href="#design-entities" class="hash-link" aria-label="Direct link to Design Entities" title="Direct link to Design Entities" translate="no">​</a></h2>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="1-web-client-browser-ui">1) Web Client (Browser UI)<a href="#1-web-client-browser-ui" class="hash-link" aria-label="Direct link to 1) Web Client (Browser UI)" title="Direct link to 1) Web Client (Browser UI)" translate="no">​</a></h3>
 <ul>
-<li class=""><strong>Type:</strong> Client / Frontend (server-rendered templates + static assets)</li>
-<li class=""><strong>Purpose:</strong> Provide usable experiences for Child / Expert / Admin.</li>
-<li class=""><strong>Function:</strong> Renders pages, sends REST requests, optionally uses WebSockets for streaming updates.</li>
-<li class=""><strong>Dependencies:</strong> Backend API, browser runtime.</li>
-<li class=""><strong>Interface:</strong> HTTP (pages) + REST calls to <code>/api/*</code> + optional WebSocket endpoint(s).</li>
-<li class=""><strong>Processing:</strong> User input, form submissions, polling/updates, displaying video &amp; Q/A.</li>
-<li class=""><strong>Data (hidden inside):</strong> Session state in browser; no sensitive secrets stored client-side.</li>
+<li class=""><strong>Type:</strong> Frontend - server-rendered templates and static assets</li>
+<li class=""><strong>Purpose:</strong> Provide usable interfaces for Child, Parent, and Admin.</li>
+<li class=""><strong>Function:</strong> Renders pages, sends REST requests, uses WebSockets for streaming updates during question generation.</li>
+<li class=""><strong>Dependencies:</strong> Backend API, browser runtime, microphone for voice input.</li>
+<li class=""><strong>Interface:</strong> HTTP pages + REST calls to <code>/api/*</code> + WebSocket for progress updates.</li>
+<li class=""><strong>Processing:</strong> User input, voice recording, video playback, quiz interaction, companion animations.</li>
+<li class=""><strong>Data:</strong> Session state in browser; no secrets stored client-side.</li>
 </ul>
-<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="2-api-server-fastapi-piggyback-learning-app">2) API Server (FastAPI “Piggyback Learning” App)<a href="#2-api-server-fastapi-piggyback-learning-app" class="hash-link" aria-label="Direct link to 2) API Server (FastAPI “Piggyback Learning” App)" title="Direct link to 2) API Server (FastAPI “Piggyback Learning” App)" translate="no">​</a></h3>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="2-api-server-fastapi">2) API Server (FastAPI)<a href="#2-api-server-fastapi" class="hash-link" aria-label="Direct link to 2) API Server (FastAPI)" title="Direct link to 2) API Server (FastAPI)" translate="no">​</a></h3>
 <ul>
 <li class=""><strong>Type:</strong> Backend service</li>
-<li class=""><strong>Purpose:</strong> Central orchestrator for downloading videos, extracting frames/subtitles, generating questions, and saving review outputs.</li>
-<li class=""><strong>Function:</strong> Routes requests, validates payloads, coordinates external services, reads/writes project data.</li>
-<li class=""><strong>Dependencies:</strong> <code>video_quiz_routes</code>, <code>admin_routes</code>, filesystem storage, yt-dlp, FFmpeg, OpenAI/Gemini.</li>
+<li class=""><strong>Purpose:</strong> Central orchestrator for all app logic - video processing, question generation, user management, and quiz evaluation.</li>
+<li class=""><strong>Function:</strong> Routes requests, validates payloads, coordinates external services, reads and writes to SQLite and the filesystem.</li>
+<li class=""><strong>Dependencies:</strong> <code>admin_routes</code>, <code>video_quiz_routes</code>, SQLite, yt-dlp, FFmpeg, OpenAI, Anthropic, Gemini, Hume AI.</li>
 <li class=""><strong>Interface:</strong>
 <ul>
-<li class=""><strong>Pages:</strong>  <code>/children</code>, <code>/admin/*</code>, <code>/expert-preview</code></li>
-<li class=""><strong>REST APIs:</strong> <code>/api/*</code> (examples below)</li>
-<li class=""><strong>WebSocket:</strong> (used for streaming interval results if enabled)</li>
+<li class="">Pages: <code>/children</code>, <code>/admin/*</code>, <code>/expert-preview</code></li>
+<li class="">REST: <code>/api/*</code></li>
+<li class="">WebSocket: <code>/ws/questions/{video_id}</code> for streaming question generation progress</li>
 </ul>
 </li>
-<li class=""><strong>Processing:</strong> Request validation, orchestration, retry logic, JSON normalization, file persistence.</li>
-<li class=""><strong>Data (hidden inside):</strong> Environment-configured secrets (API keys, passwords), runtime caches (clients/config).</li>
 </ul>
-<p><strong>Key API endpoints (examples):</strong></p>
+<p><strong>Key API endpoints:</strong></p>
 <ul>
-<li class=""><code>POST /api/verify-password</code> – gates admin/expert access</li>
-<li class=""><code>GET /api/videos-list</code> – lists downloaded videos + metadata</li>
-<li class=""><code>POST /api/save-final-questions</code> – persists final reviewed questions</li>
-<li class=""><code>POST /api/tts</code> – generates speech audio for text (OpenAI TTS)</li>
-<li class=""><code>POST /api/expert-annotations</code> – stores expert review/approval notes</li>
+<li class=""><code>POST /api/verify-password</code> - admin login</li>
+<li class=""><code>POST /api/learners/parents/login</code> - parent login with access code</li>
+<li class=""><code>GET /api/learners/experts/{expert_id}/children</code> - list children for a parent</li>
+<li class=""><code>GET /api/learners/children/{child_id}/videos</code> - get videos available to a child</li>
+<li class=""><code>POST /api/check_answer</code> - evaluate a child&#x27;s voice answer</li>
+<li class=""><code>GET /api/expert/report</code> - load a child&#x27;s progress report</li>
+<li class=""><code>PUT /api/expert/parents/{parent_id}/login-code</code> - update a parent&#x27;s access code</li>
+<li class=""><code>GET /api/final-questions/{video_id}</code> - get quiz questions for a video</li>
+<li class=""><code>POST /api/download</code> - download a YouTube video</li>
 </ul>
-<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="3-video-acquisition-module-yt-dlp--helpers">3) Video Acquisition Module (yt-dlp + helpers)<a href="#3-video-acquisition-module-yt-dlp--helpers" class="hash-link" aria-label="Direct link to 3) Video Acquisition Module (yt-dlp + helpers)" title="Direct link to 3) Video Acquisition Module (yt-dlp + helpers)" translate="no">​</a></h3>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="3-video-acquisition-module-yt-dlp">3) Video Acquisition Module (yt-dlp)<a href="#3-video-acquisition-module-yt-dlp" class="hash-link" aria-label="Direct link to 3) Video Acquisition Module (yt-dlp)" title="Direct link to 3) Video Acquisition Module (yt-dlp)" translate="no">​</a></h3>
 <ul>
 <li class=""><strong>Type:</strong> Integration component</li>
-<li class=""><strong>Purpose:</strong> Download a YouTube video + metadata and make it available locally.</li>
-<li class=""><strong>Function:</strong> Extract metadata (title, thumbnail, duration), download video, optionally download subtitles.</li>
-<li class=""><strong>Dependencies:</strong> <code>yt_dlp</code>, optional <code>node</code> runtime, optional cookies file, optional <code>ffmpeg</code> for remuxing.</li>
-<li class=""><strong>Interface:</strong> Internal Python functions (called by API server).</li>
-<li class=""><strong>Processing:</strong> Attempts multiple “player clients” on 403 errors; format fallback when requested formats are unavailable.</li>
-<li class=""><strong>Data (hidden inside):</strong> Download options, cookies path, downloaded files.</li>
+<li class=""><strong>Purpose:</strong> Download a YouTube video and its metadata for local use.</li>
+<li class=""><strong>Function:</strong> Extracts title, thumbnail, and duration; downloads the video file; optionally downloads subtitles.</li>
+<li class=""><strong>Dependencies:</strong> <code>yt_dlp</code>, optional Node.js runtime, optional cookies file, FFmpeg for remuxing.</li>
+<li class=""><strong>Interface:</strong> Internal Python functions called by the API server.</li>
+<li class=""><strong>Processing:</strong> Tries multiple player clients on 403 errors; falls back on format unavailability.</li>
 </ul>
-<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="4-media-processing-module-framessubtitles">4) Media Processing Module (Frames/Subtitles)<a href="#4-media-processing-module-framessubtitles" class="hash-link" aria-label="Direct link to 4) Media Processing Module (Frames/Subtitles)" title="Direct link to 4) Media Processing Module (Frames/Subtitles)" translate="no">​</a></h3>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="4-media-processing-module-frames-and-subtitles">4) Media Processing Module (Frames and Subtitles)<a href="#4-media-processing-module-frames-and-subtitles" class="hash-link" aria-label="Direct link to 4) Media Processing Module (Frames and Subtitles)" title="Direct link to 4) Media Processing Module (Frames and Subtitles)" translate="no">​</a></h3>
 <ul>
 <li class=""><strong>Type:</strong> Processing component</li>
-<li class=""><strong>Purpose:</strong> Convert video into structured inputs (frames and transcript snippets) for question generation.</li>
-<li class=""><strong>Function:</strong> Extract 1 frame per second, store frame index + timestamps; collect transcript lines for segment windows.</li>
-<li class=""><strong>Dependencies:</strong> OpenCV (<code>cv2</code>), PIL, pandas; relies on downloaded video file and subtitle availability.</li>
-<li class=""><strong>Interface:</strong> Internal functions (called by API server).</li>
-<li class=""><strong>Processing:</strong> Video read → frame sampling → write CSV/JSON summaries.</li>
-<li class=""><strong>Data (hidden inside):</strong> Frame cache, frame metadata, transcript window text.</li>
+<li class=""><strong>Purpose:</strong> Convert video into structured inputs for AI question generation.</li>
+<li class=""><strong>Function:</strong> Extracts 1 frame per second, stores frame index and timestamps, collects transcript lines for segment windows.</li>
+<li class=""><strong>Dependencies:</strong> OpenCV, PIL, pandas; relies on downloaded video and subtitle files.</li>
+<li class=""><strong>Processing:</strong> Video read - frame sampling - write CSV/JSON summaries.</li>
 </ul>
-<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="5-question-generation-engine-llm-provider-openaigemini">5) Question Generation Engine (LLM Provider: OpenAI/Gemini)<a href="#5-question-generation-engine-llm-provider-openaigemini" class="hash-link" aria-label="Direct link to 5) Question Generation Engine (LLM Provider: OpenAI/Gemini)" title="Direct link to 5) Question Generation Engine (LLM Provider: OpenAI/Gemini)" translate="no">​</a></h3>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="5-ai-question-generation-engine">5) AI Question Generation Engine<a href="#5-ai-question-generation-engine" class="hash-link" aria-label="Direct link to 5) AI Question Generation Engine" title="Direct link to 5) AI Question Generation Engine" translate="no">​</a></h3>
 <ul>
 <li class=""><strong>Type:</strong> External service integration</li>
-<li class=""><strong>Purpose:</strong> Generate child-friendly comprehension questions from transcript + sampled frames.</li>
-<li class=""><strong>Function:</strong> For each segment, returns JSON containing 7 categories (character/setting/feeling/action/causal/outcome/prediction) + ranking + best question.</li>
-<li class=""><strong>Dependencies:</strong> OpenAI API client, Gemini API client, environment keys, retry/backoff logic.</li>
-<li class=""><strong>Interface:</strong> Internal function that returns <strong>JSON text</strong> (schema enforced).</li>
-<li class=""><strong>Processing:</strong> Prompt creation → send frames + transcript → validate JSON → retry on rate limit/invalid JSON.</li>
-<li class=""><strong>Data (hidden inside):</strong> Provider selection, model name, raw provider response logs (if any).</li>
+<li class=""><strong>Purpose:</strong> Generate child-friendly comprehension questions from video frames and transcripts.</li>
+<li class=""><strong>Function:</strong> For each video segment, returns questions across 7 categories - character, setting, feeling, action, causal, outcome, prediction.</li>
+<li class=""><strong>Dependencies:</strong> OpenAI, Anthropic (Claude), and Gemini API clients; environment API keys; retry/backoff logic.</li>
+<li class=""><strong>Processing:</strong> Prompt creation - send frames and transcript - validate JSON response - retry on failure.</li>
 </ul>
-<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="6-review--annotation-module-expert-workflow">6) Review &amp; Annotation Module (Expert Workflow)<a href="#6-review--annotation-module-expert-workflow" class="hash-link" aria-label="Direct link to 6) Review &amp; Annotation Module (Expert Workflow)" title="Direct link to 6) Review &amp; Annotation Module (Expert Workflow)" translate="no">​</a></h3>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="6-companion-and-voice-module">6) Companion and Voice Module<a href="#6-companion-and-voice-module" class="hash-link" aria-label="Direct link to 6) Companion and Voice Module" title="Direct link to 6) Companion and Voice Module" translate="no">​</a></h3>
 <ul>
 <li class=""><strong>Type:</strong> Application module</li>
-<li class=""><strong>Purpose:</strong> Allow experts to approve/edit/skip AI questions and record rankings/feedback.</li>
-<li class=""><strong>Function:</strong> Loads generated questions, shows per-segment questions, saves expert annotations and “best question” approval.</li>
-<li class=""><strong>Dependencies:</strong> Filesystem storage, API routes, templates.</li>
-<li class=""><strong>Interface:</strong> UI: <code>/expert-preview</code> + API: <code>/api/expert-annotations</code>, <code>/api/expert-questions/*</code></li>
-<li class=""><strong>Processing:</strong> Merge/overwrite annotations by (start,end) segment, preserve best-question feedback, keep sorted.</li>
-<li class=""><strong>Data (hidden inside):</strong> Expert annotations JSON bundles.</li>
+<li class=""><strong>Purpose:</strong> Give each child a character companion that guides them through quizzes with voice and personality.</li>
+<li class=""><strong>Function:</strong> Plays companion voice lines using Hume AI voices for Blossom the Bunny, Pippa the Pig, and Ash the Alligator. Provides feedback, hints, and encouragement based on the child&#x27;s answers.</li>
+<li class=""><strong>Dependencies:</strong> Hume AI API, browser Web Speech API for voice recording, OpenAI TTS as fallback.</li>
+<li class=""><strong>Interface:</strong> Frontend JS module managing audio playback and companion animations.</li>
 </ul>
-<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="7-storage-layer-filesystem-based-data-store">7) Storage Layer (Filesystem-based Data Store)<a href="#7-storage-layer-filesystem-based-data-store" class="hash-link" aria-label="Direct link to 7) Storage Layer (Filesystem-based Data Store)" title="Direct link to 7) Storage Layer (Filesystem-based Data Store)" translate="no">​</a></h3>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="7-report-service">7) Report Service<a href="#7-report-service" class="hash-link" aria-label="Direct link to 7) Report Service" title="Direct link to 7) Report Service" translate="no">​</a></h3>
+<ul>
+<li class=""><strong>Type:</strong> Application module</li>
+<li class=""><strong>Purpose:</strong> Compute and deliver per-child progress reports for parents.</li>
+<li class=""><strong>Function:</strong> Reads quiz result files, aggregates scores by interaction mode, computes category breakdowns, and returns structured report data.</li>
+<li class=""><strong>Dependencies:</strong> SQLite, quiz result JSON files, <code>report_service.py</code>.</li>
+<li class=""><strong>Interface:</strong> <code>GET /api/expert/report?child_id=...</code></li>
+<li class=""><strong>Data:</strong> Overall score, total attempts, retries, watch time, category scores, recent sessions.</li>
+</ul>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="8-storage-layer-sqlite-and-filesystem">8) Storage Layer (SQLite and Filesystem)<a href="#8-storage-layer-sqlite-and-filesystem" class="hash-link" aria-label="Direct link to 8) Storage Layer (SQLite and Filesystem)" title="Direct link to 8) Storage Layer (SQLite and Filesystem)" translate="no">​</a></h3>
 <ul>
 <li class=""><strong>Type:</strong> Data component</li>
-<li class=""><strong>Purpose:</strong> Persist all artifacts without requiring a DB (simple + debuggable).</li>
-<li class=""><strong>Function:</strong> Stores downloaded videos, metadata, extracted frames, generated question JSON, expert annotations, and final reviewed outputs.</li>
-<li class=""><strong>Dependencies:</strong> OS filesystem.</li>
-<li class=""><strong>Interface:</strong> Directory layout + JSON/CSV schemas.</li>
-<li class=""><strong>Processing:</strong> Write/read JSON files, build downloads URLs, ensure folders exist.</li>
-<li class=""><strong>Data (hidden inside):</strong> Files under <code>downloads/&lt;video_id&gt;/...</code></li>
-</ul>
-<p><strong>Primary stored artifacts (per video):</strong></p>
+<li class=""><strong>Purpose:</strong> Persist all user data, quiz artifacts, and video files.</li>
+<li class=""><strong>Function:</strong>
 <ul>
-<li class=""><code>downloads/&lt;video_id&gt;/meta.json</code> – title/thumbnail/duration + local path</li>
-<li class=""><code>downloads/&lt;video_id&gt;/&lt;video_file&gt;.mp4|webm|mkv</code> – video asset</li>
-<li class=""><code>downloads/&lt;video_id&gt;/extracted_frames/frame_*.jpg</code> – sampled frames</li>
-<li class=""><code>downloads/&lt;video_id&gt;/extracted_frames/frame_data.csv</code> + <code>frame_data.json</code> – frame metadata</li>
-<li class=""><code>downloads/&lt;video_id&gt;/questions/*.json</code> – AI-generated segment questions</li>
-<li class=""><code>downloads/&lt;video_id&gt;/questions/&lt;file&gt;.expert.json</code> – expert annotations (review mode)</li>
-<li class=""><code>downloads/&lt;video_id&gt;/expert_questions/expert_questions.json</code> – expert-created questions (create mode)</li>
-<li class=""><code>downloads/&lt;video_id&gt;/final_questions/final_questions.json</code> – finalized reviewed output</li>
+<li class="">SQLite stores users (parents, children, admins), access codes, and child-parent relationships.</li>
+<li class="">Filesystem stores video files, extracted frames, AI-generated questions, and quiz results.</li>
+</ul>
+</li>
+<li class=""><strong>Dependencies:</strong> SQLite via <code>sqlite_store.py</code>, OS filesystem.</li>
+</ul>
+<p><strong>SQLite tables:</strong></p>
+<ul>
+<li class=""><code>parents</code> - parent accounts, login code hash, access code</li>
+<li class=""><code>children</code> - child profiles, icon, interaction mode, linked parent</li>
+<li class=""><code>experts</code> - admin/expert accounts</li>
+</ul>
+<p><strong>Filesystem artifacts (per video):</strong></p>
+<ul>
+<li class=""><code>downloads/&lt;video_id&gt;/meta.json</code> - title, thumbnail, duration</li>
+<li class=""><code>downloads/&lt;video_id&gt;/&lt;file&gt;.mp4</code> - video asset</li>
+<li class=""><code>downloads/&lt;video_id&gt;/extracted_frames/</code> - sampled frames and metadata</li>
+<li class=""><code>downloads/&lt;video_id&gt;/questions/</code> - AI-generated questions per segment</li>
+<li class=""><code>downloads/&lt;video_id&gt;/final_questions/final_questions.json</code> - finalized questions</li>
+<li class=""><code>downloads/quiz_results/&lt;child_id&gt;_results.json</code> - per-child quiz history</li>
 </ul>
 <hr>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="requirements--architecture-mapping-traceability">Requirements → Architecture Mapping (Traceability)<a href="#requirements--architecture-mapping-traceability" class="hash-link" aria-label="Direct link to Requirements → Architecture Mapping (Traceability)" title="Direct link to Requirements → Architecture Mapping (Traceability)" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="requirements-to-architecture-mapping">Requirements to Architecture Mapping<a href="#requirements-to-architecture-mapping" class="hash-link" aria-label="Direct link to Requirements to Architecture Mapping" title="Direct link to Requirements to Architecture Mapping" translate="no">​</a></h2>
 <ul>
-<li class="">
-<p><strong>Generate questions for children</strong><br>
-<!-- -->→ Question Generation Engine + Media Processing Module + API Server orchestration.</p>
-</li>
-<li class="">
-<p><strong>Support multiple user roles (Child / Expert / Admin)</strong><br>
-<!-- -->→ Web Client pages + API Server routing; password verification for expert/admin routes.</p>
-</li>
-<li class="">
-<p><strong>Provide feedback + track review decisions</strong><br>
-<!-- -->→ Review &amp; Annotation Module storing structured expert annotations and “best question” approval.</p>
-</li>
-<li class="">
-<p><strong>Reliability under rate limits / failures</strong><br>
-<!-- -->→ Retry/backoff in question generation; format/client fallbacks for downloads; transcript-only fallback.</p>
-</li>
-<li class="">
-<p><strong>Maintainability / simplicity</strong><br>
-<!-- -->→ Fewer than 7 high-level components; external integrations isolated behind helper functions.</p>
-</li>
+<li class=""><strong>Generate questions for children:</strong> Question Generation Engine + Media Processing + API Server.</li>
+<li class=""><strong>Support Child, Parent, and Admin roles:</strong> Web Client pages + API routing + SQLite auth.</li>
+<li class=""><strong>Companion-guided quiz experience:</strong> Companion and Voice Module + Hume AI voices.</li>
+<li class=""><strong>Parent progress reports:</strong> Report Service + SQLite + quiz result files.</li>
+<li class=""><strong>Reliability under failures:</strong> Retry/backoff in question generation; player client fallbacks for downloads.</li>
+<li class=""><strong>Secure access:</strong> Personal access codes for parents; children log in via parent-provided codes; admin password via env variable.</li>
 </ul>
 <hr>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="interfaces-and-protocols-enough-to-implement-independently">Interfaces and Protocols (Enough to Implement Independently)<a href="#interfaces-and-protocols-enough-to-implement-independently" class="hash-link" aria-label="Direct link to Interfaces and Protocols (Enough to Implement Independently)" title="Direct link to Interfaces and Protocols (Enough to Implement Independently)" translate="no">​</a></h2>
-<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="http-routes-high-level">HTTP Routes (High-level)<a href="#http-routes-high-level" class="hash-link" aria-label="Direct link to HTTP Routes (High-level)" title="Direct link to HTTP Routes (High-level)" translate="no">​</a></h3>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="interfaces-and-protocols">Interfaces and Protocols<a href="#interfaces-and-protocols" class="hash-link" aria-label="Direct link to Interfaces and Protocols" title="Direct link to Interfaces and Protocols" translate="no">​</a></h2>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="http-routes">HTTP Routes<a href="#http-routes" class="hash-link" aria-label="Direct link to HTTP Routes" title="Direct link to HTTP Routes" translate="no">​</a></h3>
 <ul>
-<li class=""><strong>Pages:</strong> <code>GET /</code>, <code>GET /children</code>, <code>GET /expert-preview</code>, <code>GET /admin/*</code></li>
-<li class=""><strong>REST:</strong> <code>GET/POST /api/*</code></li>
-<li class=""><strong>WebSocket:</strong> Used when streaming progress/results is enabled.</li>
+<li class="">Pages: <code>GET /</code>, <code>GET /children</code>, <code>GET /expert-preview</code>, <code>GET /admin/*</code></li>
+<li class="">REST: <code>GET/POST /api/*</code></li>
+<li class="">WebSocket: <code>/ws/questions/{video_id}</code> for streaming question generation progress</li>
 </ul>
-<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="auth--access-control">Auth / Access Control<a href="#auth--access-control" class="hash-link" aria-label="Direct link to Auth / Access Control" title="Direct link to Auth / Access Control" translate="no">​</a></h3>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="auth-and-access-control">Auth and Access Control<a href="#auth-and-access-control" class="hash-link" aria-label="Direct link to Auth and Access Control" title="Direct link to Auth and Access Control" translate="no">​</a></h3>
 <ul>
-<li class="">Basic role gating via <code>POST /api/verify-password</code> using environment-configured passwords for Admin/Expert.</li>
-<li class="">No user PII stored; keys/passwords are loaded from environment variables (<code>.env</code> / <code>.env.txt</code>) and never committed.</li>
-</ul>
-<hr>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="achievability--integration-plan">Achievability &amp; Integration Plan<a href="#achievability--integration-plan" class="hash-link" aria-label="Direct link to Achievability &amp; Integration Plan" title="Direct link to Achievability &amp; Integration Plan" translate="no">​</a></h2>
-<p>The system is achievable with off-the-shelf components:</p>
-<ul>
-<li class="">FastAPI for backend + templates/static assets for UI</li>
-<li class="">yt-dlp + FFmpeg for robust video handling</li>
-<li class="">OpenAI/Gemini for question generation and TTS</li>
-<li class="">Filesystem storage for all artifacts (no DB required)</li>
-</ul>
-<p>If we need scalability later, the storage layer can be upgraded to an object store + database without changing the UI contracts (keep the <code>/api/*</code> schemas stable).</p>
-<hr>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="database">Database<a href="#database" class="hash-link" aria-label="Direct link to Database" title="Direct link to Database" translate="no">​</a></h2>
-<p>Currently, we use a <strong>filesystem-based store</strong> instead of a relational database.<br>
-<!-- -->If a database is introduced later, we will add:</p>
-<ul>
-<li class="">ER diagram + table design for Videos, Segments, Questions, ExpertAnnotations, FinalQuestions</li>
-<li class="">Migration plan from <code>downloads/&lt;video_id&gt;/*</code> JSON to relational tables</li>
-</ul></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-edit-meta-row"><div class="col noPrint_WFHX"><a href="https://github.com/Capstone-Projects-2026-spring/project-piggyback-learning-piggyback-1/edit/main/documentation/docs/system-architecture/design.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>Edit this page</a></div><div class="col lastUpdated_JAkA"><details><summary>Revision History</summary><table><thead><tr><th scope="row">Author</th><th scope="row">Revision</th><th scope="row">Date</th></tr></thead><tbody><tr><td colspan="3" style="text-align:center;font-style:italic;color:#666">Loading...</td></tr></tbody></table></details><span class="theme-last-updated">Last updated<!-- --> by <b>Jerry Lin</b></span></div></div></footer></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/project-piggyback-learning-piggyback-1/docs/category/system-architecture"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">System Architecture</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/project-piggyback-learning-piggyback-1/docs/system-architecture/development-environment"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">Development Environment</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#purpose" class="table-of-contents__link toc-highlight">Purpose</a></li><li><a href="#architecture-overview-high-level" class="table-of-contents__link toc-highlight">Architecture Overview (High-Level)</a><ul><li><a href="#related-diagrams" class="table-of-contents__link toc-highlight">Related diagrams</a></li></ul></li><li><a href="#design-entities-checklist-friendly" class="table-of-contents__link toc-highlight">Design Entities (Checklist-Friendly)</a><ul><li><a href="#1-web-client-browser-ui" class="table-of-contents__link toc-highlight">1) Web Client (Browser UI)</a></li><li><a href="#2-api-server-fastapi-piggyback-learning-app" class="table-of-contents__link toc-highlight">2) API Server (FastAPI “Piggyback Learning” App)</a></li><li><a href="#3-video-acquisition-module-yt-dlp--helpers" class="table-of-contents__link toc-highlight">3) Video Acquisition Module (yt-dlp + helpers)</a></li><li><a href="#4-media-processing-module-framessubtitles" class="table-of-contents__link toc-highlight">4) Media Processing Module (Frames/Subtitles)</a></li><li><a href="#5-question-generation-engine-llm-provider-openaigemini" class="table-of-contents__link toc-highlight">5) Question Generation Engine (LLM Provider: OpenAI/Gemini)</a></li><li><a href="#6-review--annotation-module-expert-workflow" class="table-of-contents__link toc-highlight">6) Review &amp; Annotation Module (Expert Workflow)</a></li><li><a href="#7-storage-layer-filesystem-based-data-store" class="table-of-contents__link toc-highlight">7) Storage Layer (Filesystem-based Data Store)</a></li></ul></li><li><a href="#requirements--architecture-mapping-traceability" class="table-of-contents__link toc-highlight">Requirements → Architecture Mapping (Traceability)</a></li><li><a href="#interfaces-and-protocols-enough-to-implement-independently" class="table-of-contents__link toc-highlight">Interfaces and Protocols (Enough to Implement Independently)</a><ul><li><a href="#http-routes-high-level" class="table-of-contents__link toc-highlight">HTTP Routes (High-level)</a></li><li><a href="#auth--access-control" class="table-of-contents__link toc-highlight">Auth / Access Control</a></li></ul></li><li><a href="#achievability--integration-plan" class="table-of-contents__link toc-highlight">Achievability &amp; Integration Plan</a></li><li><a href="#database" class="table-of-contents__link toc-highlight">Database</a></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/project-piggyback-learning-piggyback-1/docs/intro">Documentation</a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://github.com/Capstone-Projects-2026-spring/project-piggyback-learning-piggyback-1" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a class="footer__link-item" href="/project-piggyback-learning-piggyback-1/tutorial/open-source-usage">Template Contributors</a></li></ul></div></div><div class="footer__bottom text--center"><div class="margin-bottom--sm"><img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Temple_T_logo.svg" alt="My Site Logo" class="footer__logo themedComponent_mlkZ themedComponent--light_NVdE"><img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Temple_T_logo.svg" alt="My Site Logo" class="footer__logo themedComponent_mlkZ themedComponent--dark_xIcU"></div><div class="footer__copyright">Copyright © 2026 Project Piggyback Learning Piggyback 1, Inc. Built with Docusaurus.</div></div></div></footer></div>
+<li class="">Admin: password from environment variable (<code>ADMIN_PASSWORD</code>)</li>
+<li class="">Parents: personal login code stored as a hash in SQLite; plain text code also stored for admin visibility</li>
+<li class="">Children: log in using parent&#x27;s access code; no separate password</li>
+<li class="">No PII stored; API keys loaded from <code>.env</code> and never committed to git</li>
+</ul></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-edit-meta-row"><div class="col noPrint_WFHX"><a href="https://github.com/Capstone-Projects-2026-spring/project-piggyback-learning-piggyback-1/edit/main/documentation/docs/system-architecture/design.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>Edit this page</a></div><div class="col lastUpdated_JAkA"><details><summary>Revision History</summary><table><thead><tr><th scope="row">Author</th><th scope="row">Revision</th><th scope="row">Date</th></tr></thead><tbody><tr><td colspan="3" style="text-align:center;font-style:italic;color:#666">Loading...</td></tr></tbody></table></details><span class="theme-last-updated">Last updated<!-- --> by <b>Jerry Lin</b></span></div></div></footer></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/project-piggyback-learning-piggyback-1/docs/category/system-architecture"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">System Architecture</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/project-piggyback-learning-piggyback-1/docs/system-architecture/development-environment"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">Development Environment</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#purpose" class="table-of-contents__link toc-highlight">Purpose</a></li><li><a href="#architecture-overview" class="table-of-contents__link toc-highlight">Architecture Overview</a><ul><li><a href="#related-diagrams" class="table-of-contents__link toc-highlight">Related Diagrams</a></li></ul></li><li><a href="#design-entities" class="table-of-contents__link toc-highlight">Design Entities</a><ul><li><a href="#1-web-client-browser-ui" class="table-of-contents__link toc-highlight">1) Web Client (Browser UI)</a></li><li><a href="#2-api-server-fastapi" class="table-of-contents__link toc-highlight">2) API Server (FastAPI)</a></li><li><a href="#3-video-acquisition-module-yt-dlp" class="table-of-contents__link toc-highlight">3) Video Acquisition Module (yt-dlp)</a></li><li><a href="#4-media-processing-module-frames-and-subtitles" class="table-of-contents__link toc-highlight">4) Media Processing Module (Frames and Subtitles)</a></li><li><a href="#5-ai-question-generation-engine" class="table-of-contents__link toc-highlight">5) AI Question Generation Engine</a></li><li><a href="#6-companion-and-voice-module" class="table-of-contents__link toc-highlight">6) Companion and Voice Module</a></li><li><a href="#7-report-service" class="table-of-contents__link toc-highlight">7) Report Service</a></li><li><a href="#8-storage-layer-sqlite-and-filesystem" class="table-of-contents__link toc-highlight">8) Storage Layer (SQLite and Filesystem)</a></li></ul></li><li><a href="#requirements-to-architecture-mapping" class="table-of-contents__link toc-highlight">Requirements to Architecture Mapping</a></li><li><a href="#interfaces-and-protocols" class="table-of-contents__link toc-highlight">Interfaces and Protocols</a><ul><li><a href="#http-routes" class="table-of-contents__link toc-highlight">HTTP Routes</a></li><li><a href="#auth-and-access-control" class="table-of-contents__link toc-highlight">Auth and Access Control</a></li></ul></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/project-piggyback-learning-piggyback-1/docs/intro">Documentation</a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://github.com/Capstone-Projects-2026-spring/project-piggyback-learning-piggyback-1" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a class="footer__link-item" href="/project-piggyback-learning-piggyback-1/tutorial/open-source-usage">Template Contributors</a></li></ul></div></div><div class="footer__bottom text--center"><div class="margin-bottom--sm"><img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Temple_T_logo.svg" alt="My Site Logo" class="footer__logo themedComponent_mlkZ themedComponent--light_NVdE"><img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Temple_T_logo.svg" alt="My Site Logo" class="footer__logo themedComponent_mlkZ themedComponent--dark_xIcU"></div><div class="footer__copyright">Copyright © 2026 Project Piggyback Learning Piggyback 1, Inc. Built with Docusaurus.</div></div></div></footer></div>
 </body>
 </html>
