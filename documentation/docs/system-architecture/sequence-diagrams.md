@@ -4,150 +4,158 @@ sidebar_position: 6
 
 # Sequence Diagrams
 
-## Use case 1 - Admin creates quiz
+## Use Case 1 - Admin downloads a video and generates questions
 
 ```mermaid
 sequenceDiagram
     participant Admin
     participant App
-    participant System
+    participant YTDLP
+    participant YouTube
+    participant AI
 
-    Admin->>App: Log in
-    App->>Admin: Display 'Choose your role'
-    Admin->>App: Select 'Administrator'
-    App->>Admin: Prompt to upload video
-    Admin->>App: Upload video
-    App->>System: Process video & generate quiz
-    System-->>App: Quiz generated
-    Admin->>App: Approve quiz
-    App-->>System: Quiz ready for child
+    Admin->>App: Log in with admin password
+    App-->>Admin: Display admin panel
+    Admin->>App: Paste YouTube URL and submit
+    App->>YTDLP: Download video
+    YTDLP->>YouTube: Fetch video and metadata
+    YouTube-->>YTDLP: Video file and subtitles
+    YTDLP-->>App: Video saved locally
+    App->>App: Extract frames and transcript
+    App->>AI: Generate questions from frames and transcript
+    AI-->>App: Questions JSON
+    App-->>Admin: Questions ready for parent review
 ```
 
-## Use case 2 - Learner watches the video and answers quiz
+---
+
+## Use Case 2 - Parent sets up their child's profile
+
+```mermaid
+sequenceDiagram
+    participant Parent
+    participant App
+    participant DB
+
+    Parent->>App: Enter personal access code
+    App->>DB: Verify login code
+    DB-->>App: Authenticated
+    App-->>Parent: Display parent dashboard
+    Parent->>App: Navigate to child management
+    Parent->>App: Enter child name, icon, interaction mode
+    App->>DB: Save child profile
+    DB-->>App: Profile created
+    App-->>Parent: Child profile ready
+```
+
+---
+
+## Use Case 3 - Parent reviews and approves quiz questions
+
+```mermaid
+sequenceDiagram
+    participant Parent
+    participant App
+    participant Storage
+
+    Parent->>App: Navigate to question review
+    Parent->>App: Select a video
+    App->>Storage: Load AI-generated questions
+    Storage-->>App: Questions list
+    App-->>Parent: Display questions
+    Parent->>App: Edit or remove questions as needed
+    Parent->>App: Save final questions
+    App->>Storage: Write final_questions.json
+    App-->>Parent: Questions saved and ready for kids
+```
+
+---
+
+## Use Case 4 - Child logs in and picks a companion
 
 ```mermaid
 sequenceDiagram
     participant Child
     participant App
-    participant System
-    
-    Child->>App: Open app
-    App->>Child: Display available videos
+    participant DB
+
+    Child->>App: Enter parent access code
+    App->>DB: Look up access code
+    DB-->>App: Return linked children
+    App-->>Child: Display child profiles
+    Child->>App: Select profile
+    App-->>Child: Show companion selection screen
+    Child->>App: Pick companion (Bunny, Pig, or Alligator)
+    App-->>Child: Display video library
+```
+
+---
+
+## Use Case 5 - Child watches a video and answers quiz questions
+
+```mermaid
+sequenceDiagram
+    participant Child
+    participant App
+    participant Companion
+    participant API
+
     Child->>App: Select a video
-    App->>System: Load video with admin-configured mode
-    System-->>App: Video and mode ready
-    Child->>App: Start
+    App->>API: Load questions and interaction mode
+    API-->>App: Questions and mode ready
     App->>Child: Begin playing video
+    App->>App: Pause at question timestamp
+    App->>Companion: Play companion prompt audio
+    Companion-->>Child: Ask question out loud
+    Child->>App: Speak answer (voice recorded)
+    App->>API: Submit answer for evaluation
+    API-->>App: Return status - correct, almost, or wrong
+    App->>Companion: Play feedback audio
+    Companion-->>Child: Give feedback
+    App->>API: Save quiz result
+    App->>Child: Resume video
 ```
 
-## Use case 3 - Learner answers a question using voice
+---
 
-```mermaid
-sequenceDiagram
-    participant User
-    participant App
-    participant System
-    participant Speech
-
-    App->>User: Display question, prompt to speak
-    User->>App: Speak answer
-    App->>Speech: Record audio
-    Speech-->>App: Convert speech to text
-    App->>User: Show recognized answer
-    User->>App: Confirm answer
-    App->>System: Save answer, move to next question
-    alt Speech not recognized
-        App->>User: Prompt to retry speaking
-    end
-```
-
-## Use case 4 - Child interact with video questions
+## Use Case 6 - Child's voice is not recognized
 
 ```mermaid
 sequenceDiagram
     participant Child
     participant App
-    participant System
-    participant Video
+    participant Companion
 
-    Child->>App: Start video
-    App->>Video: Play video
-    Video-->>App: Pause at question timestamp
-    alt Answer required
-        App->>Child: Display question, must answer to continue
-        Child->>App: Speak answer
-        App->>System: Evaluate answer
-        System-->>App: Correct, resume video
-    else Keep going allowed
-        App->>Child: Display question
-        Child->>App: Speak answer
-        App->>System: Evaluate answer
-        alt Answer incorrect
-            App->>Child: Show "Rewind Video" or "Keep Going"
-            alt Rewind Video
-                App->>Video: Rewind to timestamp
-                Video-->>Child: Play segment
-            else Keep Going
-                App->>Video: Resume video
-            end
-        end
-    else Auto-play
-        App->>Video: Continue playing, no question shown
-    end
-    
+    App->>Child: Display question and start recording
+    Child->>App: Speak answer
+    App->>App: Silence detected - no speech recognized
+    App->>Companion: Play retry prompt
+    Companion-->>Child: Ask to try again
+    Child->>App: Speak answer again
+    App->>App: Evaluate second attempt
+    App-->>Child: Show result
 ```
 
-## Use case 5 - Parental report
+---
+
+## Use Case 7 - Parent checks their child's report
 
 ```mermaid
 sequenceDiagram
-    participant Admin
+    participant Parent
     participant App
-    participant System
+    participant ReportService
+    participant Storage
 
-    Admin->>App: Log in
-    App->>Admin: Display 'Choose your role'
-    Admin->>App: Select 'Administrator'
-    Admin->>App: Click 'Dashboard'
-    App->>System: Fetch child results
-    System-->>App: Send scores, time watched, insights
-    App-->>Admin: Display report
-```
-
-## Use case 6 - Expert review
-
-```mermaid
-sequenceDiagram
-    participant Admin
-    participant App
-    participant System
-    participant Video
-
-    Admin->>App: Log in
-    App->>Admin: Display 'Choose your role'
-    Admin->>App: Select 'Expert Reviewer'
-    App->>Admin: Show created/approved quizzes
-    Admin->>App: Select quiz to review
-    App->>Video: Rewind to timestamp for question
-    Admin->>App: Modify question as needed
-    App->>System: Save updated quiz
-    System-->>App: Quiz ready for child selection
-```
-
-## Use case 7 - Admin configures child's learning conditions
-
-```mermaid
-sequenceDiagram
-    participant Admin
-    participant App
-    participant System
-
-    Admin->>App: Log in
-    App->>Admin: Display admin panel
-    Admin->>App: Select a child or session
-    App->>Admin: Show current settings
-    Admin->>App: Choose interaction mode
-    App->>System: Save mode configuration
-    System-->>App: Settings saved
-    App-->>Admin: Confirmation displayed
+    Parent->>App: Enter personal access code
+    App-->>Parent: Display parent dashboard
+    Parent->>App: Navigate to report section
+    Parent->>App: Select child and click Load Report
+    App->>ReportService: Request report for child
+    ReportService->>Storage: Load quiz results
+    Storage-->>ReportService: Quiz attempt history
+    ReportService-->>App: Computed report data
+    App-->>Parent: Display score, retries, watch time, recent sessions
+    Parent->>App: Adjust child interaction mode if needed
+    App->>Storage: Save updated mode
 ```
