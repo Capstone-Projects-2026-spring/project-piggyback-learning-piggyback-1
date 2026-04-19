@@ -4,7 +4,24 @@ sidebar_position: 1
 
 # Piggyback Learning
 
-Piggyback Learning is an educational web app that helps parents set up video-based quiz sessions for their kids. Parents claim YouTube videos, AI generates comprehension questions, and children watch and answer quizzes guided by animated companion characters.
+## The Problem
+
+Kids today spend hours watching YouTube — and while some pick things up naturally, most are just absorbing flashing colors, sounds, and movement without retaining any of it. No comprehension. No language development. No real learning. And parents have little to no insight into what their child is even watching.
+
+**The root cause?** Passive screen time. Kids sit alone, eyes glazed, while videos play. Without someone asking "wait, what just happened?" — nothing sticks.
+
+## The Solution
+
+What if kids had a friend watching with them?
+
+Piggyback turns any YouTube video into an interactive learning experience — pausing at key moments to ask questions the child answers out loud, in their own voice. No typing. No multiple choice. Just real comprehension.
+
+And they don't do it alone. They pick a companion:
+- 🐰 **Blossom the Bunny** — like an older sibling, always pushing you to think harder
+- 🐷 **Pippa the Pig** — your childhood best friend, warm and always by your side
+- 🐊 **Ash the Alligator** — the cool uncle, supportive and cheering you on every step
+
+And every session, parents get a real report — what was watched, how their child did, and where they struggled. Finally, a window into their child's screen time.
 
 ---
 
@@ -13,8 +30,8 @@ Piggyback Learning is an educational web app that helps parents set up video-bas
 | Role | What They Do |
 |---|---|
 | **Admin** | Downloads YouTube videos, extracts frames, generates AI questions |
-| **Parent** | Logs in, claims videos, adds children, manages access code |
-| **Child** | Logs in with parent's code, picks their profile, watches videos and answers quizzes |
+| **Parent** | Logs in with a personal login code, reviews questions, manages children, views reports |
+| **Child** | Logs in with parent's code, picks their profile and companion, watches videos and answers quizzes |
 
 ---
 
@@ -32,7 +49,8 @@ source .venv/bin/activate        # macOS/Linux
 pip install -r requirements.txt
 
 # 3. Set environment variables
-# Copy the variables from README.md into a .env file
+cp .env.example .env             # macOS/Linux
+copy .env.example .env           # Windows
 
 # 4. Start the server
 uvicorn main:app --reload
@@ -41,14 +59,16 @@ uvicorn main:app --reload
 # http://localhost:8000
 ```
 
+> A sample video with questions is included — you can run the kids experience immediately without any API keys.
+
 ---
 
 ## Default Login Credentials
 
-| Role | ID / Password |
+| Role | Credential |
 |---|---|
 | Admin | password: `admin123` |
-| Parent | password: `expert123` (set your own ID on first login) |
+| Parent | personal login code set by admin |
 
 ---
 
@@ -58,7 +78,7 @@ uvicorn main:app --reload
 pytest tests/ -v
 ```
 
-69 tests across unit, integration, and acceptance. See the Testing section for details.
+76 tests across unit, integration, and acceptance. See the Testing section for details.
 
 ---
 
@@ -66,8 +86,8 @@ pytest tests/ -v
 
 - YouTube video download and frame extraction pipeline
 - AI question generation (OpenAI, Gemini, or Claude)
+- Interactive quiz player with voice answers — no typing required
+- Animated companion characters that guide and encourage kids
 - Parent dashboard: claim videos, manage children, set access codes
-- Children login with a short parent-provided access code
-- Kids quiz player with animated companion characters (Bunny, Pig, Alligator)
-- Parent report showing per-child quiz scores and watch time
-- Admin panel for video processing and parent management
+- Parent report showing per-child quiz scores, retries, and watch time
+- Admin panel for video processing and question management
