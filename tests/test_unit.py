@@ -297,3 +297,31 @@ def test_upsert_login_code_stores_plain_and_hash():
         conn.commit()
 
 
+# ── New: report service unit tests ──
+from app.services.report_service import _compute_top_categories, get_child_report_scoped
+from unittest.mock import patch
+
+def test_compute_top_categories_correct_scores():
+    # correct answers should produce 100% score for their category
+    attempts = [{"details": [{"question_type": "action", "status": "correct"}]}]
+    cats = _compute_top_categories(attempts)
+    assert any(c["type"] == "action" and c["score"] == 100 for c in cats)
+
+def test_compute_top_categories_almost_is_half_point():
+    # almost answer should yield 50% score
+    attempts = [{"details": [{"question_type": "feeling", "status": "almost"}]}]
+    cats = _compute_top_categories(attempts)
+    assert any(c["type"] == "feeling" and c["score"] == 50 for c in cats)
+
+def test_compute_top_categories_wrong_yields_zero():
+    # wrong answer should yield 0%
+    attempts = [{"details": [{"question_type": "setting", "status": "wrong"}]}]
+    cats = _compute_top_categories(attempts)
+    assert any(c["type"] == "setting" and c["score"] == 0 for c in cats)
+
+def test_report_empty_when_no_attempts():
+    # child with no quiz history should return zeroed-out report
+    with patch("app.services.report_service._load_attempts", return_value=[]):
+        report = get_child_report_scoped("no_attempts_child", mode="all")
+    assert report["total_attempts"] == 0
+    assert report["overall_score"] == 0

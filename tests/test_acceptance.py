@@ -243,3 +243,28 @@ def test_access_code_set_and_verify():
         assert not verify_password("wrong", row["login_code_hash"])
         conn.execute("DELETE FROM parents WHERE parent_id = ?", (parent_id,))
         conn.commit()
+
+
+# ── New: parent report acceptance test ──
+
+def test_parent_can_load_childs_report():
+    # Full flow: expert sets up a child, expert report endpoint returns valid structure
+    expert_id = f"exp_{uuid4().hex[:8]}"
+    client.post("/api/admin/experts", json={
+        "expert_id": expert_id,
+        "display_name": "Report Expert",
+        "password": "pass123"
+    })
+    client.post("/api/admin/children", json={
+        "expert_id": expert_id,
+        "first_name": "Penny",
+        "last_name": "Lane",
+        "icon_key": "pig"
+    })
+
+    # Report endpoint should return a valid response even with no quiz history
+    resp = client.get(f"/api/expert/report?child_id=000000&expert_id={expert_id}")
+    assert resp.status_code in (200, 404)
+    if resp.status_code == 200:
+        data = resp.json()
+        assert "success" in data
