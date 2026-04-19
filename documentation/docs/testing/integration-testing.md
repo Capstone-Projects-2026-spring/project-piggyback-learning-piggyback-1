@@ -57,3 +57,10 @@ Integration tests verify that API endpoints behave correctly end-to-end — requ
 | Test | What it checks |
 |---|---|
 | `test_get_child_report_scoped_filters_by_mode` | report filters attempts by interaction mode correctly (mocked) |
+
+## Parent Login
+
+| Test | Endpoint | What it checks |
+|---|---|---|
+| `test_parent_login_wrong_code_returns_failure` | `POST /api/learners/parents/login` | wrong access code returns `success: false` |
+| `test_parent_login_empty_code_returns_400` | `POST /api/learners/parents/login` | empty code returns 400 |

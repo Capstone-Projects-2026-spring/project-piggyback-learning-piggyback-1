@@ -253,7 +253,7 @@ def test_get_child_report_scoped_filters_by_mode():
         assert flexible_report["overall_score"] == 80
 
 
-# ── New: parent login integration tests ──
+#  New: parent login integration tests 
 
 def test_parent_login_wrong_code_returns_failure():
     # wrong login code should return success: false
