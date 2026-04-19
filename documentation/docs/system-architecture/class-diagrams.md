@@ -4,50 +4,52 @@ sidebar_position: 5
 
 # Class Diagrams
 
-## Backend classes
+## Backend Services
 
 ```mermaid
 classDiagram
-    class QuizManager {
-        -quizzes: List~Quiz~
-        -storage: StorageManager
-        -videoProcessor: VideoProcessor
-        -questionGenerator: AIQuestionGenerator
-        -ttsModule: TTSModule
+    class QuestionGenerationService {
+        -modelName: string
+        -provider: string
 
-        +createQuiz(videoUrl)
-        +approveQuiz(quizId)
-        +getQuiz(quizId)
-        +evaluateAnswer(answer)
-        +saveQuiz(quiz)
+        +generateQuestions(transcript, frames)
+        +buildSegments(duration, interval)
+        +validateJSON(response)
+        +retryOnFailure()
     }
 
-    class Quiz {
-        -id: string
-        -title: string
-        -questions: List~Question~
-        -approved: boolean
-        -interactionMode: string
-
-        +addQuestion(question)
-        +setApproved(status)
+    class ReportService {
+        +getChildReportScoped(childId, mode)
+        +loadAttempts(childId)
+        +computeTopCategories(attempts)
+        +getVideoTitle(videoId)
     }
 
-    class Question {
-        -text: string
-        -options: List~string~
-        -timestamp: float
-        -correctAnswer: string
-
-        +validateAnswer(answer)
+    class ChildrenService {
+        +createChild(expertId, firstName, lastName, iconKey)
+        +getChild(childId)
+        +listChildren(expertId)
+        +updateChild(childId, fields)
+        +deactivateChild(childId)
+        +deleteChild(childId)
+        +generateChildId()
     }
 
-    class Answer {
-        -response: string
-        -timestamp: datetime
-        -score: int
+    class ExpertAuthService {
+        +createExpert(expertId, displayName, password)
+        +deleteExpert(expertId)
+        +hashPassword(password)
+        +verifyPassword(password, hash)
+        +addVideoAssignment(videoId, expertId)
+        +removeVideoAssignment(videoId, expertId)
+        +canExpertAccessVideo(expertId, videoId)
+    }
 
-        +calculateScore(correctAnswer)
+    class SQLiteStore {
+        -dbPath: string
+
+        +initDB()
+        +getConn()
     }
 
     class VideoProcessor {
@@ -59,146 +61,194 @@ classDiagram
         +extractTranscript()
     }
 
-    class AIQuestionGenerator {
-        -modelName: string
-        -openAIService: OpenAIService
-
-        +generateQuestions(transcript)
-        +validateQuestions(questions)
+    class AnswerEvaluator {
+        +checkAnswer(expected, user, question)
+        +normalizeText(text)
+        +fuzzyMatch(a, b)
     }
 
-    class TTSModule {
-        -voiceModel: string
-
-        +convertTextToSpeech(text)
-    }
-
-    QuizManager --> Quiz
-    Quiz --> Question
-    QuizManager --> VideoProcessor
-    QuizManager --> AIQuestionGenerator
-    QuizManager --> TTSModule
-    QuizManager --> StorageManager
-    Question --> Answer
+    QuestionGenerationService o-- VideoProcessor : uses
+    ReportService *-- SQLiteStore : owns
+    ChildrenService *-- SQLiteStore : owns
+    ExpertAuthService *-- SQLiteStore : owns
+    AnswerEvaluator --> ReportService : feeds into
 ```
-The backend component manages quiz creation, video processing, 
-AI-based question generation, and evaluation of user responses. The QuizManager
-acts as the central coordinator and interacts with the VideoProcessor,
-AIQuestionGenerator, TTSModule, and StorageManager. The design helps with 
-modular processing and responsibility separation.
 
+The backend is organized into focused service modules. `ChildrenService` and `ExpertAuthService` handle all user and access management. `ReportService` computes per-child progress reports from quiz result files. `AnswerEvaluator` scores voice answers using fuzzy matching and text normalization.
 
-## Frontend classes
+---
+
+## Data Models
+
+```mermaid
+classDiagram
+    class Child {
+        -childId: string
+        -firstName: string
+        -lastName: string
+        -iconKey: string
+        -interactionMode: string
+        -expertId: string
+        -parentId: string
+        -isActive: boolean
+    }
+
+    class Parent {
+        -parentId: string
+        -displayName: string
+        -loginCodeHash: string
+        -loginCode: string
+        -isActive: boolean
+    }
+
+    class Expert {
+        -expertId: string
+        -displayName: string
+        -passwordHash: string
+    }
+
+    class Question {
+        -text: string
+        -questionType: string
+        -timestamp: float
+        -correctAnswer: string
+    }
+
+    class QuizAttempt {
+        -childId: string
+        -videoId: string
+        -interactionMode: string
+        -percentage: float
+        -totalRetries: int
+        -watchMinutes: float
+        -details: List
+    }
+
+    Expert "1" *-- "many" Child : manages
+    Parent "1" o-- "many" Child : linked to
+    Child "1" *-- "many" QuizAttempt : owns
+    QuizAttempt *-- Question : contains
+```
+
+---
+
+## Frontend Interfaces
 
 ```mermaid
 classDiagram
     class KidsUI {
-        -currentQuiz: Quiz
+        -currentChild: Child
+        -selectedCompanion: string
 
-        +displayQuiz(quiz)
-        +playVideo(timestamp)
-        +submitAnswer(answer)
+        +displayVideoLibrary()
+        +playVideo(videoId)
+        +submitVoiceAnswer(answer)
         +rewindVideo(timestamp)
         +keepGoing()
     }
 
-    class AdminUI {
-        +uploadVideo(video)
-        +approveQuiz(quizId)
-        +viewDashboard()
-        +setInteractionMode(mode)
-        +linkChild(childId)
+    class CompanionSelector {
+        -companions: List
+
+        +displayCompanions()
+        +selectCompanion(name)
+        +playHelloAudio()
+        +swapToWaveImage()
     }
 
-    class Admin {
-    -id: string
-    -children: List~Child~
+    class QuizPlayer {
+        -interactionMode: string
+        -currentQuestion: Question
 
-    +addChild(childId)
-    +configureSession(childId, mode)
+        +pauseAtTimestamp()
+        +showQuestion()
+        +recordVoice()
+        +showFeedback(status)
+        +resumeVideo()
     }
 
-    class ExpertUI {
-        +reviewQuiz(quiz)
+    class ParentUI {
+        -currentChild: Child
+
+        +reviewQuestions(videoId)
         +editQuestion(question)
-        +saveQuiz(quiz)
+        +saveQuestions()
+        +loadReport(childId)
+        +updateLoginCode(code)
     }
-    Admin --> AdminUI
-    KidsUI --> QuizManager
-    AdminUI --> QuizManager
-    ExpertUI --> QuizManager
+
+    class AdminUI {
+        +downloadVideo(url)
+        +generateQuestions(videoId)
+        +createParent()
+        +manageChildren()
+    }
+
+    class ReportUI {
+        +displayOverallScore(score)
+        +displayStatCards(stats)
+        +displayCategoryScores(cats)
+        +displayRecentSessions(sessions)
+    }
+
+    KidsUI *-- CompanionSelector : owns
+    KidsUI *-- QuizPlayer : owns
+    ParentUI *-- ReportUI : owns
 ```
-The frontend component provides user interfaces for children, administrators,
-and expert reviewers. Each UI class communicates with the backend through
-well-defined APIs. Business logic is handled by the backend, which reduces
-coupling and improves maintainability.
 
+The frontend is split by user role. `KidsUI` handles the child experience including companion selection and quiz playback. `ParentUI` covers question review and report viewing. `AdminUI` manages video processing and account management.
 
-## Video/Audio pipeline classes
+---
+
+## External Services
 
 ```mermaid
 classDiagram
-    class AudioRecorder {
-        -audioFilePath: string
-
-        +startRecording()
-        +stopRecording()
-        +saveAudio()
-    }
-
-    class SpeechRecognizer {
-        -openAIService: OpenAIService
-
-        +convertAudioToText(audioFile)
-        +retryRecognition()
-    }
-
-    AudioRecorder --> SpeechRecognizer
-    SpeechRecognizer --> QuizManager
-```
-The video and audio processing subsystem enables voice-based interaction.
-AudioRecorder captures user speech, while SpeechRecognizer converts audio
-to text using external AI services. Recognized answers are then forwarded to the
-backend for evaluation.
-
-
-## Storage and external services
-
-```mermaid
-classDiagram
-    class StorageManager {
-        -videoDirectory: string
-        -frameDirectory: string
-        -quizDataStore: string
-
-        +saveVideo(video)
-        +saveFrames(frames)
-        +saveQuizData(quiz)
-        +loadQuizData(quizId)
-    }
-
     class OpenAIService {
         -apiKey: string
 
-        +generateQuestions(prompt)
-        +speechToText(audio)
+        +generateQuestions(prompt, frames)
+        +checkAnswer(expected, user)
+        +textToSpeech(text, voice)
     }
 
-    class YouTubeService {
+    class AnthropicService {
+        -apiKey: string
+
+        +generateQuestions(prompt, frames)
+    }
+
+    class GeminiService {
+        -apiKey: string
+
+        +generateQuestions(prompt, frames)
+    }
+
+    class HumeAIService {
+        -apiKey: string
+        -voiceIds: dict
+
+        +getCompanionVoice(companion)
+        +streamVoiceLine(text)
+    }
+
+    class YTDLPService {
         +downloadVideo(url)
+        +extractMetadata(url)
+        +extractSubtitles(url)
     }
 
     class FFmpegService {
-        +processVideo(video)
+        +remuxVideo(inputPath)
+        +processAudio(file)
     }
 
-    StorageManager --> QuizManager
-    OpenAIService --> AIQuestionGenerator
-    OpenAIService --> SpeechRecognizer
-    YouTubeService --> VideoProcessor
-    FFmpegService --> VideoProcessor
+    OpenAIService o-- QuestionGenerationService : used by
+    AnthropicService o-- QuestionGenerationService : used by
+    GeminiService o-- QuestionGenerationService : used by
+    HumeAIService o-- CompanionSelector : used by
+    YTDLPService *-- VideoProcessor : owned by
+    FFmpegService o-- VideoProcessor : used by
 ```
-The storage component manages persistent data including videos, frames,
-and quiz metadata. External service wrappers encapsulate third-party
-integrations like OpenAI, YouTube downloading, and FFmpeg processing,
-which reduces direct dependencies within the core application.
+
+All three AI providers (OpenAI, Anthropic, Gemini) are supported for question generation. Hume AI powers the companion character voices. yt-dlp and FFmpeg handle video downloading and processing.
