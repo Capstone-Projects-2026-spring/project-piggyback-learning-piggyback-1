@@ -1,6 +1,4 @@
-# Piggyback Learning
-
-[![Documentation](https://img.shields.io/badge/docs-Docusaurus-3ECC5F?logo=docusaurus&logoColor=white)](https://Capstone-Projects-2026-spring.github.io/project-piggyback-learning-piggyback-1/)
+<h1>Piggyback Learning &nbsp;<a href="https://Capstone-Projects-2026-spring.github.io/project-piggyback-learning-piggyback-1/"><img src="https://img.shields.io/badge/docs-Docusaurus-3ECC5F?logo=docusaurus&logoColor=white" alt="Documentation"/></a></h1>
 
 FastAPI application for downloading YouTube videos, extracting frames, and generating
 educational comprehension questions. The app includes admin processing tools, parent
