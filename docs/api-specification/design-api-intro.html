@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.9.2">
 <title data-rh="true">Design Document - Part II API | Project Piggyback Learning Piggyback 1</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://Capstone-Projects-2026-spring.github.io/project-piggyback-learning-piggyback-1/docs/api-specification/design-api-intro"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Design Document - Part II API | Project Piggyback Learning Piggyback 1"><meta data-rh="true" name="description" content="Backend API contract overview and internal code contract scope."><meta data-rh="true" property="og:description" content="Backend API contract overview and internal code contract scope."><link data-rh="true" rel="icon" href="/project-piggyback-learning-piggyback-1/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://Capstone-Projects-2026-spring.github.io/project-piggyback-learning-piggyback-1/docs/api-specification/design-api-intro"><link data-rh="true" rel="alternate" href="https://Capstone-Projects-2026-spring.github.io/project-piggyback-learning-piggyback-1/docs/api-specification/design-api-intro" hreflang="en"><link data-rh="true" rel="alternate" href="https://Capstone-Projects-2026-spring.github.io/project-piggyback-learning-piggyback-1/docs/api-specification/design-api-intro" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"API Specification","item":"https://Capstone-Projects-2026-spring.github.io/project-piggyback-learning-piggyback-1/docs/category/api-specification"},{"@type":"ListItem","position":2,"name":"Design Document - Part II API","item":"https://Capstone-Projects-2026-spring.github.io/project-piggyback-learning-piggyback-1/docs/api-specification/design-api-intro"}]}</script><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script><link rel="stylesheet" href="/project-piggyback-learning-piggyback-1/assets/css/styles.7aa687c6.css">
-<script src="/project-piggyback-learning-piggyback-1/assets/js/runtime~main.2c7a303d.js" defer="defer"></script>
+<script src="/project-piggyback-learning-piggyback-1/assets/js/runtime~main.2805371c.js" defer="defer"></script>
 <script src="/project-piggyback-learning-piggyback-1/assets/js/main.fdca1115.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -41,39 +41,103 @@
 <li class="">WebSocket streaming route</li>
 </ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="backend-api-surface-inventory">Backend API Surface (Inventory)<a href="#backend-api-surface-inventory" class="hash-link" aria-label="Direct link to Backend API Surface (Inventory)" title="Direct link to Backend API Surface (Inventory)" translate="no">​</a></h2>
-<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="api-routes-json-form-multipart">API Routes (JSON, form, multipart)<a href="#api-routes-json-form-multipart" class="hash-link" aria-label="Direct link to API Routes (JSON, form, multipart)" title="Direct link to API Routes (JSON, form, multipart)" translate="no">​</a></h3>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="admin-routes-admin_routespy">Admin Routes (<code>admin_routes.py</code>)<a href="#admin-routes-admin_routespy" class="hash-link" aria-label="Direct link to admin-routes-admin_routespy" title="Direct link to admin-routes-admin_routespy" translate="no">​</a></h3>
+<p><strong>Admin auth and expert management:</strong></p>
 <ul>
-<li class=""><code>POST /api/verify-password</code></li>
-<li class=""><code>POST /api/expert-annotations</code></li>
+<li class=""><code>POST /api/admin/verify-access</code></li>
+<li class=""><code>GET /api/admin/experts</code></li>
+<li class=""><code>POST /api/admin/experts</code></li>
+<li class=""><code>PUT /api/admin/experts/{expert_id}</code></li>
+<li class=""><code>POST /api/admin/experts/{expert_id}/deactivate</code></li>
+<li class=""><code>DELETE /api/admin/experts/{expert_id}</code></li>
+</ul>
+<p><strong>Admin children management:</strong></p>
+<ul>
+<li class=""><code>GET /api/admin/children</code></li>
+<li class=""><code>POST /api/admin/children</code></li>
+<li class=""><code>PUT /api/admin/children/{child_id}</code></li>
+<li class=""><code>POST /api/admin/children/{child_id}/deactivate</code></li>
+<li class=""><code>POST /api/admin/children/{child_id}/unlink</code></li>
+<li class=""><code>DELETE /api/admin/children/{child_id}</code></li>
+</ul>
+<p><strong>Admin video and question management:</strong></p>
+<ul>
+<li class=""><code>GET /api/admin/videos</code></li>
+<li class=""><code>GET /api/admin/videos/assignments</code></li>
+<li class=""><code>POST /api/admin/videos/assignments</code></li>
+<li class=""><code>POST /api/download</code></li>
+<li class=""><code>POST /api/frames/{video_id}</code></li>
+<li class=""><code>POST /api/submit-questions</code></li>
+<li class=""><code>WS /ws/questions/{video_id}</code></li>
+</ul>
+<p><strong>Admin report:</strong></p>
+<ul>
+<li class=""><code>GET /api/reports/child/{child_id}</code></li>
+</ul>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="parent-expert-routes-mainpy">Parent (Expert) Routes (<code>main.py</code>)<a href="#parent-expert-routes-mainpy" class="hash-link" aria-label="Direct link to parent-expert-routes-mainpy" title="Direct link to parent-expert-routes-mainpy" translate="no">​</a></h3>
+<p><strong>Auth:</strong></p>
+<ul>
+<li class=""><code>POST /api/expert/login</code></li>
+<li class=""><code>POST /api/expert/logout</code></li>
+<li class=""><code>GET /api/expert/access-code</code></li>
+<li class=""><code>PUT /api/expert/my-login-code</code></li>
+</ul>
+<p><strong>Parent management:</strong></p>
+<ul>
+<li class=""><code>GET /api/expert/parents</code></li>
+<li class=""><code>GET /api/expert/parents/{parent_id}/children</code></li>
+<li class=""><code>PUT /api/expert/parents/{parent_id}/login-code</code></li>
+</ul>
+<p><strong>Question review:</strong></p>
+<ul>
+<li class=""><code>GET /api/expert/video/{video_id}/final-questions</code></li>
+<li class=""><code>POST /api/expert/video/{video_id}/update-questions</code></li>
+<li class=""><code>POST /api/expert/video/{video_id}/regenerate-question</code></li>
+<li class=""><code>GET /api/expert/videos</code></li>
+<li class=""><code>GET /api/expert/videos/available</code></li>
+<li class=""><code>POST /api/expert/videos/{video_id}/claim</code></li>
+<li class=""><code>DELETE /api/expert/videos/{video_id}/unclaim</code></li>
+<li class=""><code>GET /api/expert/report</code></li>
+</ul>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="child-learner-routes-mainpy-and-video_quiz_routespy">Child (Learner) Routes (<code>main.py</code> and <code>video_quiz_routes.py</code>)<a href="#child-learner-routes-mainpy-and-video_quiz_routespy" class="hash-link" aria-label="Direct link to child-learner-routes-mainpy-and-video_quiz_routespy" title="Direct link to child-learner-routes-mainpy-and-video_quiz_routespy" translate="no">​</a></h3>
+<p><strong>Login and profile:</strong></p>
+<ul>
+<li class=""><code>POST /api/learners/parents/login</code></li>
+<li class=""><code>GET /api/learners/experts/{expert_id}/children</code></li>
+<li class=""><code>GET /api/learners/children/{child_id}/videos</code></li>
+<li class=""><code>GET /api/learners/children/{child_id}/report</code></li>
+</ul>
+<p><strong>Quiz playback:</strong></p>
+<ul>
+<li class=""><code>GET /api/kids_videos</code></li>
+<li class=""><code>GET /api/final-questions/{video_id}</code></li>
+<li class=""><code>POST /api/check_answer</code></li>
+<li class=""><code>POST /api/transcribe</code></li>
+<li class=""><code>POST /api/save-quiz-score</code></li>
+<li class=""><code>GET /api/get-quiz-scores/{child_id}</code></li>
+<li class=""><code>GET /api/config</code></li>
+</ul>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="shared-routes-mainpy">Shared Routes (<code>main.py</code>)<a href="#shared-routes-mainpy" class="hash-link" aria-label="Direct link to shared-routes-mainpy" title="Direct link to shared-routes-mainpy" translate="no">​</a></h3>
+<ul>
 <li class=""><code>GET /api/videos-list</code></li>
 <li class=""><code>GET /api/expert-questions/{video_id}</code></li>
 <li class=""><code>POST /api/expert-questions</code></li>
 <li class=""><code>POST /api/save-final-questions</code></li>
 <li class=""><code>POST /api/tts</code></li>
-<li class=""><code>POST /api/expert/login</code></li>
-<li class=""><code>POST /api/expert/logout</code></li>
-<li class=""><code>GET /api/learners/experts/{expert_id}/children</code></li>
-<li class=""><code>GET /api/learners/children/{child_id}/report</code></li>
-<li class=""><code>GET /api/learners/children/{child_id}/videos</code></li>
-<li class=""><code>GET /expert/edit/{video_id}</code></li>
-<li class=""><code>GET /api/expert/video/{video_id}/persona-variants</code></li>
-<li class=""><code>POST /api/expert/video/{video_id}/persona-variants</code></li>
-<li class=""><code>GET /api/expert/video/{video_id}/final-questions</code></li>
-<li class=""><code>POST /api/expert/video/{video_id}/update-questions</code></li>
-<li class=""><code>POST /api/expert/video/{video_id}/regenerate-question</code></li>
-<li class=""><code>GET /api/expert/videos</code></li>
-<li class=""><code>POST /api/expert/videos/{video_id}/claim</code></li>
-<li class=""><code>POST /api/expert/questions/persona-variants</code></li>
+<li class=""><code>POST /api/verify-password</code></li>
+<li class=""><code>POST /api/expert-annotations</code></li>
 </ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="authentication-and-authorization-current-state">Authentication and Authorization (Current State)<a href="#authentication-and-authorization-current-state" class="hash-link" aria-label="Direct link to Authentication and Authorization (Current State)" title="Direct link to Authentication and Authorization (Current State)" translate="no">​</a></h2>
-<p>Current implementation includes:</p>
+<p>Current implementation uses:</p>
 <ul>
-<li class=""><code>POST /api/verify-password</code> for admin/expert password checks.</li>
+<li class=""><code>POST /api/expert/login</code> - parent/expert logs in with their personal access code (stored as bcrypt hash in SQLite).</li>
+<li class=""><code>POST /api/learners/parents/login</code> - child login by entering the parent&#x27;s access code, returns linked child profiles.</li>
+<li class=""><code>POST /api/admin/verify-access</code> - admin authenticates with the <code>ADMIN_PASSWORD</code> environment variable.</li>
 </ul>
 <p>Current limitations:</p>
 <ul>
 <li class="">No formal JWT/session token contract is defined in OpenAPI yet.</li>
-<li class="">Authorization is not uniformly expressed as token-based route security.</li>
+<li class="">Authorization is cookie/session based, not uniformly expressed as token-based route security.</li>
 <li class="">Any auth model update requires immediate OpenAPI <code>securitySchemes</code> and route <code>security</code> updates.</li>
 </ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="error-handling-current-state">Error Handling (Current State)<a href="#error-handling-current-state" class="hash-link" aria-label="Direct link to Error Handling (Current State)" title="Direct link to Error Handling (Current State)" translate="no">​</a></h2>
@@ -87,13 +151,17 @@
 <ul>
 <li class="">OpenAPI must define endpoint-specific error responses and payload schemas.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="traceability-endpoint---internal-responsibility">Traceability (Endpoint -&gt; Internal Responsibility)<a href="#traceability-endpoint---internal-responsibility" class="hash-link" aria-label="Direct link to Traceability (Endpoint -&gt; Internal Responsibility)" title="Direct link to Traceability (Endpoint -&gt; Internal Responsibility)" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="traceability-endpoint---internal-responsibility">Traceability (Endpoint - Internal Responsibility)<a href="#traceability-endpoint---internal-responsibility" class="hash-link" aria-label="Direct link to Traceability (Endpoint - Internal Responsibility)" title="Direct link to Traceability (Endpoint - Internal Responsibility)" translate="no">​</a></h2>
 <ul>
-<li class=""><code>POST /api/frames/{video_id}</code> -&gt; <code>app/services/frame_service.py::extract_frames_per_second_for_video</code></li>
-<li class=""><code>WS /ws/questions/{video_id}</code> -&gt; orchestration in <code>admin_routes.py</code> + generation functions in <code>app/services/question_generation_service.py</code></li>
-<li class=""><code>POST /api/check_answer</code> -&gt; scoring flow in <code>video_quiz_routes.py</code></li>
-<li class=""><code>POST /api/transcribe</code> -&gt; transcription flow in <code>video_quiz_routes.py</code></li>
-<li class=""><code>GET /api/kids_videos</code> -&gt; local video discovery/refresh flow in <code>video_quiz_routes.py</code></li>
+<li class=""><code>POST /api/frames/{video_id}</code> - <code>app/services/frame_service.py::extract_frames_per_second_for_video</code></li>
+<li class=""><code>WS /ws/questions/{video_id}</code> - orchestration in <code>admin_routes.py</code> + generation in <code>app/services/question_generation_service.py</code></li>
+<li class=""><code>POST /api/check_answer</code> - scoring flow in <code>video_quiz_routes.py</code></li>
+<li class=""><code>POST /api/transcribe</code> - transcription flow in <code>video_quiz_routes.py</code></li>
+<li class=""><code>GET /api/kids_videos</code> - local video discovery in <code>video_quiz_routes.py</code></li>
+<li class=""><code>GET /api/expert/report</code> - <code>app/services/report_service.py::get_child_report_scoped</code></li>
+<li class=""><code>GET /api/learners/children/{child_id}/report</code> - <code>app/services/report_service.py::get_child_report</code></li>
+<li class=""><code>POST /api/admin/children</code> - <code>app/services/children_service.py::create_child</code></li>
+<li class=""><code>POST /api/expert/login</code> - <code>app/services/expert_auth_service.py::verify_password</code></li>
 </ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="maintenance-requirement">Maintenance Requirement<a href="#maintenance-requirement" class="hash-link" aria-label="Direct link to Maintenance Requirement" title="Direct link to Maintenance Requirement" translate="no">​</a></h2>
 <p>Update documentation whenever any of the following changes:</p>
@@ -103,6 +171,6 @@
 <li class="">Auth behavior or security policy</li>
 <li class="">Error schema</li>
 <li class="">Core service function signature or module responsibility</li>
-</ul></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-edit-meta-row"><div class="col noPrint_WFHX"><a href="https://github.com/Capstone-Projects-2026-spring/project-piggyback-learning-piggyback-1/edit/main/documentation/docs/api-specification/design-api-intro.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>Edit this page</a></div><div class="col lastUpdated_JAkA"><details><summary>Revision History</summary><table><thead><tr><th scope="row">Author</th><th scope="row">Revision</th><th scope="row">Date</th></tr></thead><tbody><tr><td colspan="3" style="text-align:center;font-style:italic;color:#666">Loading...</td></tr></tbody></table></details><span class="theme-last-updated">Last updated<!-- --> by <b>Jerry Lin</b></span></div></div></footer></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/project-piggyback-learning-piggyback-1/docs/category/api-specification"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">API Specification</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/project-piggyback-learning-piggyback-1/docs/api-specification/openapi-spec"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">Piggyback Learning API</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#required-artifacts" class="table-of-contents__link toc-highlight">Required Artifacts</a></li><li><a href="#frontend-and-backend-split" class="table-of-contents__link toc-highlight">Frontend and Backend Split</a><ul><li><a href="#frontend-contract" class="table-of-contents__link toc-highlight">Frontend Contract</a></li><li><a href="#backend-contract" class="table-of-contents__link toc-highlight">Backend Contract</a></li></ul></li><li><a href="#backend-api-surface-inventory" class="table-of-contents__link toc-highlight">Backend API Surface (Inventory)</a><ul><li><a href="#api-routes-json-form-multipart" class="table-of-contents__link toc-highlight">API Routes (JSON, form, multipart)</a></li></ul></li><li><a href="#authentication-and-authorization-current-state" class="table-of-contents__link toc-highlight">Authentication and Authorization (Current State)</a></li><li><a href="#error-handling-current-state" class="table-of-contents__link toc-highlight">Error Handling (Current State)</a></li><li><a href="#traceability-endpoint---internal-responsibility" class="table-of-contents__link toc-highlight">Traceability (Endpoint -&gt; Internal Responsibility)</a></li><li><a href="#maintenance-requirement" class="table-of-contents__link toc-highlight">Maintenance Requirement</a></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/project-piggyback-learning-piggyback-1/docs/intro">Documentation</a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://github.com/Capstone-Projects-2026-spring/project-piggyback-learning-piggyback-1" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a class="footer__link-item" href="/project-piggyback-learning-piggyback-1/tutorial/open-source-usage">Template Contributors</a></li></ul></div></div><div class="footer__bottom text--center"><div class="margin-bottom--sm"><img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Temple_T_logo.svg" alt="My Site Logo" class="footer__logo themedComponent_mlkZ themedComponent--light_NVdE"><img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Temple_T_logo.svg" alt="My Site Logo" class="footer__logo themedComponent_mlkZ themedComponent--dark_xIcU"></div><div class="footer__copyright">Copyright © 2026 Project Piggyback Learning Piggyback 1, Inc. Built with Docusaurus.</div></div></div></footer></div>
+</ul></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-edit-meta-row"><div class="col noPrint_WFHX"><a href="https://github.com/Capstone-Projects-2026-spring/project-piggyback-learning-piggyback-1/edit/main/documentation/docs/api-specification/design-api-intro.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>Edit this page</a></div><div class="col lastUpdated_JAkA"><details><summary>Revision History</summary><table><thead><tr><th scope="row">Author</th><th scope="row">Revision</th><th scope="row">Date</th></tr></thead><tbody><tr><td colspan="3" style="text-align:center;font-style:italic;color:#666">Loading...</td></tr></tbody></table></details><span class="theme-last-updated">Last updated<!-- --> by <b>Jerry Lin</b></span></div></div></footer></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/project-piggyback-learning-piggyback-1/docs/category/api-specification"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">API Specification</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/project-piggyback-learning-piggyback-1/docs/api-specification/openapi-spec"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">Piggyback Learning API</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#required-artifacts" class="table-of-contents__link toc-highlight">Required Artifacts</a></li><li><a href="#frontend-and-backend-split" class="table-of-contents__link toc-highlight">Frontend and Backend Split</a><ul><li><a href="#frontend-contract" class="table-of-contents__link toc-highlight">Frontend Contract</a></li><li><a href="#backend-contract" class="table-of-contents__link toc-highlight">Backend Contract</a></li></ul></li><li><a href="#backend-api-surface-inventory" class="table-of-contents__link toc-highlight">Backend API Surface (Inventory)</a><ul><li><a href="#admin-routes-admin_routespy" class="table-of-contents__link toc-highlight">Admin Routes (<code>admin_routes.py</code>)</a></li><li><a href="#parent-expert-routes-mainpy" class="table-of-contents__link toc-highlight">Parent (Expert) Routes (<code>main.py</code>)</a></li><li><a href="#child-learner-routes-mainpy-and-video_quiz_routespy" class="table-of-contents__link toc-highlight">Child (Learner) Routes (<code>main.py</code> and <code>video_quiz_routes.py</code>)</a></li><li><a href="#shared-routes-mainpy" class="table-of-contents__link toc-highlight">Shared Routes (<code>main.py</code>)</a></li></ul></li><li><a href="#authentication-and-authorization-current-state" class="table-of-contents__link toc-highlight">Authentication and Authorization (Current State)</a></li><li><a href="#error-handling-current-state" class="table-of-contents__link toc-highlight">Error Handling (Current State)</a></li><li><a href="#traceability-endpoint---internal-responsibility" class="table-of-contents__link toc-highlight">Traceability (Endpoint - Internal Responsibility)</a></li><li><a href="#maintenance-requirement" class="table-of-contents__link toc-highlight">Maintenance Requirement</a></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/project-piggyback-learning-piggyback-1/docs/intro">Documentation</a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://github.com/Capstone-Projects-2026-spring/project-piggyback-learning-piggyback-1" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a class="footer__link-item" href="/project-piggyback-learning-piggyback-1/tutorial/open-source-usage">Template Contributors</a></li></ul></div></div><div class="footer__bottom text--center"><div class="margin-bottom--sm"><img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Temple_T_logo.svg" alt="My Site Logo" class="footer__logo themedComponent_mlkZ themedComponent--light_NVdE"><img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Temple_T_logo.svg" alt="My Site Logo" class="footer__logo themedComponent_mlkZ themedComponent--dark_xIcU"></div><div class="footer__copyright">Copyright © 2026 Project Piggyback Learning Piggyback 1, Inc. Built with Docusaurus.</div></div></div></footer></div>
 </body>
 </html>
