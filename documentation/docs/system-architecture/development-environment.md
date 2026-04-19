@@ -6,92 +6,124 @@ sidebar_position: 4
 
 ## Hardware Requirements
 
-### Typical Hardware
-
 - A modern laptop or desktop capable of running Python and FFmpeg
-
-- Minimum suggested 8 GBs of RAM
-
-- Enough disk space to store downloaded video data and extracted frames
-
+- Minimum 8 GB RAM recommended
+- Enough disk space to store downloaded videos and extracted frames (videos can be large)
 - Internet access for installing dependencies and downloading YouTube content
+- A microphone (required for testing the kids voice quiz experience)
 
-### Setup Effort
-
-**Installing Python 3.10+**
-
-- Downloading and installing from python.org or OS package manager.
-
-**Installing FFmpeg**
-
-- Is required for multimedia processing.
-
-**Installing Node.js (optional)**
-
-- Improves yt-dlp reliability.
-
-**Cloning Git Repo**
-
-- Using Git commands to clone the repo.
-
-**Creating a .env config file**
-
-- Stores the secret keys and passwords.
+---
 
 ## Software Requirements
 
-### Programming Languages and Frameworks
+### Languages and Frameworks
 
-python 3.x - Core backend language (FastAPI framework)
+- **Python 3.12** - required exactly, other versions are not supported
+- **FastAPI** - web server framework for building APIs
+- **Uvicorn** - ASGI server for running the FastAPI app
 
-FastAPI - Web server framework used to build APIs
+### System Dependencies
 
-Unicorn - ASGI server for running the FastAPI app
-
-### Dependencies
-
-FFmpeg - System-level dependency for media processing
-
-Node.js - Optional but recommended for better yt-dlp performance
+- **FFmpeg** - required for video processing and remuxing
+- **Node.js LTS** - optional, improves yt-dlp download reliability
 
 ### Python Libraries
 
-Web & ASGI: fastapi, uvicorn, starlette
+| Category | Libraries |
+|---|---|
+| Web and ASGI | `fastapi`, `uvicorn`, `starlette` |
+| Multimedia | `yt-dlp`, `opencv-python`, `pandas`, `numpy` |
+| AI Providers | `openai`, `anthropic`, `google-generativeai` |
+| Voice | `python-dotenv`, `websockets`, `httpx` |
+| Utilities | `tqdm`, `python-multipart`, `anyio` |
 
-Multimedia: yt-dlp, opencv-python, pandas, numpy
+### API Keys Needed
 
-Data & Utils: anthropic, openai, gemini, python-dotenv, tqdm, python-multipart
+| Key | Purpose | Required? |
+|---|---|---|
+| `OPENAI_API_KEY` | Question generation and answer grading | For new videos |
+| `ANTHROPIC_API_KEY` | Claude AI question generation | For new videos |
+| `GEMINI_API_KEY` | Gemini AI question generation | For new videos |
+| `YOUTUBE_API_KEY` | YouTube video search | For new videos |
+| `HUME_API_KEY` | Companion character voices | Optional |
 
-Networking & Async: httpx, anyio, websockets
+---
 
-## Tools & IDEs
+## Tools and IDEs
 
-### IDE / Code Editor:
+- **IDE:** VS Code, PyCharm, or any editor that supports Python
+- **Shell:** Git Bash (Windows), Terminal (macOS/Linux)
+- **Version Control:** Git
 
-- VS code, PyCharm, Sublime Text, or any editor that supports Python
-
-### Terminal / Shell:
-
-- Git Bash (Windows) - Repo includes git bash for setup
+---
 
 ## Local Setup Workflow
 
-### Install dependenices
+### 1. Verify Python version
+
+```bash
+python --version  # must be 3.12.x
+```
+
+### 2. Install FFmpeg
+
+Windows: install via winget or chocolatey and add to PATH
+
+macOS:
+```bash
+brew install ffmpeg
+```
+
+Linux:
+```bash
+sudo apt-get install ffmpeg
+```
+
+### 3. Clone the repo and create a virtual environment
+
+```bash
+git clone <repo-url>
+cd project-piggyback-learning-piggyback-1
 
 python -m venv venv
 
+# Windows
+venv\Scripts\activate
+
+# macOS/Linux
 source venv/bin/activate
+```
 
+### 4. Install dependencies
+
+```bash
 python -m pip install --upgrade pip
-
 python -m pip install -r requirements.txt
+```
 
-### Run the Application
+### 5. Set up environment variables
 
+```bash
+# macOS/Linux
+cp .env.example .env
+
+# Windows
+copy .env.example .env
+```
+
+Fill in your API keys in the `.env` file.
+
+### 6. Run the app
+
+```bash
 python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
 
-### Verify system tools
+### 7. Verify system tools
 
+```bash
 ffmpeg -version
+node -v  # optional
+```
 
-node -v
+Open `http://localhost:8000` in your browser.
