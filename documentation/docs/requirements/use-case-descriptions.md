@@ -4,65 +4,82 @@ sidebar_position: 5
 
 # Use-case descriptions
 
-## Use Case 1 - Admin creates quiz
-*As a parent or administrator, I want to generate a quiz for the child to use.*
-1. After logging in, the admin selects the 'Administrator' option on the 'Choose your role' page.
-2. The app prompts the admin and the admin uploads a video.
-3. The system processes the video and generates a quiz.
-4. The administrator approves the quiz to be completed by the child.
+## Use Case 1 - Admin downloads a video and generates questions
+*As an admin, I want to add a YouTube video to the system and generate quiz questions for it.*
 
-## Use Case 2 - Learner watches video and answers quiz
-*As a child, I want to watch a video and interact with questions based on how the admin configured my session.*
-1. The child opens the app and sees available videos.
-2. The child selects a video.
-3. The system loads the video with the interaction mode configured by the admin.
-4. The child selects "Start."
-5. The system begins playing the video.
+1. The admin logs in using the admin password.
+2. The admin pastes a YouTube video URL into the admin panel.
+3. The system downloads the video and extracts frames.
+4. The system uses AI to generate comprehension questions based on the video content.
+5. The questions are saved and made available for parent review.
 
-## Use Case 3 - Learner answers a question using voice
-*As a user, I want to answer quiz questions using my voice and have my answer scored moments later.*
-1. The system displays a question and prompts the user to speak their answer.
-2. The system automatically starts to record and the user speaks their answer.
-3. The system records the audio and converts it into text.
-4. The system displays the recognized answer.
-5. The user confirms the answer, and the system saves it and moves to the next question.
+---
 
-**Alternate flow**: If the system cannot recognize the speech clearly, the user is prompted to retry speaking.
+## Use Case 2 - Parent sets up their child's profile
+*As a parent, I want to create a profile for my child and configure how they interact with quizzes.*
 
+1. The parent logs in using their personal access code.
+2. The parent navigates to the child management section.
+3. The parent creates a child profile - entering the child's name, picking an icon, and selecting an interaction mode: strict, flexible, or passive.
+4. The system saves the profile and the child is ready to use the app.
 
-## Use Case 4 - Child interacts with video questions
-*As a child, I want to interact with video questions based on the mode my admin configured.*
+---
 
-1. The system plays the video and pauses at a question timestamp.
-2. The system displays a question based on the admin-configured mode:
-   - **Answer required:** The child must answer before the video continues.
-   - **Keep going allowed:**  video pauses, child answers but if wrong can press "Keep Going" to continue anyway.
-   - **Auto-play:** No question is shown; the video plays straight through.
-3. If answering, the child speaks their answer using voice input.
-4. The system evaluates the answer and shows whether it is correct or incorrect.
-5. The video resumes from where it paused.
+## Use Case 3 - Parent reviews and approves quiz questions
+*As a parent, I want to review the AI-generated questions before my child sees them.*
 
-**Alternate flow:** If the answer is incorrect and the mode allows it, the system offers “Rewind Video” to replay the relevant segment before continuing.
+1. The parent logs in and navigates to the question review section.
+2. The parent selects a video to review.
+3. The parent reads through each question, editing or removing any that are unclear or inaccurate.
+4. The parent saves the final set of questions.
+5. The questions are now available for the child during playback.
 
-## Use Case 5 - Parental report
-*As a parent or guardian, I want to check on my child's progress to be able to make adjustments as necessary.*
-1. After logging in, the admin selects the 'Administrator' option on the 'Choose your role' page.
-2. The admin clicks on the 'Dashboard' button.
-3. The admin views a page containing Piggyback's results, including response scores, time watched, and other insights.
-V4. The admin views a page containing Piggyback's results, including response scores, time watched, and other insights.
+---
 
-## Use Case 6 - Expert review
-*As a parent or guardian, I want to be able to review and modify the quizzes for my child.*
-1. After logging in, the admin selects the 'Expert Reviewer' option on the 'Choose your role' page.
-2. The screen displays the quizzes that the admin has created and approved.
-3. The admin selects one of the quizzes to be reviewed.
-4. The admin selects a timestamp with a question and rewinds slightly to look through the video.
-5. The admin makes changes to the question as needed.
-6. Once done with the whole quiz, the admin saves the quiz for the child to be able to select again.
+## Use Case 4 - Child logs in and picks a companion
+*As a child, I want to log in and pick a friend to watch videos with me.*
 
-## Use Case 7 - Admin configures child's learning conditions
-*As an admin, I want to set how a child interacts with the video so I can customize their learning experience.*
-1. Admin logs into the admin panel.
-2. Admin selects a child or session.
-3. Admin chooses the interaction mode: "Answer to continue," "Keep going allowed," or "Auto-play."
-4. System saves the settings and applies them when the child opens the app.
+1. The child opens the app and enters the access code provided by their parent.
+2. The child sees their profile and selects it.
+3. The child picks a companion character - Blossom the Bunny, Pippa the Pig, or Ash the Alligator.
+4. The child is taken to the video library.
+
+---
+
+## Use Case 5 - Child watches a video and answers quiz questions
+*As a child, I want to watch a video and answer questions using my voice.*
+
+1. The child selects a video from the library.
+2. The system loads the video with the interaction mode set by the parent.
+3. The video plays and pauses at question timestamps.
+4. The system displays a question and the companion prompts the child to answer.
+5. The system records the child's voice, converts it to text, and evaluates the answer.
+6. The companion gives feedback - correct, almost, or incorrect - based on the result.
+7. The video resumes and continues to the next question.
+
+**Alternate flow - strict mode:** The child must answer correctly before the video continues. If incorrect, the video rewinds to the relevant segment.
+
+**Alternate flow - flexible mode:** The child answers but can press "Keep Going" if incorrect. The companion reveals the correct answer.
+
+**Alternate flow - passive mode:** No questions are shown. The video plays straight through and only watch time is recorded.
+
+---
+
+## Use Case 6 - Child's voice is not recognized
+*As a child, I want the app to let me retry if it didn't understand what I said.*
+
+1. The system displays a question and starts recording.
+2. The child speaks but the system cannot recognize the answer clearly.
+3. The system prompts the child to try again.
+4. The child speaks again and the system re-evaluates.
+
+---
+
+## Use Case 7 - Parent checks their child's report
+*As a parent, I want to see how my child is doing so I can track their progress.*
+
+1. The parent logs in using their personal access code.
+2. The parent navigates to the report section and selects their child.
+3. The parent clicks "Load Report."
+4. The system displays the child's overall score, quiz attempts, retries, watch time, and recent sessions.
+5. The parent uses the report to decide whether to adjust the child's interaction mode or review more questions.
