@@ -186,8 +186,8 @@ Test files are located in the `tests/` directory:
 
 ### Parent Review
 
-1. From the home page, choose Parent and enter the parent password.
-2. Use the Parent Preview page to review or create questions.
+1. From the home page, choose Parent and enter your personal login code.
+2. Use the Parent dashboard to review questions and view your child's progress report.
 
 ### Kids
 
