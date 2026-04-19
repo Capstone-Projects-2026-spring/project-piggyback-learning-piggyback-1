@@ -1,4 +1,4 @@
-# Piggyback Learning
+<h1>Piggyback Learning &nbsp;<a href="https://Capstone-Projects-2026-spring.github.io/project-piggyback-learning-piggyback-1/"><img src="https://img.shields.io/badge/docs-Docusaurus-3ECC5F?logo=docusaurus&logoColor=white" alt="Documentation"/></a></h1>
 
 FastAPI application for downloading YouTube videos, extracting frames, and generating
 educational comprehension questions. The app includes admin processing tools, parent
@@ -42,7 +42,7 @@ Key Python packages (see `requirements.txt` for pinned versions):
 |---|---|
 | Admin | `admin123` |
 
-These are the defaults when `ADMIN_PASSWORD` / `EXPERT_PASSWORD` are not set in `.env`.
+These are the defaults when `ADMIN_PASSWORD` is not set in `.env`.
 **Change these in production.**
 
 ## Quickstart
@@ -73,7 +73,10 @@ These are the defaults when `ADMIN_PASSWORD` / `EXPERT_PASSWORD` are not set in 
    ```
 5. Copy `.env.example` to `.env` and fill in your API keys:
    ```bash
+   # macOS/Linux
    cp .env.example .env
+   # Windows
+   copy .env.example .env
    ```
 6. Run the app:
    ```bash
@@ -125,22 +128,35 @@ Linux:
 Copy `.env.example` to `.env` and fill in your values:
 
 ```bash
+# macOS/Linux
 cp .env.example .env
+# Windows
+copy .env.example .env
 ```
 
 All available variables (see `.env.example` for full list):
 
 ```bash
+ADMIN_PASSWORD="admin123"
+
+# Required only to add new videos and generate questions
 OPENAI_API_KEY="your_openai_key"
 ANTHROPIC_API_KEY="your_anthropic_key"
 GEMINI_API_KEY="your_gemini_key"
 YOUTUBE_API_KEY="your_youtube_key"
-ADMIN_PASSWORD="admin123"
-EXPERT_PASSWORD="expert123"
+
+# Optional: Hume AI companion voices (get keys at hume.ai)
+HUME_API_KEY="your_hume_api_key"
+HUME_VOICE_BLOSSOM="your_blossom_voice_id"
+HUME_VOICE_PIPPA="your_pippa_voice_id"
+HUME_VOICE_ASH="your_ash_voice_id"
+
 # Optional: Netscape-format cookies file for restricted videos
 YTDLP_COOKIEFILE="C:\\path\\to\\cookies.txt"
 YTDLP_COOKIES_FILE="C:\\path\\to\\cookies.txt"
 ```
+
+> A sample video with questions is included — you can run the kids experience immediately without any API keys.
 
 Notes:
 - `.env` and `.env.txt` are both loaded if present.
@@ -181,13 +197,15 @@ Test files are located in the `tests/` directory:
 
 ### Parent Review
 
-1. From the home page, choose Parent and enter the parent password.
-2. Use the Parent Preview page to review or create questions.
+1. From the home page, choose Parent and enter your personal login code.
+2. Use the Parent dashboard to review questions and view your child's progress report.
 
 ### Kids
 
-1. Go to the Kids page.
-2. Browse videos and play quizzes.
+1. From the home page, choose Kids.
+2. Log in and select a profile.
+3. Pick a companion character.
+4. Browse videos and play quizzes.
 
 ## API Endpoints (Core)
 
@@ -218,8 +236,8 @@ templates/
   admin.html
   children.html
   expert_preview.html
-  home.html
-  video_quiz.html
+  edit_questions.html
+  avatar_sample.html
 tests/
   conftest.py
   test_unit.py

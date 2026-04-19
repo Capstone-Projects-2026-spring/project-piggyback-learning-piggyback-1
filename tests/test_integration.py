@@ -251,3 +251,18 @@ def test_get_child_report_scoped_filters_by_mode():
         flexible_report = get_child_report_scoped("child_x", mode="flexible")
         assert flexible_report["total_attempts"] == 1
         assert flexible_report["overall_score"] == 80
+
+
+# ── New: parent login integration tests ──
+
+def test_parent_login_wrong_code_returns_failure():
+    # wrong login code should return success: false
+    resp = client.post("/api/learners/parents/login", json={"login_code": "definitely_wrong_code_xyz"})
+    assert resp.status_code in (200, 401)
+    assert resp.json().get("success") is False
+
+def test_parent_login_empty_code_returns_400():
+    # empty login code should be rejected immediately
+    resp = client.post("/api/learners/parents/login", json={"login_code": ""})
+    assert resp.status_code == 400
+    assert resp.json().get("success") is False

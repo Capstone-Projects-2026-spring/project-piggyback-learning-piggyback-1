@@ -4,10 +4,10 @@ sidebar_position: 4
 
 # Test Results
 
-All 69 tests passing as of 2026-04-06.
+All 76 tests passing as of 2026-04-19.
 
 ```
-collected 69 items
+collected 76 items
 
 tests/test_acceptance.py::test_student_misspells_pikachu_and_still_gets_correct PASSED
 tests/test_acceptance.py::test_student_answers_spinning_cat_question PASSED
@@ -78,6 +78,13 @@ tests/test_unit.py::test_parents_table_has_correct_columns PASSED
 tests/test_unit.py::test_children_has_parent_id_column PASSED
 tests/test_unit.py::test_parents_table_has_login_code_column PASSED
 tests/test_unit.py::test_upsert_login_code_stores_plain_and_hash PASSED
+tests/test_unit.py::test_compute_top_categories_correct_scores PASSED
+tests/test_unit.py::test_compute_top_categories_almost_is_half_point PASSED
+tests/test_unit.py::test_compute_top_categories_wrong_yields_zero PASSED
+tests/test_unit.py::test_report_empty_when_no_attempts PASSED
+tests/test_integration.py::test_parent_login_wrong_code_returns_failure PASSED
+tests/test_integration.py::test_parent_login_empty_code_returns_400 PASSED
+tests/test_acceptance.py::test_parent_can_load_childs_report PASSED
 
-69 passed in 2.08s
+76 passed in 3.59s
 ```
