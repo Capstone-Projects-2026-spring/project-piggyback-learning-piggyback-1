@@ -94,3 +94,12 @@ Unit tests verify individual functions and service layer logic in isolation. No 
 | `test_children_has_parent_id_column` | children table has parent_id FK |
 | `test_parents_table_has_login_code_column` | login_code plain text column exists |
 | `test_upsert_login_code_stores_plain_and_hash` | access code stored in both plain and hashed form |
+
+## Report Service
+
+| Test | What it checks |
+|---|---|
+| `test_compute_top_categories_correct_scores` | correct answer scores 100% for its category |
+| `test_compute_top_categories_almost_is_half_point` | almost answer scores 50% for its category |
+| `test_compute_top_categories_wrong_yields_zero` | wrong answer scores 0% for its category |
+| `test_report_empty_when_no_attempts` | child with no history returns zeroed-out report |

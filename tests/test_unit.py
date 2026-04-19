@@ -297,7 +297,7 @@ def test_upsert_login_code_stores_plain_and_hash():
         conn.commit()
 
 
-# ── New: report service unit tests ──
+#New: report service unit tests 
 from app.services.report_service import _compute_top_categories, get_child_report_scoped
 from unittest.mock import patch
 
