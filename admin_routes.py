@@ -3,6 +3,7 @@ import json
 import csv
 import asyncio
 import sqlite3
+import os
 from typing import Any, Dict, List, Optional
 from app.services.frame_service import (
     extract_frames_per_second_for_video as extract_frames_per_second_for_video_service,
@@ -265,6 +266,17 @@ def _wrap_segment_result(
 def admin_page(request: Request):
     # admin.html is self-contained (fetches data via JS), so no heavy context needed
     return templates.TemplateResponse("admin.html", {"request": request})
+
+
+# =========================================================
+# Admin access code verification
+# =========================================================
+@router_admin_api.post("/admin/verify-access")
+async def verify_admin_access(payload: Dict[str, Any] = Body(...)):
+    expected = os.environ.get("ADMIN_PASSWORD", "admin123")
+    if payload.get("code") == expected:
+        return JSONResponse({"ok": True})
+    raise HTTPException(status_code=401, detail="Invalid access code")
 
 
 # =========================================================
