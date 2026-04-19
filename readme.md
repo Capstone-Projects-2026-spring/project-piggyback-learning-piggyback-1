@@ -73,7 +73,10 @@ These are the defaults when `ADMIN_PASSWORD` is not set in `.env`.
    ```
 5. Copy `.env.example` to `.env` and fill in your API keys:
    ```bash
+   # macOS/Linux
    cp .env.example .env
+   # Windows
+   copy .env.example .env
    ```
 6. Run the app:
    ```bash
@@ -125,7 +128,10 @@ Linux:
 Copy `.env.example` to `.env` and fill in your values:
 
 ```bash
+# macOS/Linux
 cp .env.example .env
+# Windows
+copy .env.example .env
 ```
 
 All available variables (see `.env.example` for full list):
