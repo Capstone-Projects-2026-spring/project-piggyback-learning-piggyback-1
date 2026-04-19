@@ -42,40 +42,98 @@ Backend is implemented with FastAPI and exposes:
 
 ## Backend API Surface (Inventory)
 
-### API Routes (JSON, form, multipart)
+### Admin Routes (`admin_routes.py`)
 
-- `POST /api/verify-password`
-- `POST /api/expert-annotations`
+**Admin auth and expert management:**
+- `POST /api/admin/verify-access`
+- `GET /api/admin/experts`
+- `POST /api/admin/experts`
+- `PUT /api/admin/experts/{expert_id}`
+- `POST /api/admin/experts/{expert_id}/deactivate`
+- `DELETE /api/admin/experts/{expert_id}`
+
+**Admin children management:**
+- `GET /api/admin/children`
+- `POST /api/admin/children`
+- `PUT /api/admin/children/{child_id}`
+- `POST /api/admin/children/{child_id}/deactivate`
+- `POST /api/admin/children/{child_id}/unlink`
+- `DELETE /api/admin/children/{child_id}`
+
+**Admin video and question management:**
+- `GET /api/admin/videos`
+- `GET /api/admin/videos/assignments`
+- `POST /api/admin/videos/assignments`
+- `POST /api/download`
+- `POST /api/frames/{video_id}`
+- `POST /api/submit-questions`
+- `WS /ws/questions/{video_id}`
+
+**Admin report:**
+- `GET /api/reports/child/{child_id}`
+
+### Parent (Expert) Routes (`main.py`)
+
+**Auth:**
+- `POST /api/expert/login`
+- `POST /api/expert/logout`
+- `GET /api/expert/access-code`
+- `PUT /api/expert/my-login-code`
+
+**Parent management:**
+- `GET /api/expert/parents`
+- `GET /api/expert/parents/{parent_id}/children`
+- `PUT /api/expert/parents/{parent_id}/login-code`
+
+**Question review:**
+- `GET /api/expert/video/{video_id}/final-questions`
+- `POST /api/expert/video/{video_id}/update-questions`
+- `POST /api/expert/video/{video_id}/regenerate-question`
+- `GET /api/expert/videos`
+- `GET /api/expert/videos/available`
+- `POST /api/expert/videos/{video_id}/claim`
+- `DELETE /api/expert/videos/{video_id}/unclaim`
+- `GET /api/expert/report`
+
+### Child (Learner) Routes (`main.py` and `video_quiz_routes.py`)
+
+**Login and profile:**
+- `POST /api/learners/parents/login`
+- `GET /api/learners/experts/{expert_id}/children`
+- `GET /api/learners/children/{child_id}/videos`
+- `GET /api/learners/children/{child_id}/report`
+
+**Quiz playback:**
+- `GET /api/kids_videos`
+- `GET /api/final-questions/{video_id}`
+- `POST /api/check_answer`
+- `POST /api/transcribe`
+- `POST /api/save-quiz-score`
+- `GET /api/get-quiz-scores/{child_id}`
+- `GET /api/config`
+
+### Shared Routes (`main.py`)
+
 - `GET /api/videos-list`
 - `GET /api/expert-questions/{video_id}`
 - `POST /api/expert-questions`
 - `POST /api/save-final-questions`
 - `POST /api/tts`
-- `POST /api/expert/login`
-- `POST /api/expert/logout`
-- `GET /api/learners/experts/{expert_id}/children`
-- `GET /api/learners/children/{child_id}/report`
-- `GET /api/learners/children/{child_id}/videos`
-- `GET /expert/edit/{video_id}`
-- `GET /api/expert/video/{video_id}/persona-variants`
-- `POST /api/expert/video/{video_id}/persona-variants`
-- `GET /api/expert/video/{video_id}/final-questions`
-- `POST /api/expert/video/{video_id}/update-questions`
-- `POST /api/expert/video/{video_id}/regenerate-question`
-- `GET /api/expert/videos`
-- `POST /api/expert/videos/{video_id}/claim`
-- `POST /api/expert/questions/persona-variants`
+- `POST /api/verify-password`
+- `POST /api/expert-annotations`
 
 ## Authentication and Authorization (Current State)
 
-Current implementation includes:
+Current implementation uses:
 
-- `POST /api/verify-password` for admin/expert password checks.
+- `POST /api/expert/login` - parent/expert logs in with their personal access code (stored as bcrypt hash in SQLite).
+- `POST /api/learners/parents/login` - child login by entering the parent's access code, returns linked child profiles.
+- `POST /api/admin/verify-access` - admin authenticates with the `ADMIN_PASSWORD` environment variable.
 
 Current limitations:
 
 - No formal JWT/session token contract is defined in OpenAPI yet.
-- Authorization is not uniformly expressed as token-based route security.
+- Authorization is cookie/session based, not uniformly expressed as token-based route security.
 - Any auth model update requires immediate OpenAPI `securitySchemes` and route `security` updates.
 
 ## Error Handling (Current State)
@@ -90,13 +148,17 @@ Contract requirement:
 
 - OpenAPI must define endpoint-specific error responses and payload schemas.
 
-## Traceability (Endpoint -> Internal Responsibility)
+## Traceability (Endpoint - Internal Responsibility)
 
-- `POST /api/frames/{video_id}` -> `app/services/frame_service.py::extract_frames_per_second_for_video`
-- `WS /ws/questions/{video_id}` -> orchestration in `admin_routes.py` + generation functions in `app/services/question_generation_service.py`
-- `POST /api/check_answer` -> scoring flow in `video_quiz_routes.py`
-- `POST /api/transcribe` -> transcription flow in `video_quiz_routes.py`
-- `GET /api/kids_videos` -> local video discovery/refresh flow in `video_quiz_routes.py`
+- `POST /api/frames/{video_id}` - `app/services/frame_service.py::extract_frames_per_second_for_video`
+- `WS /ws/questions/{video_id}` - orchestration in `admin_routes.py` + generation in `app/services/question_generation_service.py`
+- `POST /api/check_answer` - scoring flow in `video_quiz_routes.py`
+- `POST /api/transcribe` - transcription flow in `video_quiz_routes.py`
+- `GET /api/kids_videos` - local video discovery in `video_quiz_routes.py`
+- `GET /api/expert/report` - `app/services/report_service.py::get_child_report_scoped`
+- `GET /api/learners/children/{child_id}/report` - `app/services/report_service.py::get_child_report`
+- `POST /api/admin/children` - `app/services/children_service.py::create_child`
+- `POST /api/expert/login` - `app/services/expert_auth_service.py::verify_password`
 
 ## Maintenance Requirement
 
