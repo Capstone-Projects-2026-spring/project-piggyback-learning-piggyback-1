@@ -799,10 +799,12 @@ function recordRetry(question, spoken, sim) {
 
 function showQuickFeedback(status) {
     const isStrict = document.body.dataset.interactionMode === 'strict';
+    const companion = (typeof loadState === 'function' ? loadState().companion : '') || 'pig';
+    const emoji = COMPANION_EMOJI[companion] || '🐷';
     const messages = {
-        'correct': { emoji: '🐷', text: 'Correct!', color: '#28a745' },
-        'almost': { emoji: '🐷', text: 'Close!', color: '#ffc107' },
-        'wrong': { emoji: '🐷', text: isStrict ? 'Keep trying!' : 'Keep going!', color: '#dc3545' }
+        'correct': { emoji, text: 'Correct!', color: '#28a745' },
+        'almost': { emoji, text: 'Close!', color: '#ffc107' },
+        'wrong': { emoji, text: isStrict ? 'Keep trying!' : 'Keep going!', color: '#dc3545' }
     };
     const feedback = messages[status] || messages['wrong'];
     const el = document.createElement('div');
@@ -814,6 +816,8 @@ function showQuickFeedback(status) {
 
 function showFinalScore() {
     const percentage = Math.round((quizScore.correct / quizScore.total) * 100);
+    const companion = (typeof loadState === 'function' ? loadState().companion : '') || 'pig';
+    const companionEmoji = COMPANION_EMOJI[companion] || '🐷';
     let emoji, message;
     if (percentage >= 80) {
         emoji = '🎉';
@@ -822,7 +826,7 @@ function showFinalScore() {
         emoji = '⭐';
         message = 'Keep it up!';
     } else {
-        emoji = '🐷';
+        emoji = companionEmoji;
         message = 'Keep practicing!';
     }
     const modal = document.createElement('div');
