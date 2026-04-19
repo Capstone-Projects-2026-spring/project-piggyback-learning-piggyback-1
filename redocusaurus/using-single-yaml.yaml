@@ -1,21 +1,28 @@
 openapi: 3.0.3
 info:
   title: Piggyback Learning API
-  version: 0.1.0
+  version: 0.2.0
   description: >
     OpenAPI contract for Piggyback Learning FastAPI backend.
 
-    Note: authentication is currently password-verification based and not
-    uniformly enforced on all routes.
+    Auth uses session cookies: parent/expert login via POST /api/expert/login,
+
+    child login via POST /api/learners/parents/login, admin via POST
+    /api/admin/verify-access.
 servers:
   - url: http://localhost:8000
     description: Local development server
 tags:
   - name: auth
+    description: Login and logout for all roles
   - name: kids
+    description: Child-facing quiz and video routes
   - name: expert
+    description: Parent/expert question review and video management
   - name: admin
+    description: Admin-only routes for video processing and account management
   - name: media
+    description: Text-to-speech and media utilities
 x-websocket-contract:
   endpoint: /ws/questions/{video_id}
   clientPayload:
@@ -32,7 +39,7 @@ paths:
     post:
       tags:
         - auth
-      summary: Verify admin/expert password
+      summary: Verify admin/expert password (legacy)
       operationId: verifyPassword
       requestBody:
         required: true
@@ -64,12 +71,530 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-  /api/expert-annotations:
+  /api/admin/verify-access:
+    post:
+      tags:
+        - auth
+      summary: Admin login with ADMIN_PASSWORD
+      operationId: adminVerifyAccess
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - password
+              properties:
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+        '401':
+          description: Wrong password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/expert/login:
+    post:
+      tags:
+        - auth
+      summary: Parent/expert login with personal access code
+      operationId: expertLogin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - access_code
+              properties:
+                access_code:
+                  type: string
+      responses:
+        '200':
+          description: Login result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+        '401':
+          description: Wrong access code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/expert/logout:
+    post:
+      tags:
+        - auth
+      summary: Expert logout
+      operationId: expertLogout
+      responses:
+        '200':
+          description: Logout result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/learners/parents/login:
+    post:
+      tags:
+        - auth
+      summary: Child login - enter parent access code and get linked child profiles
+      operationId: parentLogin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - access_code
+              properties:
+                access_code:
+                  type: string
+      responses:
+        '200':
+          description: Parent and children data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+        '401':
+          description: Invalid access code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/learners/experts/{expert_id}/children:
+    get:
+      tags:
+        - kids
+      summary: Get children assigned to an expert
+      operationId: getLearnersByExpert
+      parameters:
+        - name: expert_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Children list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/learners/children/{child_id}/report:
+    get:
+      tags:
+        - kids
+      summary: Get report for a child
+      operationId: getChildReport
+      parameters:
+        - name: child_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Child report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/learners/children/{child_id}/videos:
+    get:
+      tags:
+        - kids
+      summary: Get videos available for a child
+      operationId: getChildVideos
+      parameters:
+        - name: child_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Videos list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/kids_videos:
+    get:
+      tags:
+        - kids
+      summary: List all locally available videos for kids
+      operationId: listKidsVideos
+      responses:
+        '200':
+          description: Kids video list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KidsVideosResponse'
+  /api/final-questions/{video_id}:
+    get:
+      tags:
+        - kids
+      summary: Get final approved questions for a video
+      operationId: getFinalQuestions
+      parameters:
+        - name: video_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: companion
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - bunny
+              - pig
+              - alligator
+      responses:
+        '200':
+          description: Final questions for the video
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinalQuestionsResponse'
+  /api/check_answer:
+    post:
+      tags:
+        - kids
+      summary: Evaluate a child's voice answer against the expected answer
+      operationId: checkAnswer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckAnswerRequest'
+      responses:
+        '200':
+          description: Answer evaluation result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckAnswerResponse'
+  /api/transcribe:
+    post:
+      tags:
+        - kids
+      summary: Transcribe uploaded audio to text
+      operationId: transcribeAudio
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Transcription result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TranscribeResponse'
+  /api/save-quiz-score:
+    post:
+      tags:
+        - kids
+      summary: Save a completed quiz attempt for a child
+      operationId: saveQuizScore
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - child_id
+                - video_id
+              properties:
+                child_id:
+                  type: string
+                video_id:
+                  type: string
+                percentage:
+                  type: number
+                total_retries:
+                  type: integer
+                watch_minutes:
+                  type: number
+                interaction_mode:
+                  type: string
+                details:
+                  type: array
+                  items:
+                    type: object
+                    additionalProperties: true
+      responses:
+        '200':
+          description: Save result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/get-quiz-scores/{child_id}:
+    get:
+      tags:
+        - kids
+      summary: Get all quiz attempts for a child
+      operationId: getQuizScores
+      parameters:
+        - name: child_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Quiz attempt history
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/config:
+    get:
+      tags:
+        - kids
+      summary: Get frontend quiz configuration (thresholds, skip prevention)
+      operationId: getConfig
+      responses:
+        '200':
+          description: Config values
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigResponse'
+  /api/expert/access-code:
+    get:
+      tags:
+        - expert
+      summary: Get the logged-in expert's current access code
+      operationId: getExpertAccessCode
+      responses:
+        '200':
+          description: Access code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/expert/my-login-code:
+    put:
+      tags:
+        - expert
+      summary: Update the logged-in expert's own login code
+      operationId: updateMyLoginCode
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - login_code
+              properties:
+                login_code:
+                  type: string
+      responses:
+        '200':
+          description: Update result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/expert/parents:
+    get:
+      tags:
+        - expert
+      summary: List all parents managed by the logged-in expert
+      operationId: listExpertParents
+      responses:
+        '200':
+          description: Parents list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/expert/parents/{parent_id}/children:
+    get:
+      tags:
+        - expert
+      summary: List children linked to a parent
+      operationId: getParentChildren
+      parameters:
+        - name: parent_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Children list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/expert/parents/{parent_id}/login-code:
+    put:
+      tags:
+        - expert
+      summary: Update a parent's login/access code
+      operationId: updateParentLoginCode
+      parameters:
+        - name: parent_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - login_code
+              properties:
+                login_code:
+                  type: string
+      responses:
+        '200':
+          description: Update result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/expert/report:
+    get:
+      tags:
+        - expert
+      summary: Get the child progress report for the logged-in expert
+      operationId: getExpertReport
+      responses:
+        '200':
+          description: Report data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/expert/videos:
+    get:
+      tags:
+        - expert
+      summary: List all processed videos available to experts
+      operationId: listExpertVideos
+      responses:
+        '200':
+          description: Video list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/expert/videos/available:
+    get:
+      tags:
+        - expert
+      summary: List videos not yet claimed by any expert
+      operationId: listAvailableVideos
+      responses:
+        '200':
+          description: Available videos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/expert/videos/{video_id}/claim:
     post:
       tags:
         - expert
-      summary: Save expert annotations payload
-      operationId: saveExpertAnnotations
+      summary: Claim a video for expert review
+      operationId: claimVideo
+      parameters:
+        - name: video_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Claim result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/expert/videos/{video_id}/unclaim:
+    delete:
+      tags:
+        - expert
+      summary: Unclaim a video from the expert
+      operationId: unclaimVideo
+      parameters:
+        - name: video_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Unclaim result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/expert/video/{video_id}/final-questions:
+    get:
+      tags:
+        - expert
+      summary: Get final questions for a video
+      operationId: getExpertFinalQuestions
+      parameters:
+        - name: video_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Final questions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinalQuestionsResponse'
+  /api/expert/video/{video_id}/update-questions:
+    post:
+      tags:
+        - expert
+      summary: Save edited questions for a video
+      operationId: updateExpertQuestions
+      parameters:
+        - name: video_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -79,7 +604,97 @@ paths:
               additionalProperties: true
       responses:
         '200':
-          description: Save result
+          description: Update result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/expert/video/{video_id}/regenerate-question:
+    post:
+      tags:
+        - expert
+      summary: Regenerate a single question for a video using AI
+      operationId: regenerateQuestion
+      parameters:
+        - name: video_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Regenerated question
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/expert/video/{video_id}/persona-variants:
+    get:
+      tags:
+        - expert
+      summary: Get companion-variant questions for a video
+      operationId: getPersonaVariants
+      parameters:
+        - name: video_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Persona variants
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+    post:
+      tags:
+        - expert
+      summary: Generate companion-variant questions for a video
+      operationId: generatePersonaVariants
+      parameters:
+        - name: video_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Generated persona variants
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/expert/questions/persona-variants:
+    post:
+      tags:
+        - expert
+      summary: Generate companion-variant questions from a question list
+      operationId: generateQuestionPersonaVariants
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Persona variants result
           content:
             application/json:
               schema:
@@ -88,7 +703,7 @@ paths:
     get:
       tags:
         - expert
-      summary: List downloaded videos
+      summary: List downloaded videos (shared expert/admin view)
       operationId: listVideos
       responses:
         '200':
@@ -101,7 +716,7 @@ paths:
     get:
       tags:
         - expert
-      summary: Get expert questions for a video
+      summary: Get AI-generated questions for a video (pre-review)
       operationId: getExpertQuestions
       parameters:
         - name: video_id
@@ -174,6 +789,431 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /api/expert-annotations:
+    post:
+      tags:
+        - expert
+      summary: Save expert annotations payload
+      operationId: saveExpertAnnotations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Save result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /expert/edit/{video_id}:
+    get:
+      tags:
+        - expert
+      summary: Expert edit page for a video (HTML)
+      operationId: expertEditPage
+      parameters:
+        - name: video_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expert edit view (HTML)
+          content:
+            text/html:
+              schema:
+                type: string
+  /api/admin/experts:
+    get:
+      tags:
+        - admin
+      summary: List all expert accounts
+      operationId: adminListExperts
+      responses:
+        '200':
+          description: Expert list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+    post:
+      tags:
+        - admin
+      summary: Create a new expert account
+      operationId: adminCreateExpert
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - expert_id
+                - display_name
+                - password
+              properties:
+                expert_id:
+                  type: string
+                display_name:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Create result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/admin/experts/{expert_id}:
+    put:
+      tags:
+        - admin
+      summary: Update an expert account
+      operationId: adminUpdateExpert
+      parameters:
+        - name: expert_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Update result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+    delete:
+      tags:
+        - admin
+      summary: Delete an expert account
+      operationId: adminDeleteExpert
+      parameters:
+        - name: expert_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Delete result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/admin/experts/{expert_id}/deactivate:
+    post:
+      tags:
+        - admin
+      summary: Deactivate an expert account
+      operationId: adminDeactivateExpert
+      parameters:
+        - name: expert_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Deactivate result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/admin/children:
+    get:
+      tags:
+        - admin
+      summary: List all children
+      operationId: adminListChildren
+      parameters:
+        - name: expert_id
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: include_inactive
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Children list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+    post:
+      tags:
+        - admin
+      summary: Create a new child profile
+      operationId: adminCreateChild
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - expert_id
+                - first_name
+              properties:
+                expert_id:
+                  type: string
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                icon_key:
+                  type: string
+                interaction_mode:
+                  type: string
+                  enum:
+                    - strict
+                    - flexible
+                    - passive
+      responses:
+        '200':
+          description: Create result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/admin/children/{child_id}:
+    put:
+      tags:
+        - admin
+      summary: Update a child profile
+      operationId: adminUpdateChild
+      parameters:
+        - name: child_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Update result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+    delete:
+      tags:
+        - admin
+      summary: Delete a child profile
+      operationId: adminDeleteChild
+      parameters:
+        - name: child_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Delete result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/admin/children/{child_id}/deactivate:
+    post:
+      tags:
+        - admin
+      summary: Deactivate a child profile
+      operationId: adminDeactivateChild
+      parameters:
+        - name: child_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Deactivate result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/admin/children/{child_id}/unlink:
+    post:
+      tags:
+        - admin
+      summary: Unlink a child from their parent
+      operationId: adminUnlinkChild
+      parameters:
+        - name: child_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Unlink result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/admin/videos:
+    get:
+      tags:
+        - admin
+      summary: List all downloaded videos with frame/question status
+      operationId: adminListVideos
+      parameters:
+        - name: include_without_frames
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Admin video list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminVideosResponse'
+  /api/admin/videos/assignments:
+    get:
+      tags:
+        - admin
+      summary: List video-to-expert assignments
+      operationId: adminListVideoAssignments
+      responses:
+        '200':
+          description: Assignments list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+    post:
+      tags:
+        - admin
+      summary: Assign a video to an expert
+      operationId: adminSetVideoAssignment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - video_id
+                - expert_id
+              properties:
+                video_id:
+                  type: string
+                expert_id:
+                  type: string
+      responses:
+        '200':
+          description: Assignment result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/download:
+    post:
+      tags:
+        - admin
+      summary: Download a YouTube video via yt-dlp
+      operationId: downloadVideo
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - url
+              properties:
+                url:
+                  type: string
+      responses:
+        '200':
+          description: Download result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
+  /api/frames/{video_id}:
+    post:
+      tags:
+        - admin
+      summary: Extract frames from a downloaded video
+      operationId: extractFrames
+      parameters:
+        - name: video_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Frame extraction result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FrameExtractionResponse'
+  /api/submit-questions:
+    post:
+      tags:
+        - admin
+      summary: Submit AI-generated questions for a video
+      operationId: submitQuestions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitQuestionsRequest'
+      responses:
+        '200':
+          description: Submit result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmitQuestionsResponse'
+  /api/reports/child/{child_id}:
+    get:
+      tags:
+        - admin
+      summary: Get full report for a child (admin view)
+      operationId: adminGetChildReport
+      parameters:
+        - name: child_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Report data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericObject'
   /api/tts:
     post:
       tags:
@@ -205,293 +1245,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /api/expert/login:
-    post:
-      tags:
-        - auth
-      summary: Expert login
-      operationId: expertLogin
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              additionalProperties: true
-      responses:
-        '200':
-          description: Login result
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericObject'
-  /api/expert/logout:
-    post:
-      tags:
-        - auth
-      summary: Expert logout
-      operationId: expertLogout
-      responses:
-        '200':
-          description: Logout result
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericObject'
-  /api/learners/experts/{expert_id}/children:
-    get:
-      tags:
-        - kids
-      summary: Get children assigned to an expert
-      operationId: getLearnersByExpert
-      parameters:
-        - name: expert_id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Children list
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericObject'
-  /api/learners/children/{child_id}/report:
-    get:
-      tags:
-        - kids
-      summary: Get report for a child
-      operationId: getChildReport
-      parameters:
-        - name: child_id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Child report
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericObject'
-  /api/learners/children/{child_id}/videos:
-    get:
-      tags:
-        - kids
-      summary: Get videos for a child
-      operationId: getChildVideos
-      parameters:
-        - name: child_id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Videos list
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericObject'
-  /expert/edit/{video_id}:
-    get:
-      tags:
-        - expert
-      summary: Expert edit page for a video
-      operationId: expertEditPage
-      parameters:
-        - name: video_id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Expert edit view
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericObject'
-  /api/expert/video/{video_id}/persona-variants:
-    get:
-      tags:
-        - expert
-      summary: Get persona variants for a video
-      operationId: getPersonaVariants
-      parameters:
-        - name: video_id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Persona variants
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericObject'
-    post:
-      tags:
-        - expert
-      summary: Generate persona variants for a video
-      operationId: generatePersonaVariants
-      parameters:
-        - name: video_id
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              additionalProperties: true
-      responses:
-        '200':
-          description: Generated persona variants
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericObject'
-  /api/expert/video/{video_id}/final-questions:
-    get:
-      tags:
-        - expert
-      summary: Get final questions for a video
-      operationId: getExpertFinalQuestions
-      parameters:
-        - name: video_id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Final questions
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericObject'
-  /api/expert/video/{video_id}/update-questions:
-    post:
-      tags:
-        - expert
-      summary: Update questions for a video
-      operationId: updateExpertQuestions
-      parameters:
-        - name: video_id
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              additionalProperties: true
-      responses:
-        '200':
-          description: Update result
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericObject'
-  /api/expert/video/{video_id}/regenerate-question:
-    post:
-      tags:
-        - expert
-      summary: Regenerate a question for a video
-      operationId: regenerateQuestion
-      parameters:
-        - name: video_id
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              additionalProperties: true
-      responses:
-        '200':
-          description: Regenerated question
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericObject'
-  /api/expert/videos:
-    get:
-      tags:
-        - expert
-      summary: List all processed videos for experts
-      operationId: listExpertVideos
-      responses:
-        '200':
-          description: Video list
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericObject'
-  /api/expert/videos/{video_id}/claim:
-    post:
-      tags:
-        - expert
-      summary: Claim a video for review
-      operationId: claimVideo
-      parameters:
-        - name: video_id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Claim result
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericObject'
-  /api/expert/questions/persona-variants:
-    post:
-      tags:
-        - expert
-      summary: Generate persona variants for questions
-      operationId: generateQuestionPersonaVariants
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              additionalProperties: true
-      responses:
-        '200':
-          description: Persona variants result
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericObject'
 components:
-  securitySchemes:
-    PasswordGate:
-      type: apiKey
-      in: header
-      name: X-Role-Password
-      description: >
-        Documentation placeholder for current password-gated admin/expert flow.
-
-        Current implementation uses POST /api/verify-password and does not
-        enforce a uniform token/session policy.
   schemas:
     GenericObject:
       type: object
