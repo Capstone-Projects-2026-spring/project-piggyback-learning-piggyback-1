@@ -27,6 +27,21 @@ FastAPI application for downloading YouTube videos, extracting frames, and gener
 educational comprehension questions. The app includes admin processing tools, parent
 review workflows, and a kids-friendly playback/quiz interface.
 
+## Deployed App
+
+Railway test deployment:
+
+- Main app: https://protective-acceptance-production-374b.up.railway.app/
+- Admin: https://protective-acceptance-production-374b.up.railway.app/admin/
+
+Notes:
+- This deployed version currently includes 1 bundled sample video for testing.
+- Please follow the use case flow when testing the app.
+- Learners and parents should use the main app link.
+- Admins should use the `/admin/` link directly.
+- Protected YouTube downloads are most reliable in the local desktop setup.
+
+
 ## Features
 
 - YouTube downloads via `yt-dlp` (prefers 720p H.264 MP4 on first attempt)
