@@ -33,6 +33,7 @@ Railway test deployment:
 
 - Main app: https://protective-acceptance-production-374b.up.railway.app/
 - Admin: https://protective-acceptance-production-374b.up.railway.app/admin/
+  PASSCODE FOR Admin is **"admin123"**
 
 Notes:
 - This deployed version currently includes 1 bundled sample video for testing.
