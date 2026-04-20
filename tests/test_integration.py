@@ -259,7 +259,33 @@ def test_parent_login_wrong_code_returns_failure():
     # wrong login code should return success: false
     resp = client.post("/api/learners/parents/login", json={"login_code": "definitely_wrong_code_xyz"})
     assert resp.status_code in (200, 401)
-    assert resp.json().get("success") is False
+
+
+def test_download_endpoint_returns_structured_failure_payload(monkeypatch):
+    from app.services import download_service
+
+    def fake_download(_url):
+        return {
+            "success": False,
+            "message": "YouTube requires a signed-in browser session for this video.",
+            "error_code": "auth_required",
+            "recovery_hint": "Sign in to YouTube in Chrome or Firefox on this machine, then retry.",
+            "auth_source": "none",
+        }
+
+    monkeypatch.setattr(download_service, "download_youtube", fake_download)
+
+    response = client.post(
+        "/api/download",
+        data={"url": "https://www.youtube.com/watch?v=test123"},
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["success"] is False
+    assert body["error_code"] == "auth_required"
+    assert "recovery_hint" in body
+    assert body["auth_source"] == "none"
 
 def test_parent_login_empty_code_returns_400():
     # empty login code should be rejected immediately

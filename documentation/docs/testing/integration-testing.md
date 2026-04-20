@@ -64,3 +64,9 @@ Integration tests verify that API endpoints behave correctly end-to-end — requ
 |---|---|---|
 | `test_parent_login_wrong_code_returns_failure` | `POST /api/learners/parents/login` | wrong access code returns `success: false` |
 | `test_parent_login_empty_code_returns_400` | `POST /api/learners/parents/login` | empty code returns 400 |
+
+## Downloader API
+
+| Test | Endpoint | What it checks |
+|---|---|---|
+| `test_download_endpoint_returns_structured_failure_payload` | `POST /api/download` | protected-download failures return structured fields such as `error_code`, `recovery_hint`, and `auth_source` instead of a server crash |

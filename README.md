@@ -124,6 +124,7 @@ node -v
 Windows:
 - Install FFmpeg and ensure `ffmpeg.exe` is on your PATH (via winget/chocolatey or a static build).
 - Install Node.js LTS (optional) and ensure `node` is on PATH.
+- If you install FFmpeg with Winget, restart your shell and the app before retrying a download.
 
 macOS (Homebrew):
 ```bash
@@ -177,6 +178,12 @@ HUME_VOICE_ASH="your_ash_voice_id"
 # Optional: Netscape-format cookies file for restricted videos
 YTDLP_COOKIEFILE="C:\\path\\to\\cookies.txt"
 YTDLP_COOKIES_FILE="C:\\path\\to\\cookies.txt"
+
+# Optional: auth mode for protected YouTube downloads
+YTDLP_AUTH_MODE="auto"
+
+# Optional: browser User-Agent for hard protected-video cases
+YTDLP_USER_AGENT="Mozilla/5.0 ..."
 ```
 
 > A sample video with questions is included — you can run the kids experience immediately without any API keys.
@@ -184,6 +191,20 @@ YTDLP_COOKIES_FILE="C:\\path\\to\\cookies.txt"
 Notes:
 - `.env` and `.env.txt` are both loaded if present.
 - Keep secrets out of git (`.env` is in `.gitignore`).
+
+Protected YouTube download support:
+- Scope is `youtube.com` and `youtu.be` links.
+- `YTDLP_AUTH_MODE=auto` is the default and prefers browser cookies first.
+- Windows support is best with Chrome, Firefox, or Edge.
+- macOS support is best with Chrome or Firefox.
+- Safari is not guaranteed for protected downloads. Use Chrome or Firefox on Mac for the most reliable results.
+- If YouTube returns an HLS transport stream with a `.mp4` name, the app will try to remux it into a valid MP4 when FFmpeg is available.
+
+`POST /api/download` may also return these optional fields on success or failure:
+- `error_code`
+- `recovery_hint`
+- `auth_source`
+- `used_player_client`
 
 ## How to Test
 
@@ -287,14 +308,20 @@ readme.md
 - **Tests failing with import errors:**
   - Run pytest from the project root directory (where `main.py` lives), not from inside `tests/`.
 - **403 Forbidden on download:**
-  - Try again (the downloader cycles player clients automatically).
-  - Add a cookies file via `YTDLP_COOKIEFILE`.
+  - Sign in to YouTube in Chrome, Firefox, or Edge on Windows, or Chrome or Firefox on macOS, then open the video once and retry.
+  - Keep `YTDLP_AUTH_MODE=auto` unless you need to force browser-only or file-only auth.
+  - If browser extraction is unavailable, add a fresh Netscape cookies file via `YTDLP_COOKIEFILE`.
+  - If protected videos still fail, set `YTDLP_USER_AGENT` to the full user agent from the same signed-in browser.
   - Install Node.js LTS to improve extraction reliability.
 - **Low quality video:**
   - The first attempt prefers 720p H.264 MP4. If you need higher, adjust the
-    format selector in `main.py` inside `download_youtube()`.
+    format selector in `app/services/download_service.py` inside `download_youtube()`.
 - **FFmpeg not found:**
   - Install FFmpeg and ensure it is on your PATH.
+  - Restart your shell and restart the app after installing it.
+  - On Windows, the downloader also checks common Winget install locations automatically.
+- **Downloaded file is not a valid MP4 container:**
+  - Install FFmpeg, restart the app, and retry. The downloader will try to repair HLS `.mp4` downloads automatically when FFmpeg is available.
 
 ## License
 
