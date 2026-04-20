@@ -11,6 +11,7 @@ from functools import lru_cache
 from app.settings import BASE_DIR, DOWNLOADS_DIR
 from app.services.clients import get_openai_client
 from app.services.quiz_scoring_service import save_quiz_result, get_child_scores
+from app.services.video_files import find_primary_video_file
 
 
 router_video_quiz = APIRouter()
@@ -81,13 +82,7 @@ def refresh_kids_videos_json():
         vid = item.name
 
         # --- Find video file ---
-        video_file = None
-        for ext in (".mp4", ".webm", ".mkv", ".mov"):
-            for cand in item.glob(f"*{ext}"):
-                video_file = cand
-                break
-            if video_file:
-                break
+        video_file = find_primary_video_file(item)
         if not video_file:
             continue
 

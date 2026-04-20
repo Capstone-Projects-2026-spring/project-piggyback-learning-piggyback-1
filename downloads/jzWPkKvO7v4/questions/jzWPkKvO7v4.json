@@ -1,0 +1,589 @@
+{
+  "video_id": "jzWPkKvO7v4",
+  "submitted_at": "2026-04-20T03:37:19.337578",
+  "status": "submitted",
+  "segments": [
+    {
+      "start": 0,
+      "end": 19,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who is the main character in the video?",
+            "a": "A boy on a skateboard.",
+            "rank": "2"
+          },
+          "setting": {
+            "q": "Where is the boy skating?",
+            "a": "At a skate park.",
+            "rank": "3"
+          },
+          "feeling": {
+            "q": "How does the boy feel while skating?",
+            "a": "He feels excited.",
+            "rank": "4"
+          },
+          "action": {
+            "q": "What is the boy doing on the skateboard?",
+            "a": "He is skating and performing tricks.",
+            "rank": "1"
+          },
+          "causal": {
+            "q": "What happens when the boy skates fast?",
+            "a": "He might do a trick or fall.",
+            "rank": "5"
+          },
+          "outcome": {
+            "q": "What do you think will happen after he skates?",
+            "a": "He might land a trick or fall.",
+            "rank": "6"
+          },
+          "prediction": {
+            "q": "What do you think the boy will do next?",
+            "a": "He might try a big jump.",
+            "rank": "7"
+          }
+        },
+        "best_question": "What is the boy doing on the skateboard?"
+      }
+    },
+    {
+      "start": 20,
+      "end": 39,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who is the girl with the big smile?",
+            "a": "She is a happy character in the video.",
+            "rank": "3"
+          },
+          "setting": {
+            "q": "Where are the characters in the video?",
+            "a": "They are by a pool on a sunny day.",
+            "rank": "2"
+          },
+          "feeling": {
+            "q": "How do you think the girl feels when she smiles?",
+            "a": "She feels happy and excited.",
+            "rank": "4"
+          },
+          "action": {
+            "q": "What is the boy doing near the pool?",
+            "a": "He is getting ready to jump in.",
+            "rank": "5"
+          },
+          "causal": {
+            "q": "What happens when the big character appears?",
+            "a": "It causes a big splash and excitement.",
+            "rank": "1"
+          },
+          "outcome": {
+            "q": "What do you think happens after the splash?",
+            "a": "Everyone might laugh and have fun.",
+            "rank": "6"
+          },
+          "prediction": {
+            "q": "What do you think the characters will do next?",
+            "a": "They might play in the water.",
+            "rank": "7"
+          }
+        },
+        "best_question": "causal"
+      }
+    },
+    {
+      "start": 40,
+      "end": 59,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who is the boy on the diving board?",
+            "a": "The boy is a character who is about to jump into the pool.",
+            "rank": "3"
+          },
+          "setting": {
+            "q": "Where is the boy getting ready to jump?",
+            "a": "He is at a pool.",
+            "rank": "2"
+          },
+          "feeling": {
+            "q": "How do you think the boy feels before he jumps?",
+            "a": "He might feel excited or a little scared.",
+            "rank": "4"
+          },
+          "action": {
+            "q": "What is the boy doing on the diving board?",
+            "a": "He is getting ready to jump into the pool.",
+            "rank": "1"
+          },
+          "causal": {
+            "q": "What happens because the boy jumps into the pool?",
+            "a": "He makes a splash in the water.",
+            "rank": "5"
+          },
+          "outcome": {
+            "q": "What do you think will happen after the boy jumps?",
+            "a": "He will land in the water and have fun.",
+            "rank": "6"
+          },
+          "prediction": {
+            "q": "What do you think the boy will do next?",
+            "a": "He might swim or play in the pool.",
+            "rank": "7"
+          }
+        },
+        "best_question": "What is the boy doing on the diving board?"
+      }
+    },
+    {
+      "start": 60,
+      "end": 79,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who is the character in the video?",
+            "a": "A green and black creature with a tail.",
+            "rank": "2"
+          },
+          "setting": {
+            "q": "Where is the character in the video?",
+            "a": "In a room with a treadmill.",
+            "rank": "3"
+          },
+          "feeling": {
+            "q": "How do you think the character feels while running?",
+            "a": "Excited or happy.",
+            "rank": "4"
+          },
+          "action": {
+            "q": "What is the character doing on the treadmill?",
+            "a": "Running fast.",
+            "rank": "1"
+          },
+          "causal": {
+            "q": "Why is the character using the treadmill?",
+            "a": "To exercise and have fun.",
+            "rank": "5"
+          },
+          "outcome": {
+            "q": "What happens when the character runs on the treadmill?",
+            "a": "The character moves quickly and has fun.",
+            "rank": "6"
+          },
+          "prediction": {
+            "q": "What do you think the character will do next?",
+            "a": "Maybe jump off the treadmill or try something new.",
+            "rank": "7"
+          }
+        },
+        "best_question": "What is the character doing on the treadmill?"
+      }
+    },
+    {
+      "start": 80,
+      "end": 99,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who is the boy in the green shirt?",
+            "a": "Ben",
+            "rank": "2"
+          },
+          "setting": {
+            "q": "Where are the characters in the last two frames?",
+            "a": "In a park",
+            "rank": "3"
+          },
+          "feeling": {
+            "q": "How do you think Ben feels when he is on the ground?",
+            "a": "Scared or surprised",
+            "rank": "4"
+          },
+          "action": {
+            "q": "What is Ben doing in the first frame?",
+            "a": "Using a treadmill",
+            "rank": "5"
+          },
+          "causal": {
+            "q": "What happens to Ben when he uses the treadmill?",
+            "a": "He falls down",
+            "rank": "1"
+          },
+          "outcome": {
+            "q": "What do you think will happen next after Ben falls?",
+            "a": "He might get up and try again",
+            "rank": "6"
+          },
+          "prediction": {
+            "q": "What do you think Ben and his friend will do in the park?",
+            "a": "Play or have fun",
+            "rank": "7"
+          }
+        },
+        "best_question": "causal"
+      }
+    },
+    {
+      "start": 100,
+      "end": 119,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who is the green character with many arms?",
+            "a": "The green character is a superhero.",
+            "rank": "1"
+          },
+          "setting": {
+            "q": "Where does the action take place?",
+            "a": "In a green forest or park.",
+            "rank": "2"
+          },
+          "feeling": {
+            "q": "How do you think the character feels when surrounded by the birds?",
+            "a": "The character might feel excited or happy.",
+            "rank": "3"
+          },
+          "action": {
+            "q": "What is the green character doing in the pictures?",
+            "a": "The character is using its arms to interact with the environment.",
+            "rank": "4"
+          },
+          "causal": {
+            "q": "What happens because the character has many arms?",
+            "a": "The character can do more things at once.",
+            "rank": "5"
+          },
+          "outcome": {
+            "q": "What do you think will happen next after the character splashes water?",
+            "a": "Maybe the character will surprise the other characters.",
+            "rank": "6"
+          },
+          "prediction": {
+            "q": "What do you think the character will do after meeting the boy?",
+            "a": "The character might help the boy or play with him.",
+            "rank": "7"
+          }
+        },
+        "best_question": "Who is the green character with many arms?"
+      }
+    },
+    {
+      "start": 120,
+      "end": 139,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who are the two characters in the video?",
+            "a": "A man in a red shirt and a boy in a green shirt.",
+            "rank": "2"
+          },
+          "setting": {
+            "q": "Where are the characters standing?",
+            "a": "In a forest near a blue and red vehicle.",
+            "rank": "3"
+          },
+          "feeling": {
+            "q": "How do you think the boy feels in this scene?",
+            "a": "Excited or happy.",
+            "rank": "4"
+          },
+          "action": {
+            "q": "What is the boy doing with his hands?",
+            "a": "He is making a gesture or showing something.",
+            "rank": "5"
+          },
+          "causal": {
+            "q": "Why do you think the boy is showing his hands?",
+            "a": "He might be trying to explain something or ask a question.",
+            "rank": "6"
+          },
+          "outcome": {
+            "q": "What do you think will happen next after this scene?",
+            "a": "They might go on an adventure together.",
+            "rank": "1"
+          },
+          "prediction": {
+            "q": "What do you think the characters will do in the forest?",
+            "a": "They might explore or find something interesting.",
+            "rank": "7"
+          }
+        },
+        "best_question": "outcome"
+      }
+    },
+    {
+      "start": 140,
+      "end": 159,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who is the big red character standing next to the man?",
+            "a": "The big red character is a superhero.",
+            "rank": "3"
+          },
+          "setting": {
+            "q": "Where are the characters in the video?",
+            "a": "They are in a forest near a blue RV.",
+            "rank": "2"
+          },
+          "feeling": {
+            "q": "How do you think the man feels when he sees the big red character?",
+            "a": "He might feel surprised or happy.",
+            "rank": "4"
+          },
+          "action": {
+            "q": "What is the man doing in the forest?",
+            "a": "He is looking around and waving.",
+            "rank": "5"
+          },
+          "causal": {
+            "q": "What happens because the man waves at the big red character?",
+            "a": "The big red character might wave back or come closer.",
+            "rank": "6"
+          },
+          "outcome": {
+            "q": "What do you think will happen next after the man waves?",
+            "a": "The big red character might talk to him.",
+            "rank": "1"
+          },
+          "prediction": {
+            "q": "What do you think the characters will do after this scene?",
+            "a": "They might go on an adventure together.",
+            "rank": "7"
+          }
+        },
+        "best_question": "What do you think will happen next after the man waves?"
+      }
+    },
+    {
+      "start": 160,
+      "end": 179,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who are the two main characters in the video?",
+            "a": "A boy and a big man.",
+            "rank": "2"
+          },
+          "setting": {
+            "q": "Where are the characters in the video?",
+            "a": "By the water on a rocky shore.",
+            "rank": "3"
+          },
+          "feeling": {
+            "q": "How do the characters feel in the video?",
+            "a": "The boy feels happy, and the man looks serious.",
+            "rank": "5"
+          },
+          "action": {
+            "q": "What is the boy doing in the video?",
+            "a": "He is taking a selfie with the man.",
+            "rank": "1"
+          },
+          "causal": {
+            "q": "Why is the boy smiling in the video?",
+            "a": "Because he is having fun with the man.",
+            "rank": "6"
+          },
+          "outcome": {
+            "q": "What happens at the end of the video segment?",
+            "a": "The boy takes a picture with the man.",
+            "rank": "4"
+          },
+          "prediction": {
+            "q": "What do you think will happen next in the video?",
+            "a": "Maybe they will go on an adventure together.",
+            "rank": "7"
+          }
+        },
+        "best_question": "action"
+      }
+    },
+    {
+      "start": 180,
+      "end": 199,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who are the three characters in the video?",
+            "a": "A can, a green bottle, and a girl.",
+            "rank": "2"
+          },
+          "setting": {
+            "q": "Where are the characters in the video?",
+            "a": "At a fun fair or carnival.",
+            "rank": "3"
+          },
+          "feeling": {
+            "q": "How do the characters feel while dancing?",
+            "a": "They feel happy and excited.",
+            "rank": "4"
+          },
+          "action": {
+            "q": "What are the characters doing together?",
+            "a": "They are dancing.",
+            "rank": "1"
+          },
+          "causal": {
+            "q": "What happens when they dance together?",
+            "a": "They have fun and enjoy themselves.",
+            "rank": "5"
+          },
+          "outcome": {
+            "q": "What happens at the end of the video segment?",
+            "a": "The characters get tangled up.",
+            "rank": "6"
+          },
+          "prediction": {
+            "q": "What do you think will happen next after they get tangled?",
+            "a": "They might help each other get untangled.",
+            "rank": "7"
+          }
+        },
+        "best_question": "What are the characters doing together?"
+      }
+    },
+    {
+      "start": 200,
+      "end": 219,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who is the funny man in the red shirt?",
+            "a": "The funny man is a character in the video.",
+            "rank": "2"
+          },
+          "setting": {
+            "q": "Where are the characters in the video?",
+            "a": "They are at a colorful fair or amusement park.",
+            "rank": "3"
+          },
+          "feeling": {
+            "q": "How do you think the boy feels when he is hiding?",
+            "a": "He might feel scared or surprised.",
+            "rank": "4"
+          },
+          "action": {
+            "q": "What is the funny man doing with the green thing?",
+            "a": "He is trying to catch or control it.",
+            "rank": "1"
+          },
+          "causal": {
+            "q": "Why is the funny man trying to catch the green thing?",
+            "a": "Because it is causing trouble.",
+            "rank": "5"
+          },
+          "outcome": {
+            "q": "What do you think will happen after this scene?",
+            "a": "The funny man might catch the green thing.",
+            "rank": "6"
+          },
+          "prediction": {
+            "q": "What do you think the characters will do next?",
+            "a": "They might go on an adventure together.",
+            "rank": "7"
+          }
+        },
+        "best_question": "What is the funny man doing with the green thing?"
+      }
+    },
+    {
+      "start": 220,
+      "end": 239,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who is the big green character wearing sunglasses?",
+            "a": "The character is a robot.",
+            "rank": "2"
+          },
+          "setting": {
+            "q": "Where is the scene taking place?",
+            "a": "In a kitchen or a camper van.",
+            "rank": "3"
+          },
+          "feeling": {
+            "q": "How do you think the character feels when they are posing?",
+            "a": "They feel confident and cool.",
+            "rank": "1"
+          },
+          "action": {
+            "q": "What is the character doing in the video?",
+            "a": "The character is showing off and posing.",
+            "rank": "4"
+          },
+          "causal": {
+            "q": "What happened to the window in the kitchen?",
+            "a": "The window is broken.",
+            "rank": "5"
+          },
+          "outcome": {
+            "q": "What do you think will happen next after the window breaks?",
+            "a": "Someone might come inside or get surprised.",
+            "rank": "6"
+          },
+          "prediction": {
+            "q": "What do you think the character will do after posing?",
+            "a": "They might go outside or react to the broken window.",
+            "rank": "7"
+          }
+        },
+        "best_question": "feeling"
+      }
+    },
+    {
+      "start": 240,
+      "end": 259,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who is the main character in the video?",
+            "a": "Ben",
+            "rank": "1"
+          },
+          "setting": {
+            "q": "Where does the action take place?",
+            "a": "In a colorful world with heroes",
+            "rank": "3"
+          },
+          "feeling": {
+            "q": "How do you think the characters feel in this scene?",
+            "a": "Excited",
+            "rank": "4"
+          },
+          "action": {
+            "q": "What is the main character doing?",
+            "a": "Running forward",
+            "rank": "2"
+          },
+          "causal": {
+            "q": "Why do you think the characters are together?",
+            "a": "To choose a hero",
+            "rank": "5"
+          },
+          "outcome": {
+            "q": "What do you think will happen next?",
+            "a": "They will choose their heroes",
+            "rank": "6"
+          },
+          "prediction": {
+            "q": "What do you think the characters will do after this scene?",
+            "a": "They will go on an adventure",
+            "rank": "7"
+          }
+        },
+        "best_question": "character"
+      }
+    },
+    {
+      "start": 260,
+      "end": 260,
+      "result": {
+        "error": {
+          "reason": "no_frames_in_segment",
+          "retryable": false
+        }
+      }
+    }
+  ]
+}

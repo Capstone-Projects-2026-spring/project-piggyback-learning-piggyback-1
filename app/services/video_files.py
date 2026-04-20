@@ -8,11 +8,18 @@ from app.settings import VIDEO_EXTENSIONS
 def find_primary_video_file(video_dir: Path) -> Optional[Path]:
     if not video_dir.exists() or not video_dir.is_dir():
         return None
+    base_name = video_dir.name
     for ext in VIDEO_EXTENSIONS:
-        matches = sorted(video_dir.glob(f"*{ext}"))
+        matches = sorted(video_dir.glob(f"*{ext}"), key=lambda path: _video_sort_key(path, base_name))
         if matches:
             return matches[0]
     return None
+
+
+def _video_sort_key(path: Path, base_name: str):
+    exact_name = 0 if path.stem == base_name else 1
+    extra_parts = path.stem.count(".")
+    return (exact_name, extra_parts, len(path.name), path.name.lower())
 
 
 def list_question_json_files() -> List[Dict[str, str]]:

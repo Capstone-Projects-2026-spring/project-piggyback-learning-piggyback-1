@@ -3,9 +3,11 @@
 !.env.example
 .env.txt
 pycache/
-downloads/
+downloads/*
 !downloads/IxX_QHay02M/
 !downloads/IxX_QHay02M/**
+!downloads/jzWPkKvO7v4/
+!downloads/jzWPkKvO7v4/**
 venv/
 .venv/
 *.py[cod]

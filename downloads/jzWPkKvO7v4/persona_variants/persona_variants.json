@@ -1,0 +1,880 @@
+{
+  "videoId": "jzWPkKvO7v4",
+  "segments": {
+    "0-19": {
+      "persona_variants": {
+        "pig": {
+          "character": {
+            "q": "Ooh, who's the star of this video? Tell me about them!",
+            "a": "Ben 10"
+          },
+          "setting": {
+            "q": "Wow! Where is this awesome boy skating?",
+            "a": "At a skate park."
+          },
+          "feeling": {
+            "q": "Ooh, how does the boy feel while he's riding his skateboard?",
+            "a": "He feels excited."
+          },
+          "action": {
+            "q": "What cool things is the boy doing on his skateboard?",
+            "a": "He is skating and performing tricks.",
+            "is_best": true
+          },
+          "causal": {
+            "q": "Wow, what happens when the boy skates really fast?",
+            "a": "He might do a trick or fall."
+          },
+          "outcome": {
+            "q": "Ooh, what do you think will happen after he finishes skating?",
+            "a": "He might land a trick or fall."
+          },
+          "prediction": {
+            "q": "What do you think this awesome skateboarder will try next?",
+            "a": "He might try a big jump."
+          }
+        },
+        "bunny": {
+          "character": {
+            "q": "I know you can figure this out—who's the protagonist in this video?",
+            "a": "Ben 10"
+          },
+          "setting": {
+            "q": "You've got this—can you identify where the boy is skating?",
+            "a": "At a skate park."
+          },
+          "feeling": {
+            "q": "Check this out: how would you describe the boy's emotions while skating?",
+            "a": "He feels excited."
+          },
+          "action": {
+            "q": "Nice observation skills—what actions is the boy performing on his skateboard?",
+            "a": "He is skating and performing tricks.",
+            "is_best": true
+          },
+          "causal": {
+            "q": "You're sharp—what's the result when the boy accelerates on his skateboard?",
+            "a": "He might do a trick or fall."
+          },
+          "outcome": {
+            "q": "Based on what you see, what consequences might follow after he skates?",
+            "a": "He might land a trick or fall."
+          },
+          "prediction": {
+            "q": "You've got good instincts—what do you anticipate the boy will attempt?",
+            "a": "He might try a big jump."
+          }
+        },
+        "alligator": {
+          "character": {
+            "q": "I'm proud of how you watch carefully—can you tell me who this video is about?",
+            "a": "Ben 10"
+          },
+          "setting": {
+            "q": "You're doing so well—where do you see the boy skating?",
+            "a": "At a skate park."
+          },
+          "feeling": {
+            "q": "I think you'll know this—how does the boy feel when he's skateboarding?",
+            "a": "He feels excited."
+          },
+          "action": {
+            "q": "You're so observant—what is the boy doing with his skateboard?",
+            "a": "He is skating and performing tricks.",
+            "is_best": true
+          },
+          "causal": {
+            "q": "Let's think about this together—what happens when the boy skates fast?",
+            "a": "He might do a trick or fall."
+          },
+          "outcome": {
+            "q": "You're thoughtful—what might happen after the boy is done skating?",
+            "a": "He might land a trick or fall."
+          },
+          "prediction": {
+            "q": "I'd love to hear what you think—what will the boy do next?",
+            "a": "He might try a big jump."
+          }
+        }
+      },
+      "persona_winners": {
+        "bunny": "character",
+        "pig": "character",
+        "alligator": "character"
+      }
+    },
+    "20-39": {
+      "persona_variants": {
+        "pig": {
+          "character": {
+            "q": "Ooh! Can you tell me who that girl is with the big, bright smile?",
+            "a": "She is a happy character in the video."
+          },
+          "setting": {
+            "q": "Wow! Where do you see all the characters hanging out in this video?",
+            "a": "They are by a pool on a sunny day."
+          },
+          "feeling": {
+            "q": "Ooh, I wonder—how do you think the girl feels when she's smiling like that?",
+            "a": "She feels happy and excited."
+          },
+          "action": {
+            "q": "Wow! What's that boy doing over by the pool?",
+            "a": "He is getting ready to jump in."
+          },
+          "causal": {
+            "q": "Ooh! What happens when that big character shows up?",
+            "a": "It causes a big splash and excitement."
+          },
+          "outcome": {
+            "q": "Wow, I'm curious—what do you think happens right after that big splash?",
+            "a": "Everyone might laugh and have fun."
+          },
+          "prediction": {
+            "q": "Ooh! What do you think these characters will do next?",
+            "a": "They might play in the water."
+          }
+        },
+        "bunny": {
+          "character": {
+            "q": "Can you identify who that girl is—the one with the amazing smile?",
+            "a": "She is a happy character in the video."
+          },
+          "setting": {
+            "q": "I think you'll notice this—where are the characters positioned in the video?",
+            "a": "They are by a pool on a sunny day."
+          },
+          "feeling": {
+            "q": "You've got good instincts—how would you interpret the girl's emotions when she smiles?",
+            "a": "She feels happy and excited."
+          },
+          "action": {
+            "q": "What's your observation about what the boy is doing near the pool?",
+            "a": "He is getting ready to jump in."
+          },
+          "causal": {
+            "q": "You'll notice this—what's the effect when the big character appears?",
+            "a": "It causes a big splash and excitement."
+          },
+          "outcome": {
+            "q": "I bet you can figure this out—what do you imagine occurs after the splash?",
+            "a": "Everyone might laugh and have fun."
+          },
+          "prediction": {
+            "q": "Based on what you've seen, what's your prediction about what the characters will do next?",
+            "a": "They might play in the water."
+          }
+        },
+        "alligator": {
+          "character": {
+            "q": "Do you see that girl with the big smile? Can you tell me about her?",
+            "a": "She is a happy character in the video."
+          },
+          "setting": {
+            "q": "Where do you see the characters in this video?",
+            "a": "They are by a pool on a sunny day."
+          },
+          "feeling": {
+            "q": "When you look at the girl smiling, what feeling do you think she has?",
+            "a": "She feels happy and excited."
+          },
+          "action": {
+            "q": "What is that boy doing near the pool?",
+            "a": "He is getting ready to jump in."
+          },
+          "causal": {
+            "q": "What happens when that big character comes along?",
+            "a": "It causes a big splash and excitement."
+          },
+          "outcome": {
+            "q": "After that big splash, what do you think happens?",
+            "a": "Everyone might laugh and have fun."
+          },
+          "prediction": {
+            "q": "What do you think the characters will do after this?",
+            "a": "They might play in the water."
+          }
+        }
+      },
+      "persona_winners": {}
+    },
+    "40-59": {
+      "persona_variants": {
+        "pig": {
+          "character": {
+            "q": "Ooh! Who is that boy standing on the diving board?",
+            "a": "The boy is a character who is about to jump into the pool."
+          },
+          "setting": {
+            "q": "Wow! Where is the boy getting ready to make his big jump?",
+            "a": "He is at a pool."
+          },
+          "feeling": {
+            "q": "Ooh! How do you think the boy feels right before he jumps?",
+            "a": "He might feel excited or a little scared."
+          },
+          "action": {
+            "q": "What is the boy doing up on that diving board?",
+            "a": "He is getting ready to jump into the pool.",
+            "is_best": true
+          },
+          "causal": {
+            "q": "Wow! What happens when the boy jumps into the pool?",
+            "a": "He makes a splash in the water."
+          },
+          "outcome": {
+            "q": "What do you think happens after the boy makes his jump?",
+            "a": "He will land in the water and have fun."
+          },
+          "prediction": {
+            "q": "Ooh! What do you think the boy will do after that?",
+            "a": "He might swim or play in the pool."
+          }
+        },
+        "bunny": {
+          "character": {
+            "q": "I think you'll nail this—who is the boy positioned on the diving board?",
+            "a": "The boy is a character who is about to jump into the pool."
+          },
+          "setting": {
+            "q": "You've got this—where is the boy preparing to dive?",
+            "a": "He is at a pool."
+          },
+          "feeling": {
+            "q": "I bet you can figure this out—how do you think the boy feels before jumping?",
+            "a": "He might feel excited or a little scared."
+          },
+          "action": {
+            "q": "You've probably noticed—what is the boy doing on the diving board?",
+            "a": "He is getting ready to jump into the pool.",
+            "is_best": true
+          },
+          "causal": {
+            "q": "Here's one for you—what happens because the boy jumps into the pool?",
+            "a": "He makes a splash in the water."
+          },
+          "outcome": {
+            "q": "You can totally predict this—what will happen after the boy jumps?",
+            "a": "He will land in the water and have fun."
+          },
+          "prediction": {
+            "q": "I'm confident you'll know—what will the boy do next?",
+            "a": "He might swim or play in the pool."
+          }
+        },
+        "alligator": {
+          "character": {
+            "q": "Can you tell me who that boy is on the diving board?",
+            "a": "The boy is a character who is about to jump into the pool."
+          },
+          "setting": {
+            "q": "Where do you see the boy getting ready to jump?",
+            "a": "He is at a pool."
+          },
+          "feeling": {
+            "q": "What do you think the boy might be feeling before he jumps?",
+            "a": "He might feel excited or a little scared."
+          },
+          "action": {
+            "q": "What is the boy doing right now on the diving board?",
+            "a": "He is getting ready to jump into the pool.",
+            "is_best": true
+          },
+          "causal": {
+            "q": "What happens when the boy jumps into the pool?",
+            "a": "He makes a splash in the water."
+          },
+          "outcome": {
+            "q": "What do you think will happen after the boy jumps in?",
+            "a": "He will land in the water and have fun."
+          },
+          "prediction": {
+            "q": "What do you think the boy will do next?",
+            "a": "He might swim or play in the pool."
+          }
+        }
+      },
+      "persona_winners": {}
+    },
+    "60-79": {
+      "persona_variants": {
+        "pig": {
+          "character": {
+            "q": "Ooh! Can you tell me about the creature we see in the video? What does it look like?",
+            "a": "A green and black creature with a tail."
+          },
+          "setting": {
+            "q": "Wow! Where do you think this character is? What do you see around them?",
+            "a": "In a room with a treadmill."
+          },
+          "feeling": {
+            "q": "Ooh, I wonder how the character feels while they're running! What do you think?",
+            "a": "Excited or happy."
+          },
+          "action": {
+            "q": "Wow! What is the character doing on that treadmill?",
+            "a": "Running fast.",
+            "is_best": true
+          },
+          "causal": {
+            "q": "I'm so curious - why do you think the character is using the treadmill?",
+            "a": "To exercise and have fun."
+          },
+          "outcome": {
+            "q": "Ooh! What happens when the character runs on the treadmill? Can you tell me?",
+            "a": "The character moves quickly and has fun."
+          },
+          "prediction": {
+            "q": "Wow, I'd love to know what you think! What will the character do next?",
+            "a": "Maybe jump off the treadmill or try something new."
+          }
+        },
+        "bunny": {
+          "character": {
+            "q": "You've got a sharp eye - describe the creature featured in this video for me.",
+            "a": "A green and black creature with a tail."
+          },
+          "setting": {
+            "q": "I believe you can spot where this character is located. What's the environment like?",
+            "a": "In a room with a treadmill."
+          },
+          "feeling": {
+            "q": "You're perceptive - based on what you see, what emotions do you think the character experiences while running?",
+            "a": "Excited or happy."
+          },
+          "action": {
+            "q": "I know you can figure this out - what action is the character performing on the treadmill?",
+            "a": "Running fast.",
+            "is_best": true
+          },
+          "causal": {
+            "q": "You're thoughtful - what's your reasoning for why the character chose to use the treadmill?",
+            "a": "To exercise and have fun."
+          },
+          "outcome": {
+            "q": "You're really observant - what results happen when the character runs on the treadmill?",
+            "a": "The character moves quickly and has fun."
+          },
+          "prediction": {
+            "q": "I'm confident you can anticipate this - what do you predict the character will do following this scene?",
+            "a": "Maybe jump off the treadmill or try something new."
+          }
+        },
+        "alligator": {
+          "character": {
+            "q": "I'd like to hear what you notice - can you tell me about the creature in the video?",
+            "a": "A green and black creature with a tail."
+          },
+          "setting": {
+            "q": "You're doing great - where does the character find themselves in this video?",
+            "a": "In a room with a treadmill."
+          },
+          "feeling": {
+            "q": "I'm so proud of how you think about characters - how do you believe the character feels while running?",
+            "a": "Excited or happy."
+          },
+          "action": {
+            "q": "You're watching so carefully - what is the character doing on the treadmill?",
+            "a": "Running fast.",
+            "is_best": true
+          },
+          "causal": {
+            "q": "I know you can understand this - why do you think the character is using the treadmill?",
+            "a": "To exercise and have fun."
+          },
+          "outcome": {
+            "q": "You're such a good listener - what happens when the character runs on the treadmill?",
+            "a": "The character moves quickly and has fun."
+          },
+          "prediction": {
+            "q": "I believe in your thinking - what do you think the character will do next?",
+            "a": "Maybe jump off the treadmill or try something new."
+          }
+        }
+      },
+      "persona_winners": {}
+    },
+    "80-99": {
+      "persona_variants": {
+        "pig": {
+          "character": {
+            "q": "Ooh! Can you tell me who that boy is wearing the green shirt?",
+            "a": "Ben"
+          },
+          "setting": {
+            "q": "Wow! Where do you see the characters in those last two frames?",
+            "a": "In a park"
+          },
+          "feeling": {
+            "q": "How do you think Ben feels when he's down on the ground? What's he thinking?",
+            "a": "Scared or surprised"
+          },
+          "action": {
+            "q": "Ooh, what is Ben doing right at the beginning in the first frame?",
+            "a": "Using a treadmill"
+          },
+          "causal": {
+            "q": "What happens to Ben when he's using that treadmill?",
+            "a": "He falls down"
+          },
+          "outcome": {
+            "q": "After Ben falls, what do you think might happen next?",
+            "a": "He might get up and try again"
+          },
+          "prediction": {
+            "q": "Wow! What do you think Ben and his friend will do together in the park?",
+            "a": "Play or have fun"
+          }
+        },
+        "bunny": {
+          "character": {
+            "q": "I bet you noticed the boy in the green shirt—can you tell me his name?",
+            "a": "Ben"
+          },
+          "setting": {
+            "q": "You've got this! Where exactly are the characters positioned in those final frames?",
+            "a": "In a park"
+          },
+          "feeling": {
+            "q": "I know you can figure this out—what emotions do you think Ben experiences when he's on the ground?",
+            "a": "Scared or surprised"
+          },
+          "action": {
+            "q": "Check out the opening scene—what activity is Ben engaged in during the first frame?",
+            "a": "Using a treadmill"
+          },
+          "causal": {
+            "q": "You're observant! What's the consequence when Ben uses the treadmill?",
+            "a": "He falls down"
+          },
+          "outcome": {
+            "q": "I trust your thinking—what do you predict will occur after Ben's fall?",
+            "a": "He might get up and try again"
+          },
+          "prediction": {
+            "q": "You're really sharp! What do you think Ben and his friend will choose to do in the park?",
+            "a": "Play or have fun"
+          }
+        },
+        "alligator": {
+          "character": {
+            "q": "Can you tell me the name of the boy wearing the green shirt?",
+            "a": "Ben"
+          },
+          "setting": {
+            "q": "I'd love to hear where you see the characters in the last two frames.",
+            "a": "In a park"
+          },
+          "feeling": {
+            "q": "When Ben is on the ground, how do you think he might be feeling?",
+            "a": "Scared or surprised"
+          },
+          "action": {
+            "q": "What do you see Ben doing at the very start in the first frame?",
+            "a": "Using a treadmill"
+          },
+          "causal": {
+            "q": "What happens to Ben when he's using the treadmill?",
+            "a": "He falls down"
+          },
+          "outcome": {
+            "q": "After Ben falls down, what do you think could happen next?",
+            "a": "He might get up and try again"
+          },
+          "prediction": {
+            "q": "I'm proud of how well you're watching—what will Ben and his friend do in the park, do you think?",
+            "a": "Play or have fun"
+          }
+        }
+      },
+      "persona_winners": {}
+    },
+    "100-119": {
+      "persona_variants": {
+        "pig": {
+          "character": {
+            "q": "Ooh, I see a green character with so many arms! Can you tell me who this cool character is?",
+            "a": "The green character is a superhero.",
+            "is_best": true
+          },
+          "setting": {
+            "q": "Wow! Where do you think all the exciting action in this video is happening?",
+            "a": "In a green forest or park."
+          },
+          "feeling": {
+            "q": "Ooh, there are so many birds around! How do you think the character might be feeling?",
+            "a": "The character might feel excited or happy."
+          },
+          "action": {
+            "q": "Wow, look at those arms! What is the green character doing in these pictures?",
+            "a": "The character is using its arms to interact with the environment."
+          },
+          "causal": {
+            "q": "Ooh, that's a lot of arms! What happens because the character has so many arms?",
+            "a": "The character can do more things at once."
+          },
+          "outcome": {
+            "q": "Wow, look at that splash! What do you think happens next after the character splashes water?",
+            "a": "Maybe the character will surprise the other characters."
+          },
+          "prediction": {
+            "q": "Ooh, the character is meeting a boy! What do you think the character might do?",
+            "a": "The character might help the boy or play with him."
+          }
+        },
+        "bunny": {
+          "character": {
+            "q": "Check out this green character with multiple arms—I think you can figure out who this character is, right?",
+            "a": "The green character is a superhero.",
+            "is_best": true
+          },
+          "setting": {
+            "q": "I believe you know where this action is taking place. Can you describe the setting?",
+            "a": "In a green forest or park."
+          },
+          "feeling": {
+            "q": "You've got a good eye for emotion—how do you think the character feels being surrounded by all those birds?",
+            "a": "The character might feel excited or happy."
+          },
+          "action": {
+            "q": "You can totally see what's happening here—what is the green character doing with those arms?",
+            "a": "The character is using its arms to interact with the environment."
+          },
+          "causal": {
+            "q": "I know you can connect the dots—what's the advantage of having multiple arms?",
+            "a": "The character can do more things at once."
+          },
+          "outcome": {
+            "q": "You're sharp—what do you predict happens after that water splash?",
+            "a": "Maybe the character will surprise the other characters."
+          },
+          "prediction": {
+            "q": "I bet you have a good sense of what happens next—what will the character do after meeting the boy?",
+            "a": "The character might help the boy or play with him."
+          }
+        },
+        "alligator": {
+          "character": {
+            "q": "Do you see that green character with all those arms? Can you tell me who this character is?",
+            "a": "The green character is a superhero.",
+            "is_best": true
+          },
+          "setting": {
+            "q": "I'm proud of how you watch carefully—where does the action happen in this video?",
+            "a": "In a green forest or park."
+          },
+          "feeling": {
+            "q": "You notice so much—how does the character feel when there are so many birds around?",
+            "a": "The character might feel excited or happy."
+          },
+          "action": {
+            "q": "You're doing such a good job paying attention—what is the green character doing with its arms?",
+            "a": "The character is using its arms to interact with the environment."
+          },
+          "causal": {
+            "q": "I can see you're thinking—what happens because the character has so many arms?",
+            "a": "The character can do more things at once."
+          },
+          "outcome": {
+            "q": "You're a good observer—what do you think happens when the character splashes water?",
+            "a": "Maybe the character will surprise the other characters."
+          },
+          "prediction": {
+            "q": "I'm so proud of how you think ahead—what do you think the character will do when meeting the boy?",
+            "a": "The character might help the boy or play with him."
+          }
+        }
+      },
+      "persona_winners": {}
+    },
+    "120-139": {
+      "persona_variants": {
+        "pig": {
+          "character": {
+            "q": "Ooh, can you tell me who the two friends are that we see in the video?",
+            "a": "A man in a red shirt and a boy in a green shirt."
+          },
+          "setting": {
+            "q": "Wow! Where do you think these characters are standing?",
+            "a": "In a forest near a blue and red vehicle."
+          },
+          "feeling": {
+            "q": "Ooh, how do you think the boy is feeling right now in this part?",
+            "a": "Excited or happy."
+          },
+          "action": {
+            "q": "I wonder what the boy is doing with his hands? Can you tell me?",
+            "a": "He is making a gesture or showing something."
+          },
+          "causal": {
+            "q": "Wow, why do you think the boy might be showing his hands like that?",
+            "a": "He might be trying to explain something or ask a question."
+          },
+          "outcome": {
+            "q": "What do you think is going to happen next after this scene? Ooh!",
+            "a": "They might go on an adventure together."
+          },
+          "prediction": {
+            "q": "I'm curious—what do you think the characters will do when they're in the forest?",
+            "a": "They might explore or find something interesting."
+          }
+        },
+        "bunny": {
+          "character": {
+            "q": "Can you identify the two characters featured in the video?",
+            "a": "A man in a red shirt and a boy in a green shirt."
+          },
+          "setting": {
+            "q": "Where does the scene take place? Check it out closely.",
+            "a": "In a forest near a blue and red vehicle."
+          },
+          "feeling": {
+            "q": "You've got a good eye—how would you describe the boy's emotions in this moment?",
+            "a": "Excited or happy."
+          },
+          "action": {
+            "q": "I believe you'll spot this: what action is the boy performing with his hands?",
+            "a": "He is making a gesture or showing something."
+          },
+          "causal": {
+            "q": "Think about it: what could be the reason the boy is displaying his hands?",
+            "a": "He might be trying to explain something or ask a question."
+          },
+          "outcome": {
+            "q": "Based on what you've observed, what do you predict happens after this scene?",
+            "a": "They might go on an adventure together."
+          },
+          "prediction": {
+            "q": "You can figure this out: what activities might the characters pursue in the forest?",
+            "a": "They might explore or find something interesting."
+          }
+        },
+        "alligator": {
+          "character": {
+            "q": "Tell me about the two people you see in the video, dear.",
+            "a": "A man in a red shirt and a boy in a green shirt."
+          },
+          "setting": {
+            "q": "I'm proud of how observant you are—where are they standing?",
+            "a": "In a forest near a blue and red vehicle."
+          },
+          "feeling": {
+            "q": "Look at the boy in this scene. How do you think he feels?",
+            "a": "Excited or happy."
+          },
+          "action": {
+            "q": "What is the boy using his hands to do in this moment?",
+            "a": "He is making a gesture or showing something."
+          },
+          "causal": {
+            "q": "You're doing so well—why might the boy be showing his hands?",
+            "a": "He might be trying to explain something or ask a question."
+          },
+          "outcome": {
+            "q": "What do you think will come next in the story?",
+            "a": "They might go on an adventure together."
+          },
+          "prediction": {
+            "q": "I know you can answer this—what might they do together in the forest?",
+            "a": "They might explore or find something interesting."
+          }
+        }
+      },
+      "persona_winners": {}
+    },
+    "140-159": {
+      "persona_variants": {
+        "pig": {
+          "character": {
+            "q": "Ooh, wow! Can you tell me who that big red character is standing right next to the man?",
+            "a": "The big red character is a superhero."
+          },
+          "setting": {
+            "q": "I'm so curious - where do you think the characters are in this video?",
+            "a": "They are in a forest near a blue RV."
+          },
+          "feeling": {
+            "q": "Wow! What do you think the man might be feeling when he sees that big red character?",
+            "a": "He might feel surprised or happy."
+          },
+          "action": {
+            "q": "Ooh, I wonder - what is the man doing while he's in the forest?",
+            "a": "He is looking around and waving."
+          },
+          "causal": {
+            "q": "That's interesting! What happens because the man waves at the big red character?",
+            "a": "The big red character might wave back or come closer."
+          },
+          "outcome": {
+            "q": "Hmm, what do you think will happen next after the man waves?",
+            "a": "The big red character might talk to him.",
+            "is_best": true
+          },
+          "prediction": {
+            "q": "Wow, I'd love to know - what do you think these characters will do after this scene?",
+            "a": "They might go on an adventure together."
+          }
+        },
+        "bunny": {
+          "character": {
+            "q": "I bet you noticed that big red character - can you identify who's standing beside the man?",
+            "a": "The big red character is a superhero."
+          },
+          "setting": {
+            "q": "Nice observation! Can you tell me where the characters are positioned in this video?",
+            "a": "They are in a forest near a blue RV."
+          },
+          "feeling": {
+            "q": "You're doing great! What emotion do you think the man might experience when he sees the big red character?",
+            "a": "He might feel surprised or happy."
+          },
+          "action": {
+            "q": "I see you're paying attention - what activities is the man performing in the forest?",
+            "a": "He is looking around and waving."
+          },
+          "causal": {
+            "q": "Good thinking! What's the consequence of the man waving at the big red character?",
+            "a": "The big red character might wave back or come closer."
+          },
+          "outcome": {
+            "q": "You're really following along! What outcome do you anticipate after the man waves?",
+            "a": "The big red character might talk to him.",
+            "is_best": true
+          },
+          "prediction": {
+            "q": "I know you can figure this out - what do you predict these characters will do following this scene?",
+            "a": "They might go on an adventure together."
+          }
+        },
+        "alligator": {
+          "character": {
+            "q": "I'm proud of how you're watching carefully. Can you tell me who that big red character is next to the man?",
+            "a": "The big red character is a superhero."
+          },
+          "setting": {
+            "q": "You're doing such a nice job. Where are the characters in this video?",
+            "a": "They are in a forest near a blue RV."
+          },
+          "feeling": {
+            "q": "I think you'll know this one. How do you think the man feels when he sees the big red character?",
+            "a": "He might feel surprised or happy."
+          },
+          "action": {
+            "q": "You're very observant. What is the man doing in the forest?",
+            "a": "He is looking around and waving."
+          },
+          "causal": {
+            "q": "You're so thoughtful. What happens because the man waves at the big red character?",
+            "a": "The big red character might wave back or come closer."
+          },
+          "outcome": {
+            "q": "I can tell you're thinking hard. What do you think will happen next after the man waves?",
+            "a": "The big red character might talk to him.",
+            "is_best": true
+          },
+          "prediction": {
+            "q": "You're doing wonderfully. What do you think the characters will do after this part?",
+            "a": "They might go on an adventure together."
+          }
+        }
+      },
+      "persona_winners": {}
+    },
+    "160-179": {
+      "persona_variants": {
+        "pig": {
+          "character": {
+            "q": "Ooh, wow! Who are the two main characters we get to see in this video?",
+            "a": "A boy and a big man."
+          },
+          "setting": {
+            "q": "Where are our characters hanging out in the video? Wow, that sounds cool!",
+            "a": "By the water on a rocky shore."
+          },
+          "feeling": {
+            "q": "Ooh! How are the characters feeling in this video?",
+            "a": "The boy feels happy, and the man looks serious."
+          },
+          "action": {
+            "q": "Wow, what is the boy doing in the video? Can you see it?",
+            "a": "He is taking a selfie with the man."
+          },
+          "causal": {
+            "q": "Ooh, I wonder why the boy is smiling so big in the video?",
+            "a": "Because he is having fun with the man."
+          },
+          "outcome": {
+            "q": "What happens right at the end of this video segment? Wow!",
+            "a": "The boy takes a picture with the man."
+          },
+          "prediction": {
+            "q": "Ooh, what do you think will happen next in the video?",
+            "a": "Maybe they will go on an adventure together."
+          }
+        },
+        "bunny": {
+          "character": {
+            "q": "I bet you noticed this already, but who are the two main characters appearing in the video?",
+            "a": "A boy and a big man."
+          },
+          "setting": {
+            "q": "You're observant! Where exactly are the characters positioned in the video?",
+            "a": "By the water on a rocky shore."
+          },
+          "feeling": {
+            "q": "Check this out—how do the characters feel in the video? What emotions do you see?",
+            "a": "The boy feels happy, and the man looks serious."
+          },
+          "action": {
+            "q": "You can totally tell what the boy is doing! What is he up to in the video?",
+            "a": "He is taking a selfie with the man."
+          },
+          "causal": {
+            "q": "Think about it—what's making the boy smile so much in the video?",
+            "a": "Because he is having fun with the man."
+          },
+          "outcome": {
+            "q": "You've got this! What conclusion happens at the end of this video segment?",
+            "a": "The boy takes a picture with the man."
+          },
+          "prediction": {
+            "q": "Based on what you've seen, what do you think will unfold next in the video?",
+            "a": "Maybe they will go on an adventure together."
+          }
+        },
+        "alligator": {
+          "character": {
+            "q": "Let's see what you noticed. Who are the two main characters in the video?",
+            "a": "A boy and a big man."
+          },
+          "setting": {
+            "q": "I'm proud of how carefully you watch! Where are the characters in the video?",
+            "a": "By the water on a rocky shore."
+          },
+          "feeling": {
+            "q": "You're doing great! How do the characters feel in the video?",
+            "a": "The boy feels happy, and the man looks serious."
+          },
+          "action": {
+            "q": "Tell me what you see the boy doing in the video.",
+            "a": "He is taking a selfie with the man."
+          },
+          "causal": {
+            "q": "Can you tell me why the boy is smiling in the video?",
+            "a": "Because he is having fun with the man."
+          },
+          "outcome": {
+            "q": "What happens at the end of the video? You can figure this out!",
+            "a": "The boy takes a picture with the man."
+          },
+          "prediction": {
+            "q": "What do you think will happen next in the video?",
+            "a": "Maybe they will go on an adventure together."
+          }
+        }
+      },
+      "persona_winners": {}
+    }
+  },
+  "updatedAt": "2026-04-20T03:40:16.337305+00:00"
+}

@@ -19,7 +19,7 @@ STORAGE_ROOT = Path(
 DOWNLOADS_DIR = Path(os.getenv("DOWNLOADS_DIR", str(STORAGE_ROOT / "downloads")))
 PRELOAD_DOWNLOAD_IDS = tuple(
     item.strip()
-    for item in (os.getenv("PRELOAD_DOWNLOAD_IDS") or "IxX_QHay02M").split(",")
+    for item in (os.getenv("PRELOAD_DOWNLOAD_IDS") or "IxX_QHay02M,jzWPkKvO7v4").split(",")
     if item.strip()
 )
 
