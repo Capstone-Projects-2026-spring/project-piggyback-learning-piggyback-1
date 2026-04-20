@@ -10,12 +10,18 @@ load_dotenv(".env.txt")
 BASE_DIR = Path(__file__).resolve().parent.parent
 TEMPLATES_DIR = BASE_DIR / "templates"
 PUBLIC_ASSETS_DIR = BASE_DIR / "public" / "assets"
+PACKAGED_DOWNLOADS_DIR = BASE_DIR / "downloads"
 STORAGE_ROOT = Path(
     os.getenv("APP_STORAGE_ROOT")
     or os.getenv("RAILWAY_VOLUME_MOUNT_PATH")
     or str(BASE_DIR)
 )
 DOWNLOADS_DIR = Path(os.getenv("DOWNLOADS_DIR", str(STORAGE_ROOT / "downloads")))
+PRELOAD_DOWNLOAD_IDS = tuple(
+    item.strip()
+    for item in (os.getenv("PRELOAD_DOWNLOAD_IDS") or "IxX_QHay02M").split(",")
+    if item.strip()
+)
 
 #Where SQLite file goes
 DATA_DIR = Path(os.getenv("DATA_DIR", str(STORAGE_ROOT / "data")))

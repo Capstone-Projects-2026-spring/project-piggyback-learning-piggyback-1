@@ -4,6 +4,7 @@ from typing import List, Dict, Any, Optional
 import base64
 import json
 import asyncio
+import shutil
 from datetime import datetime, timezone
 from app.services.sqlite_store import init_db, get_conn
 from app.services.expert_auth_service import (
@@ -54,6 +55,8 @@ from app.settings import (
     ADMIN_PASSWORD,
     DOWNLOADS_DIR,
     EXPERT_PASSWORD,
+    PACKAGED_DOWNLOADS_DIR,
+    PRELOAD_DOWNLOAD_IDS,
     PUBLIC_ASSETS_DIR,
     EXPERT_QUESTION_TYPE_LABELS,
     EXPERT_QUESTION_TYPES,
@@ -79,6 +82,20 @@ app.add_middleware(
 @app.on_event("startup")
 def startup_init_db():
     init_db()
+    _seed_packaged_downloads()
+    refresh_kids_videos_json()
+
+
+def _seed_packaged_downloads() -> None:
+    if DOWNLOADS_DIR.resolve() == PACKAGED_DOWNLOADS_DIR.resolve():
+        return
+
+    for video_id in PRELOAD_DOWNLOAD_IDS:
+        source_dir = PACKAGED_DOWNLOADS_DIR / video_id
+        target_dir = DOWNLOADS_DIR / video_id
+        if not source_dir.exists() or target_dir.exists():
+            continue
+        shutil.copytree(source_dir, target_dir)
 
 def require_expert_session(request: Request) -> Dict[str,str]:
     role = request.session.get("role")
