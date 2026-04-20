@@ -31,8 +31,8 @@ review workflows, and a kids-friendly playback/quiz interface.
 
 Railway test deployment:
 
-- Main app: https://protective-acceptance-production-374b.up.railway.app/
-- Admin: https://protective-acceptance-production-374b.up.railway.app/admin/
+- Main app: [https://protective-acceptance-production-374b.up.railway.app/](https://piggybacklearning.up.railway.app/)
+- Admin: [https://protective-acceptance-production-374b.up.railway.app/admin/](https://piggybacklearning.up.railway.app/admin)
   PASSCODE FOR Admin is **"admin123"**
 
 Notes:
