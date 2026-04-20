@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.9.2">
 <title data-rh="true">Hello from Project Piggyback Learning Piggyback 1 | Project Piggyback Learning Piggyback 1</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://Capstone-Projects-2026-spring.github.io/project-piggyback-learning-piggyback-1/"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docusaurus_tag" content="default"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docsearch:docusaurus_tag" content="default"><meta data-rh="true" property="og:title" content="Hello from Project Piggyback Learning Piggyback 1 | Project Piggyback Learning Piggyback 1"><meta data-rh="true" name="description" content="Description will go into a meta tag in &lt;head /&gt;"><meta data-rh="true" property="og:description" content="Description will go into a meta tag in &lt;head /&gt;"><link data-rh="true" rel="icon" href="/project-piggyback-learning-piggyback-1/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://Capstone-Projects-2026-spring.github.io/project-piggyback-learning-piggyback-1/"><link data-rh="true" rel="alternate" href="https://Capstone-Projects-2026-spring.github.io/project-piggyback-learning-piggyback-1/" hreflang="en"><link data-rh="true" rel="alternate" href="https://Capstone-Projects-2026-spring.github.io/project-piggyback-learning-piggyback-1/" hreflang="x-default"><script data-rh="true">function insertBanner(){var n=document.createElement("div");n.id="__docusaurus-base-url-issue-banner-container";n.innerHTML='\n<div id="__docusaurus-base-url-issue-banner" style="border: thick solid red; background-color: rgb(255, 230, 179); margin: 20px; padding: 20px; font-size: 20px;">\n   <p style="font-weight: bold; font-size: 30px;">Your Docusaurus site did not load properly.</p>\n   <p>A very common reason is a wrong site <a href="https://docusaurus.io/docs/docusaurus.config.js/#baseUrl" style="font-weight: bold;">baseUrl configuration</a>.</p>\n   <p>Current configured baseUrl = <span style="font-weight: bold; color: red;">/project-piggyback-learning-piggyback-1/</span> </p>\n   <p>We suggest trying baseUrl = <span id="__docusaurus-base-url-issue-banner-suggestion-container" style="font-weight: bold; color: green;"></span></p>\n</div>\n',document.body.prepend(n);var e=document.getElementById("__docusaurus-base-url-issue-banner-suggestion-container"),s=window.location.pathname,o="/"===s.substr(-1)?s:s+"/";e.innerHTML=o}document.addEventListener("DOMContentLoaded",function(){void 0===window.docusaurus&&insertBanner()})</script><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script><link rel="stylesheet" href="/project-piggyback-learning-piggyback-1/assets/css/styles.7aa687c6.css">
-<script src="/project-piggyback-learning-piggyback-1/assets/js/runtime~main.cfe4b66a.js" defer="defer"></script>
-<script src="/project-piggyback-learning-piggyback-1/assets/js/main.80ad18a4.js" defer="defer"></script>
+<script src="/project-piggyback-learning-piggyback-1/assets/js/runtime~main.3d4d3547.js" defer="defer"></script>
+<script src="/project-piggyback-learning-piggyback-1/assets/js/main.31077c16.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -84,6 +84,7 @@ review workflows, and a kids-friendly playback/quiz interface.</p>
 <ul>
 <li class="">Install FFmpeg and ensure <code>ffmpeg.exe</code> is on your PATH (via winget/chocolatey or a static build).</li>
 <li class="">Install Node.js LTS (optional) and ensure <code>node</code> is on PATH.</li>
+<li class="">If you install FFmpeg with Winget, restart your shell and the app before retrying a download.</li>
 </ul>
 <p>macOS (Homebrew):</p>
 <div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#bfc7d5"><span class="token plain">brew install ffmpeg</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">brew install node</span><br></span></code></pre></div></div>
@@ -103,7 +104,7 @@ review workflows, and a kids-friendly playback/quiz interface.</p>
 <p>Copy <code>.env.example</code> to <code>.env</code> and fill in your values:</p>
 <div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#bfc7d5"><span class="token plain"># macOS/Linux</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">cp .env.example .env</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain"># Windows</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">copy .env.example .env</span><br></span></code></pre></div></div>
 <p>All available variables (see <code>.env.example</code> for full list):</p>
-<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#bfc7d5"><span class="token plain">ADMIN_PASSWORD=&quot;admin123&quot;</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain"># Required only to add new videos and generate questions</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">OPENAI_API_KEY=&quot;your_openai_key&quot;</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">ANTHROPIC_API_KEY=&quot;your_anthropic_key&quot;</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">GEMINI_API_KEY=&quot;your_gemini_key&quot;</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">YOUTUBE_API_KEY=&quot;your_youtube_key&quot;</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain"># Optional: Hume AI companion voices (get keys at hume.ai)</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">HUME_API_KEY=&quot;your_hume_api_key&quot;</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">HUME_VOICE_BLOSSOM=&quot;your_blossom_voice_id&quot;</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">HUME_VOICE_PIPPA=&quot;your_pippa_voice_id&quot;</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">HUME_VOICE_ASH=&quot;your_ash_voice_id&quot;</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain"># Optional: Netscape-format cookies file for restricted videos</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">YTDLP_COOKIEFILE=&quot;C:\\path\\to\\cookies.txt&quot;</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">YTDLP_COOKIES_FILE=&quot;C:\\path\\to\\cookies.txt&quot;</span><br></span></code></pre></div></div>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#bfc7d5"><span class="token plain">ADMIN_PASSWORD=&quot;admin123&quot;</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain"># Required only to add new videos and generate questions</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">OPENAI_API_KEY=&quot;your_openai_key&quot;</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">ANTHROPIC_API_KEY=&quot;your_anthropic_key&quot;</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">GEMINI_API_KEY=&quot;your_gemini_key&quot;</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">YOUTUBE_API_KEY=&quot;your_youtube_key&quot;</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain"># Optional: Hume AI companion voices (get keys at hume.ai)</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">HUME_API_KEY=&quot;your_hume_api_key&quot;</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">HUME_VOICE_BLOSSOM=&quot;your_blossom_voice_id&quot;</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">HUME_VOICE_PIPPA=&quot;your_pippa_voice_id&quot;</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">HUME_VOICE_ASH=&quot;your_ash_voice_id&quot;</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain"># Optional: Netscape-format cookies file for restricted videos</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">YTDLP_COOKIEFILE=&quot;C:\\path\\to\\cookies.txt&quot;</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">YTDLP_COOKIES_FILE=&quot;C:\\path\\to\\cookies.txt&quot;</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain"># Optional: auth mode for protected YouTube downloads</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">YTDLP_AUTH_MODE=&quot;auto&quot;</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain"># Optional: browser User-Agent for hard protected-video cases</span><br></span><span class="token-line" style="color:#bfc7d5"><span class="token plain">YTDLP_USER_AGENT=&quot;Mozilla/5.0 ...&quot;</span><br></span></code></pre></div></div>
 <blockquote>
 <p>A sample video with questions is included — you can run the kids experience immediately without any API keys.</p>
 </blockquote>
@@ -111,6 +112,22 @@ review workflows, and a kids-friendly playback/quiz interface.</p>
 <ul>
 <li class=""><code>.env</code> and <code>.env.txt</code> are both loaded if present.</li>
 <li class="">Keep secrets out of git (<code>.env</code> is in <code>.gitignore</code>).</li>
+</ul>
+<p>Protected YouTube download support:</p>
+<ul>
+<li class="">Scope is <code>youtube.com</code> and <code>youtu.be</code> links.</li>
+<li class=""><code>YTDLP_AUTH_MODE=auto</code> is the default and prefers browser cookies first.</li>
+<li class="">Windows support is best with Chrome, Firefox, or Edge.</li>
+<li class="">macOS support is best with Chrome or Firefox.</li>
+<li class="">Safari is not guaranteed for protected downloads. Use Chrome or Firefox on Mac for the most reliable results.</li>
+<li class="">If YouTube returns an HLS transport stream with a <code>.mp4</code> name, the app will try to remux it into a valid MP4 when FFmpeg is available.</li>
+</ul>
+<p><code>POST /api/download</code> may also return these optional fields on success or failure:</p>
+<ul>
+<li class=""><code>error_code</code></li>
+<li class=""><code>recovery_hint</code></li>
+<li class=""><code>auth_source</code></li>
+<li class=""><code>used_player_client</code></li>
 </ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="how-to-test">How to Test<a href="#how-to-test" class="hash-link" aria-label="Direct link to How to Test" title="Direct link to How to Test" translate="no">​</a></h2>
 <p>Make sure the virtual environment is activated and dependencies are installed, then run:</p>
@@ -185,20 +202,29 @@ review workflows, and a kids-friendly playback/quiz interface.</p>
 </li>
 <li class=""><strong>403 Forbidden on download:</strong>
 <ul>
-<li class="">Try again (the downloader cycles player clients automatically).</li>
-<li class="">Add a cookies file via <code>YTDLP_COOKIEFILE</code>.</li>
+<li class="">Sign in to YouTube in Chrome, Firefox, or Edge on Windows, or Chrome or Firefox on macOS, then open the video once and retry.</li>
+<li class="">Keep <code>YTDLP_AUTH_MODE=auto</code> unless you need to force browser-only or file-only auth.</li>
+<li class="">If browser extraction is unavailable, add a fresh Netscape cookies file via <code>YTDLP_COOKIEFILE</code>.</li>
+<li class="">If protected videos still fail, set <code>YTDLP_USER_AGENT</code> to the full user agent from the same signed-in browser.</li>
 <li class="">Install Node.js LTS to improve extraction reliability.</li>
 </ul>
 </li>
 <li class=""><strong>Low quality video:</strong>
 <ul>
 <li class="">The first attempt prefers 720p H.264 MP4. If you need higher, adjust the
-format selector in <code>main.py</code> inside <code>download_youtube()</code>.</li>
+format selector in <code>app/services/download_service.py</code> inside <code>download_youtube()</code>.</li>
 </ul>
 </li>
 <li class=""><strong>FFmpeg not found:</strong>
 <ul>
 <li class="">Install FFmpeg and ensure it is on your PATH.</li>
+<li class="">Restart your shell and restart the app after installing it.</li>
+<li class="">On Windows, the downloader also checks common Winget install locations automatically.</li>
+</ul>
+</li>
+<li class=""><strong>Downloaded file is not a valid MP4 container:</strong>
+<ul>
+<li class="">Install FFmpeg, restart the app, and retry. The downloader will try to repair HLS <code>.mp4</code> downloads automatically when FFmpeg is available.</li>
 </ul>
 </li>
 </ul>
