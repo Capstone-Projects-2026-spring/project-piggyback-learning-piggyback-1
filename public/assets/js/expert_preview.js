@@ -4358,7 +4358,7 @@
                 pausePoint.className = 'timeline-pause-point';
                 pausePoint.id = `timeline-point-${index}`;
 
-                const leftPercent = (segment.end / videoDuration) * 100;
+                const leftPercent = Math.min(100, (segment.end / videoDuration) * 100);
                 pausePoint.style.left = leftPercent + '%';
 
                 if (hasExpertDecision(segment)) {

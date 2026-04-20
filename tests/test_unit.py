@@ -325,3 +325,246 @@ def test_report_empty_when_no_attempts():
         report = get_child_report_scoped("no_attempts_child", mode="all")
     assert report["total_attempts"] == 0
     assert report["overall_score"] == 0
+
+
+def test_select_auth_profile_prefers_windows_browser_order():
+    from app.services import download_service as ds
+
+    seen = []
+
+    def probe(browser):
+        seen.append(browser)
+        return browser == "edge"
+
+    profile = ds._select_auth_profile(
+        system_name="Windows",
+        auth_mode="auto",
+        browser_probe=probe,
+    )
+
+    assert seen == ["chrome", "firefox", "edge"]
+    assert profile["source"] == "browser"
+    assert profile["browser"] == "edge"
+
+
+def test_select_auth_profile_mac_order_skips_safari():
+    from app.services import download_service as ds
+
+    profile = ds._select_auth_profile(
+        system_name="Darwin",
+        auth_mode="auto",
+        browser_probe=lambda browser: False,
+    )
+
+    assert profile["browser_order"] == ["chrome", "firefox"]
+    assert "safari" not in profile["browser_order"]
+
+
+def test_metadata_and_download_opts_share_browser_auth():
+    from app.services import download_service as ds
+    from pathlib import Path
+
+    auth_profile = {
+        "source": "browser",
+        "browser": "firefox",
+        "cookiefile": None,
+    }
+
+    metadata_opts = ds._build_metadata_opts(auth_profile=auth_profile, has_node=False)
+    download_opts = ds._build_download_opts(
+        video_dir=Path("downloads"),
+        video_id="vid123",
+        auth_profile=auth_profile,
+        has_ffmpeg=True,
+        ffmpeg_path="ffmpeg",
+        has_node=False,
+    )
+
+    assert metadata_opts["cookiesfrombrowser"] == ("firefox",)
+    assert download_opts["cookiesfrombrowser"] == ("firefox",)
+
+
+def test_select_auth_profile_falls_back_to_cookiefile():
+    from app.services import download_service as ds
+    seen = []
+
+    def probe(browser):
+        seen.append(browser)
+        return False
+
+    with patch.object(ds, "_resolve_cookiefile", return_value="tests/fixtures/test_cookies.txt"):
+        profile = ds._select_auth_profile(
+            system_name="Windows",
+            auth_mode="auto",
+            cookiefile="tests/fixtures/test_cookies.txt",
+            browser_probe=probe,
+        )
+
+    assert seen == ["chrome", "firefox", "edge"]
+    assert profile["source"] == "cookiefile"
+    assert profile["cookiefile"] == "tests/fixtures/test_cookies.txt"
+
+
+def test_classify_auth_error_returns_stable_code_and_hint():
+    from app.services import download_service as ds
+
+    profile = {"source": "none", "browser": None}
+    classification = ds._classify_ytdlp_error(
+        "Sign in to confirm you're not a bot. Use --cookies-from-browser or --cookies for the authentication.",
+        auth_profile=profile,
+        system_name="Darwin",
+        user_agent_set=False,
+    )
+
+    assert classification["error_code"] == "auth_required"
+    assert "Chrome or Firefox" in classification["recovery_hint"]
+    assert "Safari is not guaranteed" in classification["recovery_hint"]
+    assert "YTDLP_USER_AGENT" in classification["recovery_hint"]
+
+
+def test_subtitle_opts_reuse_used_player_client():
+    from app.services import download_service as ds
+    from pathlib import Path
+
+    auth_profile = {
+        "source": "browser",
+        "browser": "chrome",
+        "cookiefile": None,
+    }
+
+    subtitle_opts = ds._build_subtitle_opts(
+        video_dir=Path("downloads"),
+        video_id="vid123",
+        auth_profile=auth_profile,
+        has_node=False,
+        used_player_client=["tv_downgraded", "web_safari"],
+        user_agent="Mozilla/5.0",
+    )
+
+    assert subtitle_opts["cookiesfrombrowser"] == ("chrome",)
+    assert subtitle_opts["extractor_args"]["youtube"]["player_client"] == [
+        "tv_downgraded",
+        "web_safari",
+    ]
+    assert subtitle_opts["http_headers"]["User-Agent"] == "Mozilla/5.0"
+
+
+def test_preferred_download_format_has_broad_ffmpeg_fallback():
+    from app.services import download_service as ds
+
+    format_selector = ds._preferred_download_format(has_ffmpeg=True)
+
+    assert "bestvideo+bestaudio/best" in format_selector
+    assert "bv*[height<=?720]+ba" in format_selector
+
+
+def test_download_with_format_fallback_keeps_player_client_first(monkeypatch):
+    from app.services import download_service as ds
+
+    calls = []
+
+    class FakeYoutubeDL:
+        def __init__(self, opts):
+            self.opts = opts
+            calls.append(opts.copy())
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def download(self, _urls):
+            if len(calls) == 1:
+                raise ds.yt_dlp.utils.DownloadError("Requested format is not available")
+            return 0
+
+    monkeypatch.setattr(ds.yt_dlp, "YoutubeDL", FakeYoutubeDL)
+
+    opts = {
+        "format": "narrow",
+        "merge_output_format": "mp4",
+        "postprocessors": [{"key": "FFmpegVideoRemuxer"}],
+        "extractor_args": {"youtube": {"player_client": ["tv_downgraded", "web_safari"]}},
+    }
+
+    ds._download_with_format_fallback(
+        "https://www.youtube.com/watch?v=test123",
+        opts=opts,
+        has_ffmpeg=True,
+    )
+
+    assert len(calls) == 2
+    assert calls[1]["format"] == "bestvideo+bestaudio/best"
+    assert calls[1]["extractor_args"]["youtube"]["player_client"] == [
+        "tv_downgraded",
+        "web_safari",
+    ]
+
+
+def test_apply_runtime_options_enables_remote_ejs_components():
+    from app.services import download_service as ds
+
+    opts = {}
+    ds._apply_runtime_options(opts, has_node=False)
+
+    assert opts["remote_components"] == ["ejs:github"]
+    assert "js_runtimes" not in opts
+
+
+def test_resolve_ffmpeg_path_uses_winget_link(monkeypatch):
+    from app.services import download_service as ds
+    from pathlib import Path
+    import shutil
+
+    tmp_path = Path("tests/.ffmpeg_link_test")
+    if tmp_path.exists():
+        shutil.rmtree(tmp_path)
+
+    try:
+        winget_link = tmp_path / "Microsoft" / "WinGet" / "Links" / "ffmpeg.exe"
+        winget_link.parent.mkdir(parents=True)
+        winget_link.write_text("stub", encoding="utf-8")
+
+        monkeypatch.setattr(ds.shutil, "which", lambda _name: None)
+        monkeypatch.setattr(ds.platform, "system", lambda: "Windows")
+        monkeypatch.setenv("LOCALAPPDATA", str(tmp_path.resolve()))
+
+        assert ds._resolve_ffmpeg_path() == str(winget_link.resolve())
+    finally:
+        if tmp_path.exists():
+            shutil.rmtree(tmp_path)
+
+
+def test_repair_invalid_mp4_replaces_file(monkeypatch):
+    from app.services import download_service as ds
+    from pathlib import Path
+    import shutil
+
+    tmp_path = Path("tests/.ffmpeg_repair_test")
+    if tmp_path.exists():
+        shutil.rmtree(tmp_path)
+
+    try:
+        tmp_path.mkdir(parents=True)
+        video_path = tmp_path / "sample.mp4"
+        video_path.write_bytes(b"\x47\x40\x00\x30bad-ts")
+
+        def fake_run(command, capture_output, text, timeout, check):
+            repaired_path = Path(command[-1])
+            repaired_path.write_bytes(b"\x00\x00\x00\x18ftypisom")
+
+            class Result:
+                returncode = 0
+
+            return Result()
+
+        monkeypatch.setattr(ds.subprocess, "run", fake_run)
+
+        repaired = ds._repair_invalid_mp4(video_path, "ffmpeg")
+
+        assert repaired == video_path
+        assert video_path.read_bytes().startswith(b"\x00\x00\x00\x18ftyp")
+    finally:
+        if tmp_path.exists():
+            shutil.rmtree(tmp_path)

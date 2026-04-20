@@ -1129,7 +1129,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GenericObject"
+                $ref: "#/components/schemas/DownloadResponse"
 
   /api/frames/{video_id}:
     post:
@@ -1329,6 +1329,42 @@ components:
           type: string
         count:
           type: integer
+
+    DownloadResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        video_id:
+          type: string
+        title:
+          type: string
+        thumbnail:
+          type: string
+        files:
+          type: array
+          items:
+            type: string
+        duration:
+          type: number
+        local_path:
+          type: string
+        subtitle_warning:
+          type: string
+        error_code:
+          type: string
+        recovery_hint:
+          type: string
+        auth_source:
+          type: string
+          enum: [browser, cookiefile, none]
+        used_player_client:
+          type: array
+          items:
+            type: string
+      required: [success, message]
 
     AdminVideoItem:
       type: object

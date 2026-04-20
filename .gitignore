@@ -35,3 +35,6 @@ data/
 report.html
 pytest_report.html
 assets/style.csspytest-cache-files-*/
+/tests/.runtime/
+/tests/.pytest-tmp/
+/tmp*/

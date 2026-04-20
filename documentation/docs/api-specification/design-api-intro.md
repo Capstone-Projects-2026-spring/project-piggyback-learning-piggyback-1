@@ -69,6 +69,16 @@ Backend is implemented with FastAPI and exposes:
 - `POST /api/submit-questions`
 - `WS /ws/questions/{video_id}`
 
+`POST /api/download` keeps the same request body and now may include these optional response fields:
+- `error_code: string`
+- `recovery_hint: string`
+- `auth_source: "browser" | "cookiefile" | "none"`
+- `used_player_client: string[]`
+
+The latest downloader update did not change the request or response shape. It changed backend behavior only:
+- browser and cookie auth are reused across metadata, video, and subtitle fetches
+- FFmpeg-backed repair is attempted when a downloaded `.mp4` is really an HLS transport stream
+
 **Admin report:**
 - `GET /api/reports/child/{child_id}`
 
@@ -141,6 +151,7 @@ Current limitations:
 Current behavior varies by endpoint:
 
 - Some responses return JSON with failure fields (for example `success: false`, `message`).
+- `POST /api/download` now also returns downloader-specific failure details such as `error_code`, `recovery_hint`, `auth_source`, and `used_player_client`.
 - Some flows use `HTTPException`.
 - FastAPI validation errors may return `422`.
 
@@ -151,6 +162,7 @@ Contract requirement:
 ## Traceability (Endpoint - Internal Responsibility)
 
 - `POST /api/frames/{video_id}` - `app/services/frame_service.py::extract_frames_per_second_for_video`
+- `POST /api/download` - `app/services/download_service.py::download_youtube`
 - `WS /ws/questions/{video_id}` - orchestration in `admin_routes.py` + generation in `app/services/question_generation_service.py`
 - `POST /api/check_answer` - scoring flow in `video_quiz_routes.py`
 - `POST /api/transcribe` - transcription flow in `video_quiz_routes.py`

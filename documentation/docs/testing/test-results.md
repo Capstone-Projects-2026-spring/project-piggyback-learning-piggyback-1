@@ -4,10 +4,10 @@ sidebar_position: 4
 
 # Test Results
 
-All 76 tests passing as of 2026-04-19.
+All 88 tests passing as of 2026-04-19.
 
 ```
-collected 76 items
+collected 88 items
 
 tests/test_acceptance.py::test_student_misspells_pikachu_and_still_gets_correct PASSED
 tests/test_acceptance.py::test_student_answers_spinning_cat_question PASSED
@@ -37,6 +37,9 @@ tests/test_integration.py::test_delete_child_endpoint PASSED
 tests/test_integration.py::test_delete_child_nonexistent_returns_404 PASSED
 tests/test_integration.py::test_claim_and_unclaim_video_api PASSED
 tests/test_integration.py::test_get_child_report_scoped_filters_by_mode PASSED
+tests/test_integration.py::test_parent_login_wrong_code_returns_failure PASSED
+tests/test_integration.py::test_download_endpoint_returns_structured_failure_payload PASSED
+tests/test_integration.py::test_parent_login_empty_code_returns_400 PASSED
 tests/test_unit.py::test_time_to_seconds_mmss PASSED
 tests/test_unit.py::test_time_to_seconds_hhmmss PASSED
 tests/test_unit.py::test_time_to_seconds_bad_input PASSED
@@ -82,9 +85,18 @@ tests/test_unit.py::test_compute_top_categories_correct_scores PASSED
 tests/test_unit.py::test_compute_top_categories_almost_is_half_point PASSED
 tests/test_unit.py::test_compute_top_categories_wrong_yields_zero PASSED
 tests/test_unit.py::test_report_empty_when_no_attempts PASSED
-tests/test_integration.py::test_parent_login_wrong_code_returns_failure PASSED
-tests/test_integration.py::test_parent_login_empty_code_returns_400 PASSED
+tests/test_unit.py::test_select_auth_profile_prefers_windows_browser_order PASSED
+tests/test_unit.py::test_select_auth_profile_mac_order_skips_safari PASSED
+tests/test_unit.py::test_metadata_and_download_opts_share_browser_auth PASSED
+tests/test_unit.py::test_select_auth_profile_falls_back_to_cookiefile PASSED
+tests/test_unit.py::test_classify_auth_error_returns_stable_code_and_hint PASSED
+tests/test_unit.py::test_subtitle_opts_reuse_used_player_client PASSED
+tests/test_unit.py::test_preferred_download_format_has_broad_ffmpeg_fallback PASSED
+tests/test_unit.py::test_download_with_format_fallback_keeps_player_client_first PASSED
+tests/test_unit.py::test_apply_runtime_options_enables_remote_ejs_components PASSED
+tests/test_unit.py::test_resolve_ffmpeg_path_uses_winget_link PASSED
+tests/test_unit.py::test_repair_invalid_mp4_replaces_file PASSED
 tests/test_acceptance.py::test_parent_can_load_childs_report PASSED
 
-76 passed in 3.59s
+88 passed in 8.23s
 ```

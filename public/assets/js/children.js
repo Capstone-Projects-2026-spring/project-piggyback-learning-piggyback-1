@@ -1104,7 +1104,9 @@
             : segStart + 0.1;
           const trigger = segment.trigger_sec;
 
-          if (previousTime < trigger && currentTime >= trigger && !asked.has(trigger)) {
+          const videoDuration = getPlayerDuration();
+          const tooCloseToEnd = videoDuration > 0 && (videoDuration - trigger) < 20;
+          if (previousTime < trigger && currentTime >= trigger && !asked.has(trigger) && !tooCloseToEnd) {
             askQuestion(segment, segStart, segEnd);
             previousTime = currentTime;
             return;

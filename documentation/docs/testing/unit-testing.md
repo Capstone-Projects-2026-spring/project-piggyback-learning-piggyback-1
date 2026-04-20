@@ -17,6 +17,8 @@ pytest tests/test_unit.py -v
 
 Unit tests verify individual functions and service layer logic in isolation. No real server is started. Database-touching tests use the test SQLite instance initialized by `init_db()`.
 
+Test runtime files stay inside repo-local temporary folders and are cleaned after the run, so pytest should not leave random `tmp_*` project folders behind.
+
 ---
 
 ## Video Timestamp Helpers
@@ -103,3 +105,19 @@ Unit tests verify individual functions and service layer logic in isolation. No 
 | `test_compute_top_categories_almost_is_half_point` | almost answer scores 50% for its category |
 | `test_compute_top_categories_wrong_yields_zero` | wrong answer scores 0% for its category |
 | `test_report_empty_when_no_attempts` | child with no history returns zeroed-out report |
+
+## Downloader Logic
+
+| Test | What it checks |
+|---|---|
+| `test_select_auth_profile_prefers_windows_browser_order` | Windows downloader tries Chrome, Firefox, then Edge |
+| `test_select_auth_profile_mac_order_skips_safari` | macOS downloader prefers Chrome and Firefox, not Safari |
+| `test_metadata_and_download_opts_share_browser_auth` | metadata and download requests use the same browser auth |
+| `test_select_auth_profile_falls_back_to_cookiefile` | cookie file is used when browser probing fails |
+| `test_classify_auth_error_returns_stable_code_and_hint` | protected-download auth failures map to stable API error fields |
+| `test_subtitle_opts_reuse_used_player_client` | subtitle fetches reuse the successful player client |
+| `test_preferred_download_format_has_broad_ffmpeg_fallback` | FFmpeg-enabled format selection keeps a broader fallback |
+| `test_download_with_format_fallback_keeps_player_client_first` | format fallback does not drop the chosen protected-video client too early |
+| `test_apply_runtime_options_enables_remote_ejs_components` | downloader enables remote EJS components for YouTube JS challenges |
+| `test_resolve_ffmpeg_path_uses_winget_link` | Windows Winget FFmpeg install can be discovered automatically |
+| `test_repair_invalid_mp4_replaces_file` | invalid HLS `.mp4` downloads are repaired into valid MP4 files |

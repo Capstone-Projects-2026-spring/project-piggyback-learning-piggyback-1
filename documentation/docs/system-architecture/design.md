@@ -66,9 +66,10 @@ Piggyback Learning is a web application with a FastAPI backend that serves pages
 - **Type:** Integration component
 - **Purpose:** Download a YouTube video and its metadata for local use.
 - **Function:** Extracts title, thumbnail, and duration; downloads the video file; optionally downloads subtitles.
-- **Dependencies:** `yt_dlp`, optional Node.js runtime, optional cookies file, FFmpeg for remuxing.
+- **Dependencies:** `yt_dlp`, optional Node.js runtime, browser cookies, optional cookies file, FFmpeg for remuxing.
 - **Interface:** Internal Python functions called by the API server.
-- **Processing:** Tries multiple player clients on 403 errors; falls back on format unavailability.
+- **Processing:** Uses browser-first auth on local desktops, applies the same auth source to metadata, video, and subtitles, classifies protected-video failures, retries with targeted player clients, falls back on format unavailability, and repairs transport-stream `.mp4` downloads into valid MP4 files when FFmpeg is available.
+- **Desktop support:** Windows works best with Chrome, Firefox, or Edge. macOS works best with Chrome or Firefox. Safari is fallback-only for protected downloads.
 
 ### 4) Media Processing Module (Frames and Subtitles)
 

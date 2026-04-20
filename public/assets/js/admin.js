@@ -1077,7 +1077,12 @@ async function handleLinkChild(row) {
                         loadExistingDownloads(true);
                         setTimeout(() => { nextStep(); }, 1500);
                     } else {
-                        showStatus('download-status', data.message || 'Download failed. Please try again.', 'error', 'download-result');
+                        showStatus(
+                            'download-status',
+                            buildDownloadStatusMessage(data),
+                            'error',
+                            'download-result'
+                        );
                     }
                 }, 1000);
                 
@@ -1088,6 +1093,19 @@ async function handleLinkChild(row) {
             } finally {
                 showLoading('download-loading', false);
             }
+        }
+
+        function buildDownloadStatusMessage(data) {
+            const parts = [];
+            if (data && data.message) {
+                parts.push(data.message);
+            } else {
+                parts.push('Download failed. Please try again.');
+            }
+            if (data && data.recovery_hint) {
+                parts.push(`Hint: ${data.recovery_hint}`);
+            }
+            return parts.join(' ');
         }
         
         async function extractFrames() {
