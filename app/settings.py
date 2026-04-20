@@ -8,13 +8,17 @@ load_dotenv()
 load_dotenv(".env.txt")
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-DOWNLOADS_DIR = BASE_DIR / "downloads"
 TEMPLATES_DIR = BASE_DIR / "templates"
 PUBLIC_ASSETS_DIR = BASE_DIR / "public" / "assets"
-DOWNLOADS_DIR.mkdir(parents=True, exist_ok=True)
+STORAGE_ROOT = Path(
+    os.getenv("APP_STORAGE_ROOT")
+    or os.getenv("RAILWAY_VOLUME_MOUNT_PATH")
+    or str(BASE_DIR)
+)
+DOWNLOADS_DIR = Path(os.getenv("DOWNLOADS_DIR", str(STORAGE_ROOT / "downloads")))
 
 #Where SQLite file goes
-DATA_DIR = BASE_DIR / "data"
+DATA_DIR = Path(os.getenv("DATA_DIR", str(STORAGE_ROOT / "data")))
 DOWNLOADS_DIR.mkdir(parents=True, exist_ok=True)
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 

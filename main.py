@@ -129,6 +129,11 @@ if PUBLIC_ASSETS_DIR.exists():
     )
 
 # -----------------------------
+@app.get("/health")
+def healthcheck():
+    return JSONResponse({"ok": True})
+
+
 @app.get("/", response_class=HTMLResponse)
 def home_page(request: Request):
     """Learner landing page"""

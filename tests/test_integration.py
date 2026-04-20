@@ -31,6 +31,12 @@ def test_get_config():
     assert "thresholds" in response.json()
 
 
+def test_healthcheck():
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.json() == {"ok": True}
+
+
 def test_learner_can_fetch_video_list():
     # Use Case 2: Learner sees list of available quizzes
     response = client.get("/api/videos-list")
