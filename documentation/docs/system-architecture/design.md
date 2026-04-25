@@ -23,13 +23,22 @@ Piggyback Learning is a web application with a FastAPI backend that serves pages
 ## Components
 
 ### Web Client (Frontend)
-A Next.js web application with separate interfaces for children, parents, and admins. Handles video playback, voice recording, quiz interactions, and companion animations. Communicates with the backend over REST and WebSocket.
+A Next.js web application with separate interfaces for children, parents, and admins. The child interface (`children.js`) controls all quiz session behavior - it enforces the active interaction mode, pauses or resumes the video at question timestamps, triggers a rewind to the relevant segment when a child answers incorrectly in Strict mode, and reveals hints and the correct answer in Flexible mode. Parents use the dashboard to review AI-generated questions before they reach children. Communicates with the backend over REST and WebSocket.
 
 ### API Server (Backend)
 A FastAPI server that acts as the central orchestrator - routing requests, managing user sessions, coordinating video processing, question generation, and quiz evaluation. Full endpoint details are in the API Specification section.
 
+### Answer Evaluation (`check_answer`)
+A backend service that receives the child's transcribed voice answer and compares it to the expected answer using fuzzy text matching. For borderline cases, it escalates to OpenAI to make a final judgment. Returns a result of correct, almost, or wrong, which the frontend uses to decide whether to continue, rewind, or reveal the answer.
+
+### Quiz Scoring Service
+Saves each quiz attempt to a result file per child, recording the video, score, correct and incorrect counts, retry counts, and watch time. This data feeds the parent progress report.
+
+### Access Code Authentication
+Parents receive a personal access code from an admin. Children log in using their parent's access code and then select their profile. This keeps the login flow simple for young children while still linking each child to a parent account.
+
 ### Video Acquisition and Processing
-Downloads YouTube videos via yt-dlp and extracts frames and subtitles for use in question generation.
+Downloads YouTube videos and extracts frames and subtitles for use in question generation.
 
 ### AI Question Generation
 Sends video frames and transcripts to OpenAI, Anthropic, or Gemini to generate child-friendly comprehension questions. Supports multiple providers so the app is not locked to one.
@@ -49,9 +58,14 @@ SQLite stores user accounts, access codes, and child-parent relationships. The l
 
 | Requirement | Components involved |
 |---|---|
-| Voice-based quiz answers | Web Client (microphone) + API Server + AI evaluation |
-| Three interaction modes (Flexible, Strict, Passive) | API Server quiz logic + Web Client playback controls |
+| Voice-based quiz answers | Web Client (microphone) + Answer Evaluation + API Server |
+| Three interaction modes (Flexible, Strict, Passive) | Web Client (`children.js`) + API Server + SQLite |
+| Rewind on incorrect answer (Strict mode) | Web Client (`children.js`) uses answer result to seek video |
+| Hints and correct answer reveal (Flexible mode) | Web Client (`children.js`) on wrong/almost result |
 | Companion-guided experience | Companion and Voice Module + Hume AI |
 | AI question generation | Video Acquisition + AI Question Generation + Storage |
-| Parent progress reports | Report Service + Storage |
-| Role-based access | API Server auth + SQLite |
+| Parent question review | Web Client (parent dashboard) + API Server + Storage |
+| Parent progress reports | Report Service + Quiz Scoring Service + Storage |
+| Access code login | Access Code Authentication + API Server + SQLite |
+| Parent configures child interaction mode | Web Client (parent dashboard) + API Server + SQLite |
+| Role-based access (Child, Parent, Admin) | Access Code Authentication + API Server + SQLite |
