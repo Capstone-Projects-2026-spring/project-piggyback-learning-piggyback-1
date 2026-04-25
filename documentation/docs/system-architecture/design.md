@@ -23,7 +23,7 @@ Piggyback Learning is a web application with a FastAPI backend that serves pages
 ## Components
 
 ### Web Client (Frontend)
-A Next.js web application with separate interfaces for children, parents, and admins. The child interface (`children.js`) controls all quiz session behavior - it enforces the active interaction mode, pauses or resumes the video at question timestamps, triggers a rewind to the relevant segment when a child answers incorrectly in Strict mode, and reveals hints and the correct answer in Flexible mode. Parents use the dashboard to review AI-generated questions before they reach children. Communicates with the backend over REST and WebSocket.
+HTML pages served by FastAPI with vanilla JavaScript handling all interactivity. Separate interfaces for children, parents, and admins. The child interface (`children.js`) controls all quiz session behavior - it enforces the active interaction mode, pauses or resumes the video at question timestamps, triggers a rewind to the relevant segment when a child answers incorrectly in Strict mode, and reveals hints and the correct answer in Flexible mode. Parents use the dashboard to review AI-generated questions before they reach children. Communicates with the backend over REST and WebSocket.
 
 ### API Server (Backend)
 A FastAPI server that acts as the central orchestrator - routing requests, managing user sessions, coordinating video processing, question generation, and quiz evaluation. Full endpoint details are in the API Specification section.

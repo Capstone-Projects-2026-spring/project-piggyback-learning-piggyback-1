@@ -4,251 +4,133 @@ sidebar_position: 5
 
 # Class Diagrams
 
-## Backend Services
+## Backend - User Roles
+
+All three user types are separate tables in the database. `Expert` is the admin role that manages videos and children. `Parent` logs in with an access code to view reports. `Child` is the learner profile linked to both.
 
 ```mermaid
 classDiagram
-    class QuestionGenerationService {
-        -modelName: string
-        -provider: string
-
-        +generateQuestions(transcript, frames)
-        +buildSegments(duration, interval)
-        +validateJSON(response)
-        +retryOnFailure()
-    }
-
-    class ReportService {
-        +getChildReportScoped(childId, mode)
-        +loadAttempts(childId)
-        +computeTopCategories(attempts)
-        +getVideoTitle(videoId)
-    }
-
-    class ChildrenService {
-        +createChild(expertId, firstName, lastName, iconKey)
-        +getChild(childId)
-        +listChildren(expertId)
-        +updateChild(childId, fields)
-        +deactivateChild(childId)
-        +deleteChild(childId)
-        +generateChildId()
-    }
-
-    class ExpertAuthService {
-        +createExpert(expertId, displayName, password)
-        +deleteExpert(expertId)
-        +hashPassword(password)
-        +verifyPassword(password, hash)
-        +addVideoAssignment(videoId, expertId)
-        +removeVideoAssignment(videoId, expertId)
-        +canExpertAccessVideo(expertId, videoId)
-    }
-
-    class SQLiteStore {
-        -dbPath: string
-
-        +initDB()
-        +getConn()
-    }
-
-    class VideoProcessor {
-        -videoPath: string
-        -frameDirectory: string
-
-        +downloadVideo(url)
-        +extractFrames()
-        +extractTranscript()
-    }
-
-    class AnswerEvaluator {
-        +checkAnswer(expected, user, question)
-        +normalizeText(text)
-        +fuzzyMatch(a, b)
-    }
-
-    QuestionGenerationService o-- VideoProcessor : uses
-    ReportService *-- SQLiteStore : owns
-    ChildrenService *-- SQLiteStore : owns
-    ExpertAuthService *-- SQLiteStore : owns
-    AnswerEvaluator --> ReportService : feeds into
-```
-
-The backend is organized into focused service modules. `ChildrenService` and `ExpertAuthService` handle all user and access management. `ReportService` computes per-child progress reports from quiz result files. `AnswerEvaluator` scores voice answers using fuzzy matching and text normalization.
-
----
-
-## Data Models
-
-```mermaid
-classDiagram
-    class Child {
-        -childId: string
-        -firstName: string
-        -lastName: string
-        -iconKey: string
-        -interactionMode: string
-        -expertId: string
-        -parentId: string
-        -isActive: boolean
-    }
-
-    class Parent {
-        -parentId: string
-        -displayName: string
-        -loginCodeHash: string
-        -loginCode: string
-        -isActive: boolean
-    }
-
     class Expert {
-        -expertId: string
-        -displayName: string
-        -passwordHash: string
+        +expert_id string
+        +display_name string
+        +password_hash string
+        +is_active bool
+    }
+    class Parent {
+        +parent_id string
+        +display_name string
+        +login_code_hash string
+        +login_code string
+        +is_active bool
+    }
+    class Child {
+        +child_id string
+        +first_name string
+        +last_name string
+        +icon_key string
+        +interaction_mode string
+        +is_active bool
     }
 
-    class Question {
-        -text: string
-        -questionType: string
-        -timestamp: float
-        -correctAnswer: string
-    }
-
-    class QuizAttempt {
-        -childId: string
-        -videoId: string
-        -interactionMode: string
-        -percentage: float
-        -totalRetries: int
-        -watchMinutes: float
-        -details: List
-    }
-
-    Expert "1" *-- "many" Child : manages
-    Parent "1" o-- "many" Child : linked to
-    Child "1" *-- "many" QuizAttempt : owns
-    QuizAttempt *-- Question : contains
+    Expert "1" --> "many" Child : creates and manages
+    Parent "1" --> "many" Child : monitors progress of
 ```
 
 ---
 
-## Frontend Interfaces
+## Backend - Services
+
+```mermaid
+classDiagram
+    class ExpertAuthService {
+        +authenticate_expert(expert_id, password)
+        +create_expert(expert_id, display_name, password)
+        +update_expert(expert_id, fields)
+        +add_video_assignment(video_id, expert_id)
+        +can_expert_access_video(expert_id, video_id)
+    }
+    class ChildrenService {
+        +create_child(expert_id, first_name, last_name, icon_key, interaction_mode)
+        +get_child(child_id)
+        +list_children(expert_id)
+        +update_child(child_id, fields)
+        +deactivate_child(child_id)
+    }
+    class QuizScoringService {
+        +save_quiz_result(child_id, video_id, score_data)
+        +get_child_scores(child_id)
+    }
+    class ReportService {
+        +get_child_report(child_id)
+        +get_child_report_scoped(child_id, video_id, mode)
+    }
+    class QuestionGenerationService {
+        +generate_questions(transcript, frames)
+        +build_segments(duration, interval)
+        +validate_json(response)
+    }
+    class PersonalizeQuizService {
+        +generate_persona_variants(questions, best_question)
+    }
+    class ExpertReviewService {
+        +get_expert_questions_payload(video_id)
+        +save_final_questions_payload(video_id, payload)
+    }
+    class DownloadService {
+        +download_youtube(url)
+    }
+    class YouTube {
+        <<external>>
+    }
+    class FrameService {
+        +extract_frames_per_second_for_video(video_id)
+    }
+    class SQLiteStore {
+        +init_db()
+        +get_conn()
+    }
+
+    ExpertAuthService --> SQLiteStore : reads/writes
+    ChildrenService --> SQLiteStore : reads/writes
+    ReportService --> QuizScoringService : reads from
+    QuestionGenerationService --> FrameService : uses frames
+    PersonalizeQuizService --> QuestionGenerationService : personalizes
+    ExpertReviewService --> QuestionGenerationService : reviews output
+    DownloadService --> YouTube : downloads from
+```
+
+---
+
+## Frontend - Interfaces
 
 ```mermaid
 classDiagram
     class KidsUI {
-        -currentChild: Child
-        -selectedCompanion: string
-
-        +displayVideoLibrary()
+        -currentChild
+        -selectedCompanion string
+        -interactionMode string
+        -segments list
+        -asked Set
         +playVideo(videoId)
         +submitVoiceAnswer(answer)
         +rewindVideo(timestamp)
-        +keepGoing()
-    }
-
-    class CompanionSelector {
-        -companions: List
-
-        +displayCompanions()
-        +selectCompanion(name)
-        +playHelloAudio()
-        +swapToWaveImage()
-    }
-
-    class QuizPlayer {
-        -interactionMode: string
-        -currentQuestion: Question
-
-        +pauseAtTimestamp()
-        +showQuestion()
-        +recordVoice()
+        +showQuestion(question)
         +showFeedback(status)
-        +resumeVideo()
     }
-
-    class ParentUI {
-        -currentChild: Child
-
-        +reviewQuestions(videoId)
-        +editQuestion(question)
-        +saveQuestions()
-        +loadReport(childId)
-        +updateLoginCode(code)
-    }
-
     class AdminUI {
+        -adminExperts list
+        -adminChildren list
+        -currentVideoId string
         +downloadVideo(url)
         +generateQuestions(videoId)
-        +createParent()
+        +createExpert()
         +manageChildren()
     }
-
-    class ReportUI {
-        +displayOverallScore(score)
-        +displayStatCards(stats)
-        +displayCategoryScores(cats)
-        +displayRecentSessions(sessions)
+    class ExpertPreviewUI {
+        -availableVideos list
+        +reviewQuestions(videoId)
+        +saveQuestions(payload)
+        +updateLoginCode(code)
+        +loadReport(childId)
     }
-
-    KidsUI *-- CompanionSelector : owns
-    KidsUI *-- QuizPlayer : owns
-    ParentUI *-- ReportUI : owns
 ```
-
-The frontend is split by user role. `KidsUI` handles the child experience including companion selection and quiz playback. `ParentUI` covers question review and report viewing. `AdminUI` manages video processing and account management.
-
----
-
-## External Services
-
-```mermaid
-classDiagram
-    class OpenAIService {
-        -apiKey: string
-
-        +generateQuestions(prompt, frames)
-        +checkAnswer(expected, user)
-        +textToSpeech(text, voice)
-    }
-
-    class AnthropicService {
-        -apiKey: string
-
-        +generateQuestions(prompt, frames)
-    }
-
-    class GeminiService {
-        -apiKey: string
-
-        +generateQuestions(prompt, frames)
-    }
-
-    class HumeAIService {
-        -apiKey: string
-        -voiceIds: dict
-
-        +getCompanionVoice(companion)
-        +streamVoiceLine(text)
-    }
-
-    class YTDLPService {
-        +downloadVideo(url)
-        +extractMetadata(url)
-        +extractSubtitles(url)
-    }
-
-    class FFmpegService {
-        +remuxVideo(inputPath)
-        +processAudio(file)
-    }
-
-    OpenAIService o-- QuestionGenerationService : used by
-    AnthropicService o-- QuestionGenerationService : used by
-    GeminiService o-- QuestionGenerationService : used by
-    HumeAIService o-- CompanionSelector : used by
-    YTDLPService *-- VideoProcessor : owned by
-    FFmpegService o-- VideoProcessor : used by
-```
-
-All three AI providers (OpenAI, Anthropic, Gemini) are supported for question generation. Hume AI powers the companion character voices. yt-dlp and FFmpeg handle video downloading and processing.

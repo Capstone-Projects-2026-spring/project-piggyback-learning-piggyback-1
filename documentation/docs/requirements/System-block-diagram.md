@@ -7,7 +7,7 @@ sidebar_position: 6
 ```mermaid
 flowchart TD
 
-  subgraph FE["Frontend (Next.js)"]
+  subgraph FE["Frontend"]
     direction LR
     ChildUI["Child Interface"]
     VideoComp["Video Player & Companion"]
@@ -55,7 +55,7 @@ flowchart TD
 
 ## Component Descriptions
 
-**Frontend (Next.js)**
+**Frontend**
 - **Child Interface** - The screen the child uses to log in, pick their companion, and interact with quizzes. Captures the child's voice answer through the browser microphone and sends it to the backend.
 - **Video Player & Companion** - Plays the YouTube video and displays the chosen companion character alongside it. The companion reacts and speaks using a voice provided by Hume AI.
 - **Parent / Admin Dashboard** - Lets parents set the interaction mode (Flexible, Strict, or Passive), manage their child's profile, review progress reports, and manage video activities.
