@@ -6,7 +6,7 @@ sidebar_position: 5
 
 ## Backend - User Roles
 
-All three user types are separate tables in the database. `Expert` is the admin role that manages videos and children. `Parent` logs in with an access code to view reports. `Child` is the learner profile linked to both.
+The admin (`Expert`) creates and manages parent accounts. Parents create and manage their children's profiles. The admin can view both parents and children for oversight, but cannot access the child's interface.
 
 ```mermaid
 classDiagram
@@ -32,8 +32,9 @@ classDiagram
         +is_active bool
     }
 
-    Expert "1" --> "many" Child : creates and manages
-    Parent "1" --> "many" Child : monitors progress of
+    Expert "1" --> "many" Parent : creates and manages
+    Parent "1" --> "many" Child : creates and manages
+    Expert ..> Child : can view for oversight
 ```
 
 ---

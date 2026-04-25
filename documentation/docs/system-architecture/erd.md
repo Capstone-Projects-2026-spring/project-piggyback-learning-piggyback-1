@@ -7,8 +7,8 @@ sidebar_position: 6
 **How to read this:** Each box is a database table. Lines show how the tables connect. `||` means "exactly one" and `o{` means "zero or more."
 
 **How this program works:**
-- An **Expert** (admin) downloads videos and creates child profiles.
-- A **Parent** is linked to their children so they can log in and view progress reports.
+- An **Expert** (admin) downloads videos and creates parent accounts. They can view both parents and children for management but cannot access the child interface.
+- A **Parent** is created by the admin and creates their children's profiles. They log in to view progress reports and configure their child's interaction mode.
 - A **Child** is the learner - they belong to one expert and optionally one parent.
 - **Videos** are YouTube videos the expert has downloaded into the system.
 - **Video Expert Assignments** tracks which expert manages which video.
@@ -63,8 +63,8 @@ erDiagram
         float percentage
     }
 
-    EXPERTS ||--o{ CHILDREN : "creates profiles for"
-    PARENTS ||--o{ CHILDREN : "monitors progress of"
+    EXPERTS ||--o{ PARENTS : "creates and manages"
+    PARENTS ||--o{ CHILDREN : "creates and manages"
     EXPERTS ||--o{ VIDEO_EXPERT_ASSIGNMENTS : "is assigned"
     VIDEOS ||--o{ VIDEO_EXPERT_ASSIGNMENTS : "managed by"
     CHILDREN ||--o{ QUIZ_ATTEMPTS : "completes"
