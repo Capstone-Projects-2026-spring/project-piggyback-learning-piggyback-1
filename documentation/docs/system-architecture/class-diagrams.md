@@ -79,23 +79,34 @@ classDiagram
     class DownloadService {
         +download_youtube(url)
     }
-    class YouTube {
-        <<external>>
-    }
     class FrameService {
         +extract_frames_per_second_for_video(video_id)
+    }
+    class VideoFiles {
+        +find_primary_video_file(video_dir)
+        +list_question_json_files()
+    }
+    class AIClients {
+        +get_openai_client()
+        +get_anthropic_client()
+        +get_gemini_configured()
     }
     class SQLiteStore {
         +init_db()
         +get_conn()
     }
+    class YouTube {
+        <<external>>
+    }
 
+    ChildrenService --> ExpertAuthService : uses normalize_expert_id
     ExpertAuthService --> SQLiteStore : reads/writes
     ChildrenService --> SQLiteStore : reads/writes
-    ReportService --> QuizScoringService : reads from
-    QuestionGenerationService --> FrameService : uses frames
-    PersonalizeQuizService --> QuestionGenerationService : personalizes
-    ExpertReviewService --> QuestionGenerationService : reviews output
+    QuestionGenerationService --> AIClients : gets AI clients
+    ExpertReviewService --> QuestionGenerationService : uses helpers
+    ExpertReviewService --> VideoFiles : finds video files
+    DownloadService --> VideoFiles : finds video file
+    FrameService --> VideoFiles : finds video file
     DownloadService --> YouTube : downloads from
 ```
 
