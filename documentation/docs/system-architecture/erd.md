@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 4
 ---
 
 # ERD Diagram
@@ -16,7 +16,7 @@ sidebar_position: 6
 
 ```mermaid
 erDiagram
-    EXPERTS {
+    ADMINS {
         text expert_id PK
         text display_name
         text password_hash
@@ -63,9 +63,9 @@ erDiagram
         float percentage
     }
 
-    EXPERTS ||--o{ PARENTS : "creates and manages"
+    ADMINS ||--o{ PARENTS : "creates and manages"
     PARENTS ||--o{ CHILDREN : "creates and manages"
-    EXPERTS ||--o{ VIDEO_EXPERT_ASSIGNMENTS : "is assigned"
+    ADMINS ||--o{ VIDEO_EXPERT_ASSIGNMENTS : "is assigned"
     VIDEOS ||--o{ VIDEO_EXPERT_ASSIGNMENTS : "managed by"
     CHILDREN ||--o{ QUIZ_ATTEMPTS : "completes"
     VIDEOS ||--o{ QUIZ_ATTEMPTS : "is watched in"

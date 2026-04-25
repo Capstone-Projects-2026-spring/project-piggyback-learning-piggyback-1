@@ -1,16 +1,16 @@
 ---
-sidebar_position: 5
+sidebar_position: 3
 ---
 
 # Class Diagrams
 
 ## Backend - User Roles
 
-The admin (`Expert`) creates and manages parent accounts. Parents create and manage their children's profiles. The admin can view both parents and children for oversight, but cannot access the child's interface.
+The admin creates and manages parent accounts. Parents create and manage their children's profiles. The admin can view both parents and children for oversight, but cannot access the child's interface.
 
 ```mermaid
 classDiagram
-    class Expert {
+    class Admin {
         +expert_id string
         +display_name string
         +password_hash string
@@ -32,9 +32,9 @@ classDiagram
         +is_active bool
     }
 
-    Expert "1" --> "many" Parent : creates and manages
+    Admin "1" --> "many" Parent : creates and manages
     Parent "1" --> "many" Child : creates and manages
-    Expert ..> Child : can view for oversight
+    Admin ..> Child : can view for oversight
 ```
 
 ---
