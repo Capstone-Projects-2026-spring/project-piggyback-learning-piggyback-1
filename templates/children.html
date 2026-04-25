@@ -280,13 +280,13 @@
   /* ── Quiz scoring animation ── */
   @keyframes cardShake {
     0%,100% { transform: rotate(0deg) scale(1.07); }
-    20%      { transform: rotate(-4deg) scale(1.07); }
-    40%      { transform: rotate(4deg) scale(1.07); }
-    60%      { transform: rotate(-3deg) scale(1.07); }
-    80%      { transform: rotate(3deg) scale(1.07); }
+    20%      { transform: rotate(-1.5deg) scale(1.07); }
+    40%      { transform: rotate(1.5deg) scale(1.07); }
+    60%      { transform: rotate(-1deg) scale(1.07); }
+    80%      { transform: rotate(1deg) scale(1.07); }
   }
   .companion-card.talking {
-    animation: cardShake 0.5s ease-in-out infinite !important;
+    animation: cardShake 1.2s ease-in-out infinite !important;
   }
   .companion-hover-bubble {
     display: none;
