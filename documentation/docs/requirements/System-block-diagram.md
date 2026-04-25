@@ -13,95 +13,45 @@ flowchart TD
     Admin["Admin"]
   end
 
-  subgraph FE["Frontend Web Interface"]
-    HomeUI["Home / Login Page"]
-    KidsUI["Kids Interface"]
-    CompanionUI["Companion Selector"]
-    QuizUI["Quiz Player and Feedback"]
-    RewindUI["Rewind / Continue Control"]
-    ParentUI["Parent Dashboard"]
-    ReportUI["Parental Report"]
-    AdminUI["Admin Control Panel"]
-    ReviewUI["Question Review Interface"]
+  subgraph FE["Frontend"]
+    UI["Web Interface"]
   end
 
-  subgraph BE["Backend - FastAPI Server"]
-    API["FastAPI Application"]
-    AuthService["Access Code Auth"]
-    AdminRoutes["Admin Routes"]
-    KidsRoutes["Video and Quiz Routes"]
-    ReportService["Report Service"]
-    WS["WebSocket - Question Progress"]
-    AnswerCheck["Answer Evaluation"]
-    TTS["Text to Speech"]
-    AIGen["AI Question Generation"]
-    FrameExt["Frame Extraction - OpenCV"]
+  subgraph BE["Backend"]
+    Server["FastAPI Server"]
+  end
+
+  subgraph DATA["Database and Storage"]
+    DB["SQLite Database"]
+    Files["Local File Storage"]
   end
 
   subgraph EXT["External Services"]
-    YTDLP["yt-dlp"]
     YouTube["YouTube"]
-    FFmpeg["FFmpeg"]
-    OpenAI["OpenAI"]
-    Anthropic["Anthropic"]
-    Gemini["Gemini"]
-    Hume["Hume AI - Companion Voices"]
+    AI["AI Providers"]
+    Hume["Hume AI"]
   end
 
-  subgraph STORE["Local Storage - SQLite and Files"]
-    DB["SQLite Database"]
-    Videos["Downloaded Videos"]
-    Frames["Extracted Frames"]
-    Questions["Final Questions"]
-    Results["Quiz Results"]
-  end
-
-  Child --> HomeUI
-  Parent --> HomeUI
-  Admin --> HomeUI
-
-  HomeUI --> AuthService
-  AuthService --> DB
-
-  Child --> KidsUI
-  KidsUI --> CompanionUI
-  CompanionUI --> QuizUI
-  QuizUI --> AnswerCheck
-  QuizUI --> RewindUI
-  QuizUI --> TTS
-  TTS --> Hume
-
-  AnswerCheck --> Results
-  AnswerCheck --> OpenAI
-
-  Parent --> ParentUI
-  ParentUI --> ReviewUI
-  ParentUI --> ReportUI
-  ReportUI --> ReportService
-  ReportService --> DB
-  ReportService --> Results
-
-  ReviewUI --> Questions
-
-  Admin --> AdminUI
-  AdminUI --> AdminRoutes
-  AdminRoutes --> YTDLP
-  AdminRoutes --> FrameExt
-  AdminRoutes --> AIGen
-  AdminRoutes --> WS
-
-  YTDLP --> YouTube
-  YTDLP --> FFmpeg
-  YTDLP --> Videos
-
-  FrameExt --> Videos
-  FrameExt --> Frames
-
-  AIGen --> OpenAI
-  AIGen --> Anthropic
-  AIGen --> Gemini
-  AIGen --> Questions
-
-  KidsRoutes --> Questions
-  KidsRoutes --> DB
+  Child --> UI
+  Parent --> UI
+  Admin --> UI
+  UI <--> Server
+  Server <--> DB
+  Server <--> Files
+  Server --> YouTube
+  Server --> AI
+  Server --> Hume
 ```
+
+## Component Descriptions
+
+**Frontend** - A Next.js web application that serves separate interfaces for children, parents, and admins. It handles video playback, voice-based quiz interactions, companion character display, and real-time progress updates over WebSockets.
+
+**Backend** - A FastAPI server that manages authentication, quiz logic, answer evaluation, AI question generation, video processing, and progress tracking. It exposes REST and WebSocket endpoints consumed by the frontend.
+
+**Database and Storage** - SQLite stores user accounts, quiz results, and video metadata. The local file system holds downloaded videos, extracted frames, and generated question files.
+
+**External Services**
+- **YouTube** - Source of video content, accessed via the YouTube API and yt-dlp for downloading.
+- **AI Providers (OpenAI, Anthropic, Gemini)** - Used to generate quiz questions from video frames and transcripts, and to evaluate child responses.
+- **Hume AI** - Provides expressive voices for the companion characters.
