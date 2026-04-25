@@ -4,7 +4,17 @@ sidebar_position: 1
 
 # System Overview
 
-This document proposes an application that helps young children retain attention and comprehension while watching the videos they consume daily. The application offers activities that consist of a YouTube video and quiz questions prompted throughout its duration. Children answer the questions using their voice. Parents configure how the child interacts with questions - whether the video pauses and requires an answer, allows skipping, or plays straight through. The application records and tracks each user's progress, saving data such as watch time, correctly and incorrectly answered questions, and video data.
+Piggyback is an application that helps young children retain attention and comprehension while watching the videos they consume daily. The application pairs YouTube videos with quiz questions that appear throughout playback - children answer using their voice.
+
+Parents choose one of three **interaction modes** that control how their child engages with the questions:
+
+| Mode | How it works |
+|------|--------------|
+| **Flexible** | Questions appear during the video. The child answers using their voice, but an incorrect or skipped answer does not block progress - they can keep watching regardless. |
+| **Strict** | The video pauses at each question and the child must answer correctly to continue. An incorrect answer rewinds the video to the point where the relevant content was covered, giving the child a chance to re-watch before trying again. |
+| **Passive** | The video plays from start to finish with no questions. The child watches without any interruptions. |
+
+The application records and tracks each user's progress, saving data such as watch time, correctly and incorrectly answered questions, and video completion history.
 
 ## Conceptual Design
 
