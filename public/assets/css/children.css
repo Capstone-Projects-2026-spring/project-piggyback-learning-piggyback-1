@@ -710,23 +710,47 @@
 
     #video-container:fullscreen,
     #video-container:-webkit-full-screen {
-      width: 100vw;
-      height: 100vh;
-      border-radius: 0;
+      width: 100vw !important;
+      height: 100vh !important;
+      max-width: 100vw !important;
+      border-radius: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: #000 !important;
     }
 
     #video-container:fullscreen #player,
     #video-container:-webkit-full-screen #player {
-      border-radius: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
+      border-radius: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      max-width: 100% !important;
+      aspect-ratio: auto !important;
+      position: relative !important;
+      overflow: hidden !important;
+      background: #000 !important;
+      box-shadow: none !important;
     }
 
+    /* Fill fullscreen on 16:10/other displays by cropping edges instead of letterboxing. */
     #video-container:fullscreen #player iframe,
     #video-container:-webkit-full-screen #player iframe {
-      width: 100%;
-      height: 100%;
+      position: absolute !important;
+      top: 50% !important;
+      left: 50% !important;
+      width: 100vw !important;
+      height: 56.25vw !important;
+      min-width: 177.78vh !important;
+      min-height: 100vh !important;
+      transform: translate(-50%, -50%) !important;
+      border-radius: 0 !important;
+    }
+
+    #video-container:fullscreen #local-player,
+    #video-container:-webkit-full-screen #local-player {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
     }
 
     #video-container:fullscreen #question-box,
