@@ -17,6 +17,7 @@ Piggyback Learning is a web application with a FastAPI backend that serves pages
 - System Block Diagram: see `Requirements - System Block Diagram`
 - Sequence Diagrams: see `System Architecture - Sequence Diagrams`
 - Class Diagrams: see `System Architecture - Class Diagrams`
+- ERD Diagram: see `System Architecture - ERD Diagram`
 
 ---
 
