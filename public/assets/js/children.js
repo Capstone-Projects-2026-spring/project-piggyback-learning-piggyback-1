@@ -103,7 +103,7 @@
     let playerMode = "youtube";
     let localVideoElement = null;
     let currentVideoMeta = null;
-    const END_SCREEN_BLOCK_SECONDS = 15;
+    const END_SCREEN_BLOCK_SECONDS = 45;
     let ytPlayer = null;
     let ytApiPromise = null;
     let ytPlayerReady = false;
@@ -487,6 +487,7 @@
         if (!activeQuestion) {
           showPauseBlocker();
           if (typeof window.triggerCompanionTalk === 'function') window.triggerCompanionTalk();
+          if (typeof quizScore !== 'undefined') quizScore.manualPauseCount = (quizScore.manualPauseCount || 0) + 1;
         } else {
           hidePauseBlocker();
         }
@@ -1016,7 +1017,8 @@
                 trigger_sec: triggerSec,
                 ques_time: secondsToTimestamp(triggerSec),
                 question: questionText,
-                answer: answerText
+                answer: answerText,
+                question_type: seg.qtype || seg.question_type || null
               };
             })
             .filter(Boolean)

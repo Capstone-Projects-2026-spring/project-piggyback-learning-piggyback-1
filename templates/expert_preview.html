@@ -731,7 +731,7 @@ const CATEGORY_META_C3 = {
     settings:   { label: 'Setting',    icon: '🏞️' },
     feeling:    { label: 'Feeling',    icon: '💚' },
     action:     { label: 'Action',     icon: '⚡' },
-    causal:     { label: 'Causal',     icon: '🔗' },
+    causal:     { label: 'Causal',     icon: '🧩' },
     outcome:    { label: 'Outcome',    icon: '🎯' },
     prediction: { label: 'Prediction', icon: '🔮' },
 };
@@ -831,6 +831,7 @@ function card3RenderReport(data, mode) {
     const attempts = data.total_attempts || 0;
     const totalRetries = data.total_retries || 0;
     const avgRetries = data.avg_retries_per_question != null ? Number(data.avg_retries_per_question).toFixed(1) : '0.0';
+    const totalPauses = data.total_manual_pauses || 0;
 
     // Score card
     const scoreHtml = `
@@ -856,27 +857,33 @@ function card3RenderReport(data, mode) {
             ${statCard('⏱️', watchDisplay, 'Watch Time')}
         </div>`;
 
-    // Categories (full width)
+    // Categories (full width) - always show all 7
     const cats = data.top_categories || [];
-    const catsHtml = cats.length === 0
-        ? `<div style="text-align:center;padding:20px 0;">
-               <div style="font-size:28px;margin-bottom:6px;">📂</div>
-               <div style="color:#b0bec5;font-size:13px;">No category data yet — keep watching!</div>
-           </div>`
-        : cats.map(cat => {
-            const meta = CATEGORY_META_C3[cat.type] || { label: cat.type, icon: '📌' };
-            const barColor = cat.score >= 80 ? '#43a047' : cat.score >= 60 ? '#fb8c00' : '#6a1b9a';
+    const catScoreMap = {};
+    cats.forEach(c => { catScoreMap[c.type] = c.score; });
+    const ALL_CATEGORIES = ['character','settings','feeling','action','causal','outcome','prediction'];
+    const CATEGORY_COLORS = ['#e91e8c','#3cb9ff','#43a047','#fb8c00','#9c27b0','#00bcd4','#ff5722'];
+    const catsHtml = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">` +
+        ALL_CATEGORIES.map((type, i) => {
+            const meta = CATEGORY_META_C3[type] || { label: type, icon: '📌' };
+            const score = catScoreMap[type] ?? 0;
+            const color = CATEGORY_COLORS[i];
+            const hasData = catScoreMap[type] !== undefined;
+            const barBg = hasData ? color : '#e0e0e0';
+            const textColor = hasData ? color : '#b0bec5';
             return `
-                <div style="margin-bottom:14px;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
-                        <span style="font-size:13px;font-weight:600;color:#2c3e50;">${meta.icon} ${meta.label}</span>
-                        <span style="font-size:13px;font-weight:700;color:${barColor};">${cat.score}%</span>
+                <div style="background:linear-gradient(135deg,${color}12,${color}06);border-radius:16px;padding:14px 16px;border:1.5px solid ${color}22;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                        <span style="font-size:18px;">${meta.icon}</span>
+                        <span style="font-size:15px;font-weight:800;color:${textColor};">${score}%</span>
                     </div>
-                    <div style="background:#f0f0f0;border-radius:999px;height:8px;overflow:hidden;">
-                        <div style="height:100%;width:${cat.score}%;background:${barColor};border-radius:999px;"></div>
+                    <div style="font-size:12px;font-weight:700;color:#2c3e50;margin-bottom:8px;">${meta.label}</div>
+                    <div style="background:#f0f0f0;border-radius:999px;height:6px;overflow:hidden;">
+                        <div style="height:100%;width:${score}%;background:${barBg};border-radius:999px;transition:width 0.5s ease;"></div>
                     </div>
+                    ${!hasData ? `<div style="font-size:10px;color:#ccc;margin-top:4px;">No data yet</div>` : ''}
                 </div>`;
-        }).join('');
+        }).join('') + `</div>`;
 
     // Recent videos
     const videos = data.recent_videos || [];
@@ -889,10 +896,23 @@ function card3RenderReport(data, mode) {
             const modeTag = v.interaction_mode
                 ? `<span style="font-size:10px;background:#f3e5f5;color:#6a1b9a;border-radius:10px;padding:2px 7px;margin-left:7px;font-weight:600;">${v.interaction_mode}</span>`
                 : '';
+            const watchMin = v.watch_minutes || 0;
+            const durMin = v.duration_minutes || 0;
+            const watchTag = durMin > 0
+                ? `<span style="font-size:11px;color:#78909c;margin-left:6px;">⏱ ${watchMin}m / ${durMin}m</span>`
+                : watchMin > 0 ? `<span style="font-size:11px;color:#78909c;margin-left:6px;">⏱ ${watchMin}m</span>` : '';
+            const finishedBadge = v.finished
+                ? `<span style="font-size:10px;background:#e8f5e9;color:#2e7d32;border-radius:10px;padding:2px 7px;margin-left:6px;font-weight:700;">✓ Finished</span>`
+                : '';
+            const pauseCount = v.manual_pauses || 0;
+            const pauseTag = `<span style="font-size:11px;color:#78909c;margin-left:6px;">⏸ pauses: ${pauseCount} time${pauseCount !== 1 ? 's' : ''}</span>`;
             return `
-                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;margin-bottom:8px;border-radius:10px;background:#fafafa;border-left:4px solid ${col};">
-                    <span style="font-size:13px;color:#37474f;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:8px;">${v.video_title || v.video_id}${modeTag}</span>
-                    <span style="font-size:13px;font-weight:800;color:${col};flex-shrink:0;background:${bg};padding:3px 9px;border-radius:8px;">${pct}%</span>
+                <div style="padding:10px 12px;margin-bottom:8px;border-radius:10px;background:#fafafa;border-left:4px solid ${col};">
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <span style="font-size:13px;color:#37474f;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:8px;">${v.video_title || v.video_id}${modeTag}</span>
+                        <span style="font-size:13px;font-weight:800;color:${col};flex-shrink:0;background:${bg};padding:3px 9px;border-radius:8px;">${pct}%</span>
+                    </div>
+                    <div style="margin-top:4px;">${watchTag}${pauseTag}${finishedBadge}</div>
                 </div>`;
         }).join('');
 

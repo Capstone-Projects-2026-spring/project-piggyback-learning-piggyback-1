@@ -14,15 +14,23 @@ def _get_downloads_dir() -> Path:
     return DOWNLOADS_DIR
 
 
-def _get_video_title(video_id: str, downloads_dir: Path) -> str:
+def _get_video_meta(video_id: str, downloads_dir: Path) -> Dict[str, Any]:
     meta_path = downloads_dir / video_id / "meta.json"
     if meta_path.exists():
         try:
             meta = json.loads(meta_path.read_text(encoding="utf-8"))
-            return meta.get("title") or video_id
+            duration_seconds = meta.get("duration", 0) or 0
+            return {
+                "title": meta.get("title") or video_id,
+                "duration_minutes": round(duration_seconds / 60, 1),
+            }
         except Exception:
             pass
-    return video_id
+    return {"title": video_id, "duration_minutes": 0}
+
+
+def _get_video_title(video_id: str, downloads_dir: Path) -> str:
+    return _get_video_meta(video_id, downloads_dir)["title"]
 
 
 def _load_attempts(child_id: str, downloads_dir: Path) -> List[Dict[str, Any]]:
@@ -125,16 +133,24 @@ def get_child_report_scoped(
         total_retries / total_questions_answered, 2
     ) if total_questions_answered > 0 else 0.0
 
-    recent_videos = [
-        {
-            "video_id": a.get("video_id"),
+    recent_videos = []
+    for a in reversed(enriched[-6:]):
+        vid_id = a.get("video_id", "")
+        meta = _get_video_meta(vid_id, downloads_dir)
+        watch_min = round(a.get("watch_minutes", 0), 1)
+        dur_min = meta["duration_minutes"]
+        finished = dur_min > 0 and watch_min >= dur_min * 0.9
+        recent_videos.append({
+            "video_id": vid_id,
             "video_title": a.get("video_title"),
             "percentage": a.get("percentage", 0),
             "timestamp": a.get("timestamp"),
             "interaction_mode": a.get("interaction_mode"),
-        }
-        for a in reversed(enriched[-6:])
-    ]
+            "watch_minutes": watch_min,
+            "duration_minutes": dur_min,
+            "finished": finished,
+            "manual_pauses": a.get("manual_pauses", 0),
+        })
 
     return {
         "success": True,
@@ -201,15 +217,23 @@ def get_child_report(child_id: str, limit: int = 10) -> Dict[str, Any]:
     top_categories = _compute_top_categories(attempts)
 
     # Recent videos: latest 4, newest first
-    recent_videos = [
-        {
-            "video_id": a.get("video_id"),
+    recent_videos = []
+    for a in reversed(enriched[-4:]):
+        vid_id = a.get("video_id", "")
+        meta = _get_video_meta(vid_id, downloads_dir)
+        watch_min = round(a.get("watch_minutes", 0), 1)
+        dur_min = meta["duration_minutes"]
+        finished = dur_min > 0 and watch_min >= dur_min * 0.9
+        recent_videos.append({
+            "video_id": vid_id,
             "video_title": a.get("video_title"),
             "percentage": a.get("percentage", 0),
             "timestamp": a.get("timestamp"),
-        }
-        for a in reversed(enriched[-4:])
-    ]
+            "watch_minutes": watch_min,
+            "duration_minutes": dur_min,
+            "finished": finished,
+            "manual_pauses": a.get("manual_pauses", 0),
+        })
 
     return {
         "success": True,
