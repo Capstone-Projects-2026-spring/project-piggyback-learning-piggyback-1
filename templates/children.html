@@ -604,22 +604,6 @@
       </button>
     -->
 
-      <!-- Settings button -->
-      <button id="settings-btn" type="button" onclick="openSettings()" style="
-        background: linear-gradient(135deg, #e0c3fc, #8ec5fc);
-        border: none;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        font-size: 20px;
-        cursor: pointer;
-        box-shadow: 0 2px 10px rgba(142,197,252,0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: transform 0.3s ease;
-        margin-left: 8px;
-      " title="Settings">⚙️</button>
     </header>
 
 
@@ -722,7 +706,7 @@
           <div id="yt-logo-blocker" aria-hidden="true"></div>
           <div id="yt-logo-blocker-left" aria-hidden="true"></div>
           <div id="yt-logo-blocker-bottom" aria-hidden="true"></div>
-          <div id="yt-end-blocker" role="button" aria-label="Replay video">Tap to replay</div>
+          <div id="yt-end-blocker" role="button" aria-label="Replay video" style="display:none!important;pointer-events:none;"></div>
           <div id="yt-pause-blocker" role="button" aria-label="Resume video">Tap to continue</div>
           <div id="embed-fallback" class="embed-fallback" role="status" aria-live="polite">
             <span>Having trouble playing the embed?</span>
@@ -835,6 +819,7 @@ let quizScore = {
     watchStartTime: null,
     watchAccumulatedMs: 0,
     watchMinutes: 0,
+    manualPauseCount: 0,
     details: []
 };
 
@@ -964,6 +949,7 @@ async function saveScoreAndClose() {
                     total_retries: quizScore.totalRetries || 0,
                     avg_retries_per_question: quizScore.total > 0 ? parseFloat((quizScore.totalRetries / quizScore.total).toFixed(2)) : 0,
                     watch_minutes: quizScore.watchMinutes || 0,
+                    manual_pauses: quizScore.manualPauseCount || 0,
                     details: quizScore.details
                 }
             })
