@@ -1,0 +1,630 @@
+{
+  "segments": [
+    {
+      "start": 0,
+      "end": 29,
+      "aiQuestions": [],
+      "persona_variants": {
+        "pig": {
+          "character": {
+            "q": "Ooh! Who is the super important character we're following in this story?",
+            "a": "A frightened lion."
+          },
+          "setting": {
+            "q": "Wow! Where do we see the lion hanging out in all these pictures?",
+            "a": "In a cozy bedroom."
+          },
+          "feeling": {
+            "q": "Ooh! How is the lion feeling while we watch the story?",
+            "a": "He feels frightened."
+          },
+          "action": {
+            "q": "Wow! What cool thing is the lion holding in his paws?",
+            "a": "A teddy bear."
+          },
+          "causal": {
+            "q": "Hmm, why do you think the lion is feeling so frightened?",
+            "a": "Because he might be scared of something in the dark."
+          },
+          "outcome": {
+            "q": "Ooh! What do you think happens to the lion after the story?",
+            "a": "He might find courage or ask for help."
+          },
+          "prediction": {
+            "q": "Wow! What do you think the lion will do to feel all better?",
+            "a": "He might hug his teddy bear or call for a friend."
+          }
+        },
+        "bunny": {
+          "character": {
+            "q": "I'm confident you can tell me\u2014who is the main character in this story?",
+            "a": "A frightened lion."
+          },
+          "setting": {
+            "q": "You've got this! Where exactly is the lion positioned in the pictures?",
+            "a": "In a cozy bedroom."
+          },
+          "feeling": {
+            "q": "I know you can figure this out\u2014what emotion is the lion experiencing?",
+            "a": "He feels frightened."
+          },
+          "action": {
+            "q": "Sharp eyes! What object is the lion clutching in his paws?",
+            "a": "A teddy bear."
+          },
+          "causal": {
+            "q": "You're observant\u2014why do you infer the lion is frightened?",
+            "a": "Because he might be scared of something in the dark."
+          },
+          "outcome": {
+            "q": "I believe you can predict this\u2014what happens to the lion subsequently?",
+            "a": "He might find courage or ask for help."
+          },
+          "prediction": {
+            "q": "You're thoughtful! What strategy might the lion use to feel better?",
+            "a": "He might hug his teddy bear or call for a friend."
+          }
+        },
+        "alligator": {
+          "character": {
+            "q": "Who is the main character in this story? I think you'll know this one.",
+            "a": "A frightened lion."
+          },
+          "setting": {
+            "q": "Where is the lion in the pictures? You're doing so well noticing details.",
+            "a": "In a cozy bedroom."
+          },
+          "feeling": {
+            "q": "How does the lion feel? I'm proud of how you're thinking about this.",
+            "a": "He feels frightened."
+          },
+          "action": {
+            "q": "What does the lion hold in his paws? You've got such good eyes.",
+            "a": "A teddy bear."
+          },
+          "causal": {
+            "q": "Why do you think the lion is frightened? Let's think about this together.",
+            "a": "Because he might be scared of something in the dark."
+          },
+          "outcome": {
+            "q": "What do you think will happen to the lion next? You're so thoughtful.",
+            "a": "He might find courage or ask for help."
+          },
+          "prediction": {
+            "q": "What do you think the lion will do to feel better? I know you can figure this out.",
+            "a": "He might hug his teddy bear or call for a friend."
+          }
+        }
+      },
+      "persona_winners": {
+        "bunny": "character",
+        "pig": "character",
+        "alligator": "character"
+      }
+    },
+    {
+      "start": 30,
+      "end": 59,
+      "aiQuestions": [],
+      "persona_variants": {
+        "pig": {
+          "character": {
+            "q": "Ooh, who's the star of this video? Who's the main character?",
+            "a": "A lion"
+          },
+          "setting": {
+            "q": "Wow! Where does our lion friend find himself in this video?",
+            "a": "In a bedroom"
+          },
+          "feeling": {
+            "q": "How do you think the lion is feeling during the video? What's his mood?",
+            "a": "Scared or worried"
+          },
+          "action": {
+            "q": "Ooh! What does the lion grab when he hears that sound?",
+            "a": "He grabs a bat"
+          },
+          "causal": {
+            "q": "What do you think is making the lion feel so scared?",
+            "a": "The tapping sound"
+          },
+          "outcome": {
+            "q": "Wow! What do you think happens next after the lion hears that sound?",
+            "a": "He might check the window"
+          },
+          "prediction": {
+            "q": "Ooh! What do you think the lion will discover when he looks outside?",
+            "a": "Maybe nothing or a friend"
+          }
+        },
+        "bunny": {
+          "character": {
+            "q": "I bet you noticed the main character\u2014who do you think it is?",
+            "a": "A lion"
+          },
+          "setting": {
+            "q": "You've got this! Can you tell me where the lion is located in the video?",
+            "a": "In a bedroom"
+          },
+          "feeling": {
+            "q": "I think you can sense the lion's emotions\u2014how does the lion seem to feel?",
+            "a": "Scared or worried"
+          },
+          "action": {
+            "q": "Nice observation! What does the lion grab in response to the sound?",
+            "a": "He grabs a bat"
+          },
+          "causal": {
+            "q": "You're perceptive! What stimulus causes the lion to feel frightened?",
+            "a": "The tapping sound"
+          },
+          "outcome": {
+            "q": "Think about the sequence\u2014what do you predict will occur next?",
+            "a": "He might check the window"
+          },
+          "prediction": {
+            "q": "You can figure this out! What might the lion encounter when he peers outside?",
+            "a": "Maybe nothing or a friend"
+          }
+        },
+        "alligator": {
+          "character": {
+            "q": "I'm so proud you're watching carefully. Tell me, who is the main character?",
+            "a": "A lion"
+          },
+          "setting": {
+            "q": "You're doing wonderfully! Where does the lion find himself?",
+            "a": "In a bedroom"
+          },
+          "feeling": {
+            "q": "I know you can understand feelings. How is the lion feeling?",
+            "a": "Scared or worried"
+          },
+          "action": {
+            "q": "You're such a good listener! What does the lion pick up when he hears the sound?",
+            "a": "He grabs a bat"
+          },
+          "causal": {
+            "q": "I'm impressed by how much you understand! What makes the lion scared?",
+            "a": "The tapping sound"
+          },
+          "outcome": {
+            "q": "You're thinking so well about this! What might happen after the lion hears the sound?",
+            "a": "He might check the window"
+          },
+          "prediction": {
+            "q": "I believe in you! What do you think the lion might see when he looks outside?",
+            "a": "Maybe nothing or a friend"
+          }
+        }
+      },
+      "persona_winners": {
+        "bunny": "feeling",
+        "pig": "setting",
+        "alligator": "action"
+      }
+    },
+    {
+      "start": 60,
+      "end": 89,
+      "aiQuestions": [],
+      "persona_variants": {
+        "pig": {
+          "character": {
+            "q": "Ooh, I wonder who the lion is hiding under the bed from?",
+            "a": "The lion is scared."
+          },
+          "setting": {
+            "q": "Wow! Where did the lion find a hiding spot?",
+            "a": "Under the bed."
+          },
+          "feeling": {
+            "q": "Ooh, how is the lion feeling right now in this part?",
+            "a": "The lion feels scared.",
+            "is_best": true
+          },
+          "action": {
+            "q": "I'm curious\u2014what is the lion holding with him?",
+            "a": "The lion is holding a baseball bat."
+          },
+          "causal": {
+            "q": "Wow, can you tell me why the lion decided to hide?",
+            "a": "The lion is hiding because he is scared of the monster."
+          },
+          "outcome": {
+            "q": "Ooh! What might happen if the lion stays under the bed?",
+            "a": "The lion might feel safer."
+          },
+          "prediction": {
+            "q": "What do you think will happen next\u2014what might the lion do?",
+            "a": "The lion might come out to face the monster."
+          }
+        },
+        "bunny": {
+          "character": {
+            "q": "You've got this\u2014can you identify who the lion is concealing himself from?",
+            "a": "The lion is scared."
+          },
+          "setting": {
+            "q": "I believe you can figure out where the lion is positioned.",
+            "a": "Under the bed."
+          },
+          "feeling": {
+            "q": "You're observant\u2014what emotion is the lion experiencing in this scene?",
+            "a": "The lion feels scared.",
+            "is_best": true
+          },
+          "action": {
+            "q": "Sharp eye! What object is the lion clutching?",
+            "a": "The lion is holding a baseball bat."
+          },
+          "causal": {
+            "q": "You can figure this out\u2014what's the reason behind the lion's decision to hide?",
+            "a": "The lion is hiding because he is scared of the monster."
+          },
+          "outcome": {
+            "q": "I know you can predict this\u2014what might occur if the lion remains hidden?",
+            "a": "The lion might feel safer."
+          },
+          "prediction": {
+            "q": "Based on what you've seen, what do you predict the lion will do afterward?",
+            "a": "The lion might come out to face the monster."
+          }
+        },
+        "alligator": {
+          "character": {
+            "q": "Can you tell me who the lion is hiding from?",
+            "a": "The lion is scared."
+          },
+          "setting": {
+            "q": "I'd love to hear where the lion is hiding.",
+            "a": "Under the bed."
+          },
+          "feeling": {
+            "q": "Look at how well you're watching\u2014can you tell me how the lion feels?",
+            "a": "The lion feels scared.",
+            "is_best": true
+          },
+          "action": {
+            "q": "You're doing great\u2014what is the lion holding?",
+            "a": "The lion is holding a baseball bat."
+          },
+          "causal": {
+            "q": "I'm proud of how you're paying attention\u2014why is the lion hiding?",
+            "a": "The lion is hiding because he is scared of the monster."
+          },
+          "outcome": {
+            "q": "What do you think might happen if the lion stays hidden under the bed?",
+            "a": "The lion might feel safer."
+          },
+          "prediction": {
+            "q": "You're doing such a good job\u2014what do you think the lion will do next?",
+            "a": "The lion might come out to face the monster."
+          }
+        }
+      },
+      "persona_winners": {
+        "bunny": "character",
+        "pig": "character",
+        "alligator": "character"
+      }
+    },
+    {
+      "start": 90,
+      "end": 119,
+      "aiQuestions": [],
+      "persona_variants": {
+        "pig": {
+          "character": {
+            "q": "Ooh, I wonder who's tucked under the bed! Can you tell me?",
+            "a": "A lion."
+          },
+          "setting": {
+            "q": "Wow! Where do you see the frog standing in this scene?",
+            "a": "At the window."
+          },
+          "feeling": {
+            "q": "Ooh! How does the lion look while he's hiding under there?",
+            "a": "He looks scared.",
+            "is_best": true
+          },
+          "action": {
+            "q": "Wow, that's quite an outfit! What is the frog wearing?",
+            "a": "A tutu and tap shoes."
+          },
+          "causal": {
+            "q": "Hmm, why do you think the lion decided to hide like that?",
+            "a": "Because he is scared."
+          },
+          "outcome": {
+            "q": "Ooh! What happens when the frog tries to help the lion?",
+            "a": "The lion feels better."
+          },
+          "prediction": {
+            "q": "Wow! What do you think happens next in the story?",
+            "a": "The lion might come out from under the bed."
+          }
+        },
+        "bunny": {
+          "character": {
+            "q": "I bet you noticed who's hiding under the bed\u2014who is it?",
+            "a": "A lion."
+          },
+          "setting": {
+            "q": "You've got a great eye for details! Where exactly is the frog positioned?",
+            "a": "At the window."
+          },
+          "feeling": {
+            "q": "I know you can pick up on emotions\u2014how is the lion expressing himself while hiding?",
+            "a": "He looks scared.",
+            "is_best": true
+          },
+          "action": {
+            "q": "Nice observation! What kind of clothing is the frog sporting?",
+            "a": "A tutu and tap shoes."
+          },
+          "causal": {
+            "q": "You're sharp! What's your theory on why the lion is concealing himself?",
+            "a": "Because he is scared."
+          },
+          "outcome": {
+            "q": "You're following the plot well! What unfolds when the frog assists the lion?",
+            "a": "The lion feels better."
+          },
+          "prediction": {
+            "q": "I trust your instincts\u2014what's your prediction for what comes next?",
+            "a": "The lion might come out from under the bed."
+          }
+        },
+        "alligator": {
+          "character": {
+            "q": "I'm so glad you're paying attention! Who is hiding under the bed?",
+            "a": "A lion."
+          },
+          "setting": {
+            "q": "You're doing great! Where is the frog standing?",
+            "a": "At the window."
+          },
+          "feeling": {
+            "q": "I can tell you're listening well. How does the lion look when he is hiding?",
+            "a": "He looks scared.",
+            "is_best": true
+          },
+          "action": {
+            "q": "You're so observant! What is the frog wearing?",
+            "a": "A tutu and tap shoes."
+          },
+          "causal": {
+            "q": "I'm proud of you for thinking about this. Why do you think the lion is hiding?",
+            "a": "Because he is scared."
+          },
+          "outcome": {
+            "q": "You're understanding the story so well! What happens when the frog tries to help the lion?",
+            "a": "The lion feels better."
+          },
+          "prediction": {
+            "q": "I believe in you! What do you think will happen next?",
+            "a": "The lion might come out from under the bed."
+          }
+        }
+      },
+      "persona_winners": {
+        "bunny": "character",
+        "pig": "character",
+        "alligator": "character"
+      }
+    },
+    {
+      "start": 120,
+      "end": 149,
+      "aiQuestions": [],
+      "persona_variants": {
+        "pig": {
+          "character": {
+            "q": "Ooh! Who do you see wearing a blanket and a helmet?",
+            "a": "The lion.",
+            "is_best": true
+          },
+          "setting": {
+            "q": "Wow! Where is the frog standing in this scene?",
+            "a": "In front of a window."
+          },
+          "feeling": {
+            "q": "Ooh, how does the lion look while he's wearing that blanket?",
+            "a": "He looks worried or sad."
+          },
+          "action": {
+            "q": "What's the frog doing in this picture?",
+            "a": "The frog is posing with hands on hips."
+          },
+          "causal": {
+            "q": "Wow! Why do you think the lion might be wearing a blanket and helmet?",
+            "a": "He might be pretending or feeling scared."
+          },
+          "outcome": {
+            "q": "What do you think might happen with the lion next?",
+            "a": "He might feel braver or take off the blanket."
+          },
+          "prediction": {
+            "q": "Ooh! What do you think the frog will do after this?",
+            "a": "The frog might dance or talk to the lion."
+          }
+        },
+        "bunny": {
+          "character": {
+            "q": "Can you identify who's wearing the blanket and helmet?",
+            "a": "The lion.",
+            "is_best": true
+          },
+          "setting": {
+            "q": "I bet you noticed where the frog is positioned\u2014where exactly is he?",
+            "a": "In front of a window."
+          },
+          "feeling": {
+            "q": "You've got this\u2014describe how the lion appears while wearing that blanket.",
+            "a": "He looks worried or sad."
+          },
+          "action": {
+            "q": "Check it out\u2014what action is the frog performing in the scene?",
+            "a": "The frog is posing with hands on hips."
+          },
+          "causal": {
+            "q": "I know you can figure this out\u2014why might the lion be dressed this way?",
+            "a": "He might be pretending or feeling scared."
+          },
+          "outcome": {
+            "q": "You're doing great\u2014what do you anticipate will happen with the lion?",
+            "a": "He might feel braver or take off the blanket."
+          },
+          "prediction": {
+            "q": "Based on what you see, what's your prediction about the frog's next move?",
+            "a": "The frog might dance or talk to the lion."
+          }
+        },
+        "alligator": {
+          "character": {
+            "q": "I'm so glad you're watching carefully\u2014who is wearing the blanket and helmet?",
+            "a": "The lion.",
+            "is_best": true
+          },
+          "setting": {
+            "q": "You're doing wonderfully\u2014can you tell me where the frog is standing?",
+            "a": "In front of a window."
+          },
+          "feeling": {
+            "q": "I'm proud of you for looking closely\u2014how does the lion look with that blanket on?",
+            "a": "He looks worried or sad."
+          },
+          "action": {
+            "q": "You're such a good observer\u2014what is the frog doing in this picture?",
+            "a": "The frog is posing with hands on hips."
+          },
+          "causal": {
+            "q": "I know you have good ideas\u2014why do you think the lion is wearing these things?",
+            "a": "He might be pretending or feeling scared."
+          },
+          "outcome": {
+            "q": "You're thinking so well\u2014what might happen next with the lion?",
+            "a": "He might feel braver or take off the blanket."
+          },
+          "prediction": {
+            "q": "I'd love to hear what you think\u2014what do you believe the frog will do next?",
+            "a": "The frog might dance or talk to the lion."
+          }
+        }
+      },
+      "persona_winners": {
+        "bunny": "character",
+        "pig": "character",
+        "alligator": "character"
+      }
+    },
+    {
+      "start": 150,
+      "end": 161,
+      "aiQuestions": [],
+      "persona_variants": {
+        "pig": {
+          "character": {
+            "q": "Ooh, I wonder who might be living in that house! Who do you think is inside?",
+            "a": "A person or character"
+          },
+          "setting": {
+            "q": "Wow! Look at that house when it gets dark outside! What does it look like at night?",
+            "a": "It has a light on in the window"
+          },
+          "feeling": {
+            "q": "Ooh, how do you think our character feels when it's all dark and spooky?",
+            "a": "They might feel scared or curious"
+          },
+          "action": {
+            "q": "Wow, what do you think happens next? What might the character do?",
+            "a": "They might go inside the house"
+          },
+          "causal": {
+            "q": "Ooh, I'm so curious! Why do you think that light is on in the house?",
+            "a": "Someone might be inside"
+          },
+          "outcome": {
+            "q": "Wow! What do you think will happen when the character goes inside?",
+            "a": "They might find something surprising",
+            "is_best": true
+          },
+          "prediction": {
+            "q": "Ooh! What do you think this story is trying to teach us? What might the moral be?",
+            "a": "It might be about facing fears"
+          }
+        },
+        "bunny": {
+          "character": {
+            "q": "You're going to be great at this\u2014who do you think could be inside that house?",
+            "a": "A person or character"
+          },
+          "setting": {
+            "q": "I believe you can figure this out: describe what the house looks like during nighttime.",
+            "a": "It has a light on in the window"
+          },
+          "feeling": {
+            "q": "You've got this! How might the character be feeling about all that darkness?",
+            "a": "They might feel scared or curious"
+          },
+          "action": {
+            "q": "I know you can predict this: what action do you think the character might take next?",
+            "a": "They might go inside the house"
+          },
+          "causal": {
+            "q": "Smart thinking\u2014what could be the reason that light is shining in the window?",
+            "a": "Someone might be inside"
+          },
+          "outcome": {
+            "q": "You're ready for this: what consequences might follow if the character enters the house?",
+            "a": "They might find something surprising",
+            "is_best": true
+          },
+          "prediction": {
+            "q": "I'm confident you can figure this out: what message or moral do you think this story conveys?",
+            "a": "It might be about facing fears"
+          }
+        },
+        "alligator": {
+          "character": {
+            "q": "I'd love to hear what you think\u2014who do you believe is in that house?",
+            "a": "A person or character"
+          },
+          "setting": {
+            "q": "You're doing so well\u2014can you tell me what the house looks like when it's nighttime?",
+            "a": "It has a light on in the window"
+          },
+          "feeling": {
+            "q": "I'm proud of you for thinking this through: how might the character feel about the dark?",
+            "a": "They might feel scared or curious"
+          },
+          "action": {
+            "q": "You're such a good thinker\u2014what do you believe the character might do next?",
+            "a": "They might go inside the house"
+          },
+          "causal": {
+            "q": "I'm so glad you're here to help figure this out: why is that light on in the house?",
+            "a": "Someone might be inside"
+          },
+          "outcome": {
+            "q": "You're doing wonderfully\u2014what do you think will happen when the character goes inside?",
+            "a": "They might find something surprising",
+            "is_best": true
+          },
+          "prediction": {
+            "q": "I'm so proud of how you think\u2014what lesson do you believe this story teaches?",
+            "a": "It might be about facing fears"
+          }
+        }
+      },
+      "persona_winners": {
+        "bunny": "character",
+        "pig": "character",
+        "alligator": "character"
+      }
+    }
+  ],
+  "saved_at": "2026-04-26T03:28:44.577414",
+  "video_id": "17o2rPGryuk"
+}

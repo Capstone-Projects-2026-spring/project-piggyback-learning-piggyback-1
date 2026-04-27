@@ -8,6 +8,10 @@ downloads/*
 !downloads/IxX_QHay02M/**
 !downloads/jzWPkKvO7v4/
 !downloads/jzWPkKvO7v4/**
+!downloads/17o2rPGryuk/
+!downloads/17o2rPGryuk/**
+downloads/17o2rPGryuk/extracted_frames/
+downloads/17o2rPGryuk/extracted_frames/**
 venv/
 .venv/
 *.py[cod]

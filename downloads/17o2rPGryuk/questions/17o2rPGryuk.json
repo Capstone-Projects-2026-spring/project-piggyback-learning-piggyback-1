@@ -1,0 +1,271 @@
+{
+  "video_id": "17o2rPGryuk",
+  "submitted_at": "2026-04-26T02:17:25.221697",
+  "status": "submitted",
+  "segments": [
+    {
+      "start": 0,
+      "end": 29,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who is the main character in the story?",
+            "a": "A frightened lion.",
+            "rank": "2"
+          },
+          "setting": {
+            "q": "Where is the lion in the pictures?",
+            "a": "In a cozy bedroom.",
+            "rank": "3"
+          },
+          "feeling": {
+            "q": "How does the lion feel in the story?",
+            "a": "He feels frightened.",
+            "rank": "1"
+          },
+          "action": {
+            "q": "What does the lion hold in his paws?",
+            "a": "A teddy bear.",
+            "rank": "4"
+          },
+          "causal": {
+            "q": "Why do you think the lion is frightened?",
+            "a": "Because he might be scared of something in the dark.",
+            "rank": "5"
+          },
+          "outcome": {
+            "q": "What do you think will happen to the lion next?",
+            "a": "He might find courage or ask for help.",
+            "rank": "6"
+          },
+          "prediction": {
+            "q": "What do you think the lion will do to feel better?",
+            "a": "He might hug his teddy bear or call for a friend.",
+            "rank": "7"
+          }
+        },
+        "best_question": "feeling"
+      }
+    },
+    {
+      "start": 30,
+      "end": 59,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who is the main character in the video?",
+            "a": "A lion",
+            "rank": "2"
+          },
+          "setting": {
+            "q": "Where is the lion in the video?",
+            "a": "In a bedroom",
+            "rank": "3"
+          },
+          "feeling": {
+            "q": "How do you think the lion feels in the video?",
+            "a": "Scared or worried",
+            "rank": "1"
+          },
+          "action": {
+            "q": "What does the lion do when he hears a sound?",
+            "a": "He grabs a bat",
+            "rank": "4"
+          },
+          "causal": {
+            "q": "What makes the lion feel scared?",
+            "a": "The tapping sound",
+            "rank": "5"
+          },
+          "outcome": {
+            "q": "What do you think will happen next after the lion hears the sound?",
+            "a": "He might check the window",
+            "rank": "6"
+          },
+          "prediction": {
+            "q": "What do you think the lion will find when he looks outside?",
+            "a": "Maybe nothing or a friend",
+            "rank": "7"
+          }
+        },
+        "best_question": "feeling"
+      }
+    },
+    {
+      "start": 60,
+      "end": 89,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who is the lion hiding under the bed?",
+            "a": "The lion is scared.",
+            "rank": "2"
+          },
+          "setting": {
+            "q": "Where is the lion hiding?",
+            "a": "Under the bed.",
+            "rank": "3"
+          },
+          "feeling": {
+            "q": "How does the lion feel in this scene?",
+            "a": "The lion feels scared.",
+            "rank": "1"
+          },
+          "action": {
+            "q": "What is the lion holding?",
+            "a": "The lion is holding a baseball bat.",
+            "rank": "4"
+          },
+          "causal": {
+            "q": "Why is the lion hiding?",
+            "a": "The lion is hiding because he is scared of the monster.",
+            "rank": "5"
+          },
+          "outcome": {
+            "q": "What might happen if the lion stays hidden?",
+            "a": "The lion might feel safer.",
+            "rank": "6"
+          },
+          "prediction": {
+            "q": "What do you think the lion will do next?",
+            "a": "The lion might come out to face the monster.",
+            "rank": "7"
+          }
+        },
+        "best_question": "How does the lion feel in this scene?"
+      }
+    },
+    {
+      "start": 90,
+      "end": 119,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who is hiding under the bed?",
+            "a": "A lion.",
+            "rank": "3"
+          },
+          "setting": {
+            "q": "Where is the frog standing?",
+            "a": "At the window.",
+            "rank": "2"
+          },
+          "feeling": {
+            "q": "How does the lion look when he is hiding?",
+            "a": "He looks scared.",
+            "rank": "1"
+          },
+          "action": {
+            "q": "What is the frog wearing?",
+            "a": "A tutu and tap shoes.",
+            "rank": "4"
+          },
+          "causal": {
+            "q": "Why do you think the lion is hiding?",
+            "a": "Because he is scared.",
+            "rank": "5"
+          },
+          "outcome": {
+            "q": "What happens when the frog tries to help the lion?",
+            "a": "The lion feels better.",
+            "rank": "6"
+          },
+          "prediction": {
+            "q": "What do you think will happen next?",
+            "a": "The lion might come out from under the bed.",
+            "rank": "7"
+          }
+        },
+        "best_question": "How does the lion look when he is hiding?"
+      }
+    },
+    {
+      "start": 120,
+      "end": 149,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who is wearing a blanket and a helmet?",
+            "a": "The lion.",
+            "rank": "1"
+          },
+          "setting": {
+            "q": "Where is the frog standing?",
+            "a": "In front of a window.",
+            "rank": "2"
+          },
+          "feeling": {
+            "q": "How does the lion look while wearing the blanket?",
+            "a": "He looks worried or sad.",
+            "rank": "3"
+          },
+          "action": {
+            "q": "What is the frog doing in the scene?",
+            "a": "The frog is posing with hands on hips.",
+            "rank": "4"
+          },
+          "causal": {
+            "q": "Why might the lion be wearing a blanket and a helmet?",
+            "a": "He might be pretending or feeling scared.",
+            "rank": "5"
+          },
+          "outcome": {
+            "q": "What do you think will happen next with the lion?",
+            "a": "He might feel braver or take off the blanket.",
+            "rank": "6"
+          },
+          "prediction": {
+            "q": "What do you think the frog will do next?",
+            "a": "The frog might dance or talk to the lion.",
+            "rank": "7"
+          }
+        },
+        "best_question": "Who is wearing a blanket and a helmet?"
+      }
+    },
+    {
+      "start": 150,
+      "end": 161,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who do you think is inside the house?",
+            "a": "A person or character",
+            "rank": "4"
+          },
+          "setting": {
+            "q": "What does the house look like at night?",
+            "a": "It has a light on in the window",
+            "rank": "3"
+          },
+          "feeling": {
+            "q": "How do you think the character feels about the dark?",
+            "a": "They might feel scared or curious",
+            "rank": "5"
+          },
+          "action": {
+            "q": "What do you think the character might do next?",
+            "a": "They might go inside the house",
+            "rank": "6"
+          },
+          "causal": {
+            "q": "Why do you think the light is on in the house?",
+            "a": "Someone might be inside",
+            "rank": "2"
+          },
+          "outcome": {
+            "q": "What do you think will happen if the character goes inside?",
+            "a": "They might find something surprising",
+            "rank": "1"
+          },
+          "prediction": {
+            "q": "What do you think the moral of the story will be?",
+            "a": "It might be about facing fears",
+            "rank": "7"
+          }
+        },
+        "best_question": "What do you think will happen if the character goes inside?"
+      }
+    }
+  ]
+}
