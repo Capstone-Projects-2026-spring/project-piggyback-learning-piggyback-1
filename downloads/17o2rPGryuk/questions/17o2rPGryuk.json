@@ -1,270 +1,754 @@
 {
   "video_id": "17o2rPGryuk",
-  "submitted_at": "2026-04-26T02:17:25.221697",
+  "submitted_at": "2026-04-27T03:33:50.514191",
   "status": "submitted",
   "segments": [
     {
       "start": 0,
+      "end": 9,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who is the main character we learn about from the title of the story?",
+            "a": "A lion.",
+            "rank": "4"
+          },
+          "setting": {
+            "q": "What kind of room do you see after the title words disappear?",
+            "a": "A room with striped wallpaper, pictures, and an open door to a bedroom.",
+            "rank": "5"
+          },
+          "feeling": {
+            "q": "How does the title tell us the lion feels?",
+            "a": "Frightened or scared.",
+            "rank": "3"
+          },
+          "action": {
+            "q": "What happens to the words 'The Frightened Lion' on the screen?",
+            "a": "They fade away.",
+            "rank": "7"
+          },
+          "causal": {
+            "q": "Why do you think the story is called 'The Frightened Lion'?",
+            "a": "Because the lion in the story is scared.",
+            "rank": "1"
+          },
+          "outcome": {
+            "q": "What new scene appears after the title disappears?",
+            "a": "A cozy room with striped wallpaper and framed pictures.",
+            "rank": "6"
+          },
+          "prediction": {
+            "q": "What do you think we will see or learn about the frightened lion next in the story?",
+            "a": "We might see the lion, or find out why it is scared.",
+            "rank": "2"
+          }
+        },
+        "best_question": "Why do you think the story is called 'The Frightened Lion'?"
+      }
+    },
+    {
+      "start": 10,
+      "end": 19,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who is the main animal character in the video?",
+            "a": "A lion.",
+            "rank": "7"
+          },
+          "setting": {
+            "q": "Where is the lion when it is reading its book?",
+            "a": "In a bed, in a bedroom.",
+            "rank": "5"
+          },
+          "feeling": {
+            "q": "How does the lion look and feel when it is in bed?",
+            "a": "Happy and joyful.",
+            "rank": "4"
+          },
+          "action": {
+            "q": "What does the lion do after it finishes reading its book?",
+            "a": "It makes a roaring sound.",
+            "rank": "2"
+          },
+          "causal": {
+            "q": "Why do you think the lion made a roaring sound while in bed?",
+            "a": "It looks happy and is playing with its teddy bear.",
+            "rank": "1"
+          },
+          "outcome": {
+            "q": "What was the result of the lion reading its book?",
+            "a": "It made a playful roaring sound.",
+            "rank": "3"
+          },
+          "prediction": {
+            "q": "What do you think the lion will do right after it roars?",
+            "a": "It might go to sleep or play more.",
+            "rank": "6"
+          }
+        },
+        "best_question": "Why do you think the lion made a roaring sound while in bed?"
+      }
+    },
+    {
+      "start": 20,
       "end": 29,
       "result": {
         "questions": {
           "character": {
-            "q": "Who is the main character in the story?",
-            "a": "A frightened lion.",
-            "rank": "2"
+            "q": "Who is the main character we see in bed?",
+            "a": "A friendly lion.",
+            "rank": 7
           },
           "setting": {
-            "q": "Where is the lion in the pictures?",
-            "a": "In a cozy bedroom.",
-            "rank": "3"
+            "q": "Where is the lion in this part of the video?",
+            "a": "The lion is in his bed in a bedroom.",
+            "rank": 6
           },
           "feeling": {
-            "q": "How does the lion feel in the story?",
-            "a": "He feels frightened.",
-            "rank": "1"
+            "q": "How does the lion feel when his eyes get wide and his mouth is straight?",
+            "a": "He feels surprised or a little bit worried.",
+            "rank": 2
           },
           "action": {
-            "q": "What does the lion hold in his paws?",
-            "a": "A teddy bear.",
-            "rank": "4"
+            "q": "What is the lion doing in the first picture?",
+            "a": "He is sitting in bed holding his teddy bear.",
+            "rank": 5
           },
           "causal": {
-            "q": "Why do you think the lion is frightened?",
-            "a": "Because he might be scared of something in the dark.",
-            "rank": "5"
+            "q": "Why do you think the lion's face changed from happy to surprised when the word 'TAP' appeared?",
+            "a": "He might have heard a sound that surprised him.",
+            "rank": 1
           },
           "outcome": {
-            "q": "What do you think will happen to the lion next?",
-            "a": "He might find courage or ask for help.",
-            "rank": "6"
+            "q": "What happened to the lion's face after the word 'TAP' showed up?",
+            "a": "His eyes stayed wide open, showing he was still surprised.",
+            "rank": 4
           },
           "prediction": {
-            "q": "What do you think the lion will do to feel better?",
-            "a": "He might hug his teddy bear or call for a friend.",
-            "rank": "7"
+            "q": "What do you think the lion will do next after looking surprised?",
+            "a": "He might look around the room or try to find out what made the sound.",
+            "rank": 3
           }
         },
-        "best_question": "feeling"
+        "best_question": "Why do you think the lion's face changed from happy to surprised when the word 'TAP' appeared?"
       }
     },
     {
       "start": 30,
+      "end": 39,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who is sleeping in the bed?",
+            "a": "A lion.",
+            "rank": "6"
+          },
+          "setting": {
+            "q": "Where is the lion when we first see him?",
+            "a": "In a bed in a room.",
+            "rank": "5"
+          },
+          "feeling": {
+            "q": "How does the lion look when the word \"TAP\" appears?",
+            "a": "Surprised or awake.",
+            "rank": "3"
+          },
+          "action": {
+            "q": "What word appears on the screen after the lion is shown?",
+            "a": "TAP.",
+            "rank": "4"
+          },
+          "causal": {
+            "q": "Why do you think the video shows a window after the \"TAP\" word?",
+            "a": "Maybe the \"TAP\" sound came from the window.",
+            "rank": "2"
+          },
+          "outcome": {
+            "q": "What object do we see right after the lion and the \"TAP\" word?",
+            "a": "A window.",
+            "rank": "7"
+          },
+          "prediction": {
+            "q": "What do you think might happen next at the window?",
+            "a": "Someone might look out the window, or something might be outside.",
+            "rank": "1"
+          }
+        },
+        "best_question": "What do you think might happen next at the window?"
+      }
+    },
+    {
+      "start": 40,
+      "end": 49,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who is the main character in the story?",
+            "a": "A lion.",
+            "rank": "6"
+          },
+          "setting": {
+            "q": "Where is the lion when the video starts?",
+            "a": "In his bedroom.",
+            "rank": "7"
+          },
+          "feeling": {
+            "q": "How does the lion look when he first hears the sound?",
+            "a": "Surprised or a little scared.",
+            "rank": "3"
+          },
+          "action": {
+            "q": "What does the lion do after hearing the sound?",
+            "a": "He gets out of bed and picks up a baseball bat.",
+            "rank": "2"
+          },
+          "causal": {
+            "q": "Why did the lion get out of bed and grab the bat?",
+            "a": "Because he heard a tapping sound.",
+            "rank": "1"
+          },
+          "outcome": {
+            "q": "What happens when the lion gets close to the window?",
+            "a": "He hears more tapping sounds.",
+            "rank": "5"
+          },
+          "prediction": {
+            "q": "What do you think the lion will do next at the window?",
+            "a": "He might open the curtains or look outside.",
+            "rank": "4"
+          }
+        },
+        "best_question": "Why did the lion get out of bed and grab the bat?"
+      }
+    },
+    {
+      "start": 50,
       "end": 59,
       "result": {
         "questions": {
           "character": {
-            "q": "Who is the main character in the video?",
-            "a": "A lion",
-            "rank": "2"
-          },
-          "setting": {
-            "q": "Where is the lion in the video?",
-            "a": "In a bedroom",
-            "rank": "3"
-          },
-          "feeling": {
-            "q": "How do you think the lion feels in the video?",
-            "a": "Scared or worried",
-            "rank": "1"
-          },
-          "action": {
-            "q": "What does the lion do when he hears a sound?",
-            "a": "He grabs a bat",
-            "rank": "4"
-          },
-          "causal": {
-            "q": "What makes the lion feel scared?",
-            "a": "The tapping sound",
-            "rank": "5"
-          },
-          "outcome": {
-            "q": "What do you think will happen next after the lion hears the sound?",
-            "a": "He might check the window",
+            "q": "Who is the animal you see in the video?",
+            "a": "A lion.",
             "rank": "6"
           },
-          "prediction": {
-            "q": "What do you think the lion will find when he looks outside?",
-            "a": "Maybe nothing or a friend",
+          "setting": {
+            "q": "Where does the lion seem to be?",
+            "a": "In a room or indoors.",
             "rank": "7"
+          },
+          "feeling": {
+            "q": "How does the lion look or feel?",
+            "a": "Nervous or a little scared.",
+            "rank": "3"
+          },
+          "action": {
+            "q": "What does the lion do with the red helmet?",
+            "a": "It puts the helmet on its head.",
+            "rank": "1"
+          },
+          "causal": {
+            "q": "Why do you think the lion put on the helmet?",
+            "a": "To be safe or to protect its head while playing.",
+            "rank": "2"
+          },
+          "outcome": {
+            "q": "What happened to the lion after it put on the helmet?",
+            "a": "The lion was wearing the helmet and still holding the bat.",
+            "rank": "4"
+          },
+          "prediction": {
+            "q": "What do you think the lion will do next?",
+            "a": "Maybe play baseball or practice hitting.",
+            "rank": "5"
           }
         },
-        "best_question": "feeling"
+        "best_question": "What does the lion do with the red helmet?"
       }
     },
     {
       "start": 60,
+      "end": 69,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who is the animal character we see in this part of the video?",
+            "a": "A lion.",
+            "rank": "4"
+          },
+          "setting": {
+            "q": "What does the background behind the lion look like?",
+            "a": "It has green stripes.",
+            "rank": "6"
+          },
+          "feeling": {
+            "q": "How does the lion seem to be feeling?",
+            "a": "Scared or worried.",
+            "rank": "1"
+          },
+          "action": {
+            "q": "What is the lion holding in its hands?",
+            "a": "A baseball bat.",
+            "rank": "2"
+          },
+          "causal": {
+            "q": "What words did we see on the screen right before the lion appeared?",
+            "a": "\"TAP TAP\".",
+            "rank": "3"
+          },
+          "outcome": {
+            "q": "What was the lion doing at the very end of this video part?",
+            "a": "It was holding the bat and still looked worried.",
+            "rank": "7"
+          },
+          "prediction": {
+            "q": "What do you think might happen next with the lion and its bat?",
+            "a": "It might try to hit a ball, or maybe something else will happen.",
+            "rank": "5"
+          }
+        },
+        "best_question": "How does the lion seem to be feeling?"
+      }
+    },
+    {
+      "start": 70,
+      "end": 79,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who is the furry character in the video?",
+            "a": "A blue monster with many eyes and horns.",
+            "rank": "6"
+          },
+          "setting": {
+            "q": "What color is the background when the monster first appears?",
+            "a": "Yellow/orange.",
+            "rank": "7"
+          },
+          "feeling": {
+            "q": "How does the monster look when the background turns red?",
+            "a": "Scared or frightened.",
+            "rank": "2"
+          },
+          "action": {
+            "q": "What does the monster do with its arms in both pictures?",
+            "a": "It holds its arms up.",
+            "rank": "3"
+          },
+          "causal": {
+            "q": "What changed about the monster's face when the background turned red?",
+            "a": "Its happy smile changed to a scared expression.",
+            "rank": "1"
+          },
+          "outcome": {
+            "q": "What words did you see on the screen after the monster?",
+            "a": "TAP, TA, and TAPPITY.",
+            "rank": "4"
+          },
+          "prediction": {
+            "q": "What do you think the monster might do next, especially with the word 'TAPPITY' appearing?",
+            "a": "It might start tapping its feet or hands.",
+            "rank": "5"
+          }
+        },
+        "best_question": "What changed about the monster's face when the background turned red?"
+      }
+    },
+    {
+      "start": 80,
       "end": 89,
       "result": {
         "questions": {
           "character": {
-            "q": "Who is the lion hiding under the bed?",
-            "a": "The lion is scared.",
-            "rank": "2"
+            "q": "Who is the character we see in this video part?",
+            "a": "A lion-like character wearing a red helmet.",
+            "rank": "7"
           },
           "setting": {
-            "q": "Where is the lion hiding?",
-            "a": "Under the bed.",
-            "rank": "3"
-          },
-          "feeling": {
-            "q": "How does the lion feel in this scene?",
-            "a": "The lion feels scared.",
-            "rank": "1"
-          },
-          "action": {
-            "q": "What is the lion holding?",
-            "a": "The lion is holding a baseball bat.",
+            "q": "Where does the character hide in this video?",
+            "a": "Under a bed in a room.",
             "rank": "4"
           },
+          "feeling": {
+            "q": "How does the character feel when they hide?",
+            "a": "Scared or frightened.",
+            "rank": "3"
+          },
+          "action": {
+            "q": "What does the character do with the blanket after hiding under the bed?",
+            "a": "The character pulls the blanket over themselves.",
+            "rank": "2"
+          },
           "causal": {
-            "q": "Why is the lion hiding?",
-            "a": "The lion is hiding because he is scared of the monster.",
-            "rank": "5"
+            "q": "Why do you think the character hid under the bed and looked so scared?",
+            "a": "They might have seen or heard something scary.",
+            "rank": "1"
           },
           "outcome": {
-            "q": "What might happen if the lion stays hidden?",
-            "a": "The lion might feel safer.",
+            "q": "What happens to the character at the very end of this video part?",
+            "a": "The character is hidden under the bed, covered by a blanket.",
             "rank": "6"
           },
           "prediction": {
-            "q": "What do you think the lion will do next?",
-            "a": "The lion might come out to face the monster.",
-            "rank": "7"
+            "q": "What do you think will happen next with the scared character?",
+            "a": "Someone might come to check on them, or they might stay hidden.",
+            "rank": "5"
           }
         },
-        "best_question": "How does the lion feel in this scene?"
+        "best_question": "Why do you think the character hid under the bed and looked so scared?"
       }
     },
     {
       "start": 90,
+      "end": 99,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Which two animal friends do we see in this video part?",
+            "a": "We see a lion and a frog.",
+            "rank": "5"
+          },
+          "setting": {
+            "q": "Where is the lion hiding?",
+            "a": "The lion is hiding under a bed in a room.",
+            "rank": "2"
+          },
+          "feeling": {
+            "q": "How does the lion look when it's under the bed?",
+            "a": "The lion looks scared or worried.",
+            "rank": "1"
+          },
+          "action": {
+            "q": "What is the frog doing in the window?",
+            "a": "The frog is standing in the window.",
+            "rank": "3"
+          },
+          "causal": {
+            "q": "Why do you think the lion is hiding under the bed?",
+            "a": "The lion might be scared of something.",
+            "rank": "6"
+          },
+          "outcome": {
+            "q": "What happens in the video after we see the lion hiding?",
+            "a": "A frog appears in the window.",
+            "rank": "4"
+          },
+          "prediction": {
+            "q": "What do you think the lion might do next?",
+            "a": "The lion might peek out, or stay hidden, or the frog might do something.",
+            "rank": "7"
+          }
+        },
+        "best_question": "How does the lion look when it's under the bed?"
+      }
+    },
+    {
+      "start": 100,
+      "end": 109,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "What special shoes is the frog wearing?",
+            "a": "Tap shoes.",
+            "rank": "3"
+          },
+          "setting": {
+            "q": "Where do we see the frog looking out from?",
+            "a": "A window.",
+            "rank": "4"
+          },
+          "feeling": {
+            "q": "How does the frog seem to be feeling?",
+            "a": "Happy/Excited.",
+            "rank": "7"
+          },
+          "action": {
+            "q": "What action might the frog be doing with its tap shoes when the word 'TAPPITY' appears?",
+            "a": "Tapping/Dancing.",
+            "rank": "1"
+          },
+          "causal": {
+            "q": "Why do you think the word 'TAPPITY' is shown next to the frog?",
+            "a": "Because the frog is wearing tap shoes and might be making tapping sounds.",
+            "rank": "2"
+          },
+          "outcome": {
+            "q": "What might happen when the frog wears its tap shoes and is happy?",
+            "a": "It might dance or tap its feet.",
+            "rank": "6"
+          },
+          "prediction": {
+            "q": "What do you think the frog will do next with its tap shoes?",
+            "a": "It will start tapping or dancing.",
+            "rank": "5"
+          }
+        },
+        "best_question": "What action might the frog be doing with its tap shoes when the word 'TAPPITY' appears?"
+      }
+    },
+    {
+      "start": 110,
       "end": 119,
       "result": {
         "questions": {
           "character": {
-            "q": "Who is hiding under the bed?",
-            "a": "A lion.",
-            "rank": "3"
-          },
-          "setting": {
-            "q": "Where is the frog standing?",
-            "a": "At the window.",
+            "q": "What kind of animal is wearing a pink skirt?",
+            "a": "A frog.",
             "rank": "2"
           },
-          "feeling": {
-            "q": "How does the lion look when he is hiding?",
-            "a": "He looks scared.",
-            "rank": "1"
-          },
-          "action": {
-            "q": "What is the frog wearing?",
-            "a": "A tutu and tap shoes.",
-            "rank": "4"
-          },
-          "causal": {
-            "q": "Why do you think the lion is hiding?",
-            "a": "Because he is scared.",
+          "setting": {
+            "q": "Where does the frog first appear to be standing?",
+            "a": "Behind curtains or on a stage.",
             "rank": "5"
           },
-          "outcome": {
-            "q": "What happens when the frog tries to help the lion?",
-            "a": "The lion feels better.",
+          "feeling": {
+            "q": "How does the frog look in the very first picture?",
+            "a": "Happy or smiling.",
+            "rank": "4"
+          },
+          "action": {
+            "q": "What is the frog doing with its hand towards the lion?",
+            "a": "Reaching out.",
+            "rank": "1"
+          },
+          "causal": {
+            "q": "Why do you think the frog is reaching for the lion?",
+            "a": "To play with it.",
             "rank": "6"
           },
+          "outcome": {
+            "q": "What happens to the picture after the frog reaches for the lion?",
+            "a": "The picture changes to yellow blankets and the word 'bla'.",
+            "rank": "3"
+          },
           "prediction": {
-            "q": "What do you think will happen next?",
-            "a": "The lion might come out from under the bed.",
+            "q": "What do you think the frog and lion might do next if their story continued?",
+            "a": "They might play together.",
             "rank": "7"
           }
         },
-        "best_question": "How does the lion look when he is hiding?"
+        "best_question": "What is the frog doing with its hand towards the lion?"
       }
     },
     {
       "start": 120,
+      "end": 129,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who is the animal character we see in the video?",
+            "a": "A lion.",
+            "rank": "7"
+          },
+          "setting": {
+            "q": "Where does the lion seem to be?",
+            "a": "Inside, perhaps in a room with a bed.",
+            "rank": "6"
+          },
+          "feeling": {
+            "q": "How might the lion be feeling based on its face?",
+            "a": "A little sad or worried.",
+            "rank": "3"
+          },
+          "action": {
+            "q": "What is the lion holding in its paws?",
+            "a": "A baseball bat.",
+            "rank": "5"
+          },
+          "causal": {
+            "q": "Why do you think the lion has a helmet and a bat?",
+            "a": "Maybe the lion is getting ready to play a game or pretend.",
+            "rank": "1"
+          },
+          "outcome": {
+            "q": "What happened to the blanket, helmet, and bat that were shown earlier?",
+            "a": "The lion is using them (wearing the helmet, holding the bat, covered by the blanket).",
+            "rank": "2"
+          },
+          "prediction": {
+            "q": "What do you think the lion will do right after this?",
+            "a": "The lion might play, or go on an adventure, or take off the blanket.",
+            "rank": "4"
+          }
+        },
+        "best_question": "Why do you think the lion has a helmet and a bat?"
+      }
+    },
+    {
+      "start": 130,
+      "end": 139,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "What animals do you see in the video?",
+            "a": "A bear-like character and a frog.",
+            "rank": "4"
+          },
+          "setting": {
+            "q": "Where does the frog appear to be standing?",
+            "a": "Behind a curtain or in a doorway.",
+            "rank": "6"
+          },
+          "feeling": {
+            "q": "How does the frog's face change from the first time we see it to the last?",
+            "a": "It starts serious or neutral and then smiles.",
+            "rank": "1"
+          },
+          "action": {
+            "q": "What is the frog doing with its hands?",
+            "a": "It has its hands on its hips.",
+            "rank": "5"
+          },
+          "causal": {
+            "q": "Why do you think the frog started to smile?",
+            "a": "Possible answers: It saw something funny, it's happy, or it's ready for something.",
+            "rank": "2"
+          },
+          "outcome": {
+            "q": "What happens to the frog's expression by the end of the video segment?",
+            "a": "The frog is smiling.",
+            "rank": "3"
+          },
+          "prediction": {
+            "q": "What do you think the frog will do next?",
+            "a": "Possible answers: It will dance, sing, or talk.",
+            "rank": "7"
+          }
+        },
+        "best_question": "How does the frog's face change from the first time we see it to the last?"
+      }
+    },
+    {
+      "start": 140,
       "end": 149,
       "result": {
         "questions": {
           "character": {
-            "q": "Who is wearing a blanket and a helmet?",
-            "a": "The lion.",
-            "rank": "1"
-          },
-          "setting": {
-            "q": "Where is the frog standing?",
-            "a": "In front of a window.",
-            "rank": "2"
-          },
-          "feeling": {
-            "q": "How does the lion look while wearing the blanket?",
-            "a": "He looks worried or sad.",
-            "rank": "3"
-          },
-          "action": {
-            "q": "What is the frog doing in the scene?",
-            "a": "The frog is posing with hands on hips.",
-            "rank": "4"
-          },
-          "causal": {
-            "q": "Why might the lion be wearing a blanket and a helmet?",
-            "a": "He might be pretending or feeling scared.",
+            "q": "Who is the main character in this video segment?",
+            "a": "A frog.",
             "rank": "5"
           },
-          "outcome": {
-            "q": "What do you think will happen next with the lion?",
-            "a": "He might feel braver or take off the blanket.",
+          "setting": {
+            "q": "Where does the frog appear to be at the beginning of the video?",
+            "a": "In a window or doorway of a house at night.",
+            "rank": "4"
+          },
+          "feeling": {
+            "q": "How do you think the frog feels when it waves and walks away?",
+            "a": "Happy, proud, or excited.",
             "rank": "6"
           },
+          "action": {
+            "q": "What does the frog do after waving from the window?",
+            "a": "It walks away from the house.",
+            "rank": "1"
+          },
+          "causal": {
+            "q": "Why do you think the frog is wearing a tutu?",
+            "a": "Maybe it's going to dance, or it just finished dancing, or it's dressed up for fun.",
+            "rank": "3"
+          },
+          "outcome": {
+            "q": "What happens to the frog at the very end of this video segment?",
+            "a": "The frog walks away and disappears from the screen.",
+            "rank": "2"
+          },
           "prediction": {
-            "q": "What do you think the frog will do next?",
-            "a": "The frog might dance or talk to the lion.",
+            "q": "What do you think the frog might do next after walking away from the house?",
+            "a": "It might go on an adventure, go home, or meet friends.",
             "rank": "7"
           }
         },
-        "best_question": "Who is wearing a blanket and a helmet?"
+        "best_question": "What does the frog do after waving from the window?"
       }
     },
     {
       "start": 150,
+      "end": 159,
+      "result": {
+        "questions": {
+          "character": {
+            "q": "Who is the small green friend we see in the picture?",
+            "a": "A little green frog (or creature).",
+            "rank": "4"
+          },
+          "setting": {
+            "q": "Where is the little green friend in this part of the story?",
+            "a": "Outside a house at night.",
+            "rank": "5"
+          },
+          "feeling": {
+            "q": "How might the little green friend feel looking at the dark path?",
+            "a": "Maybe a little curious or wondering, or a tiny bit scared.",
+            "rank": "3"
+          },
+          "action": {
+            "q": "What is the little green friend doing in the picture?",
+            "a": "Standing and looking at the house.",
+            "rank": "7"
+          },
+          "causal": {
+            "q": "Why might the dark path seem a little scary to the little green friend?",
+            "a": "Because sometimes our imaginations can make things seem scarier than they really are.",
+            "rank": "2"
+          },
+          "outcome": {
+            "q": "What important lesson did the video teach us at the end?",
+            "a": "That our imaginations can sometimes make things scarier than they are.",
+            "rank": "1"
+          },
+          "prediction": {
+            "q": "What do you think the little green friend will do next?",
+            "a": "Maybe walk closer to the house or explore the path.",
+            "rank": "6"
+          }
+        },
+        "best_question": "What important lesson did the video teach us at the end?"
+      }
+    },
+    {
+      "start": 160,
       "end": 161,
       "result": {
         "questions": {
           "character": {
-            "q": "Who do you think is inside the house?",
-            "a": "A person or character",
-            "rank": "4"
+            "q": "Can you see any characters on the screen right now?",
+            "a": "No, there are no characters on the screen.",
+            "rank": 6
           },
           "setting": {
-            "q": "What does the house look like at night?",
-            "a": "It has a light on in the window",
-            "rank": "3"
+            "q": "What do you see on the screen in this part of the video?",
+            "a": "I see a white screen with the words 'THE END' and '© TheFableCottage.co'.",
+            "rank": 3
           },
           "feeling": {
-            "q": "How do you think the character feels about the dark?",
-            "a": "They might feel scared or curious",
-            "rank": "5"
+            "q": "What does seeing 'THE END' tell us about the story?",
+            "a": "It tells us the story is finished.",
+            "rank": 4
           },
           "action": {
-            "q": "What do you think the character might do next?",
-            "a": "They might go inside the house",
-            "rank": "6"
+            "q": "Is there any action happening on the screen right now?",
+            "a": "No, the screen is still and just shows words.",
+            "rank": 7
           },
           "causal": {
-            "q": "Why do you think the light is on in the house?",
-            "a": "Someone might be inside",
-            "rank": "2"
+            "q": "Why do you think the words 'THE END' are on the screen?",
+            "a": "Because the story or video is finished.",
+            "rank": 1
           },
           "outcome": {
-            "q": "What do you think will happen if the character goes inside?",
-            "a": "They might find something surprising",
-            "rank": "1"
+            "q": "What is the outcome of seeing 'THE END'?",
+            "a": "It means the video has come to a close.",
+            "rank": 2
           },
           "prediction": {
-            "q": "What do you think the moral of the story will be?",
-            "a": "It might be about facing fears",
-            "rank": "7"
+            "q": "What do you think might happen next after the video says 'THE END'?",
+            "a": "The video will stop, or a new video might start.",
+            "rank": 5
           }
         },
-        "best_question": "What do you think will happen if the character goes inside?"
+        "best_question": "Why do you think the words 'THE END' are on the screen?"
       }
     }
   ]

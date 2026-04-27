@@ -3,6 +3,28 @@
   "questions": [
     {
       "segment_start": 0.0,
+      "segment_end": 9.0,
+      "timestamp": 9.0,
+      "question_type": null,
+      "question": "",
+      "answer": "",
+      "skipped": true,
+      "skip_reason": "",
+      "updated_at": "2026-04-27T03:34:08.880705"
+    },
+    {
+      "segment_start": 10.0,
+      "segment_end": 19.0,
+      "timestamp": 19.0,
+      "question_type": null,
+      "question": "",
+      "answer": "",
+      "skipped": true,
+      "skip_reason": "",
+      "updated_at": "2026-04-27T03:34:11.077144"
+    },
+    {
+      "segment_start": 20.0,
       "segment_end": 29.0,
       "timestamp": 29.0,
       "question_type": null,
@@ -10,10 +32,32 @@
       "answer": "",
       "skipped": true,
       "skip_reason": "",
-      "updated_at": "2026-04-26T02:17:57.997323"
+      "updated_at": "2026-04-27T03:34:12.149227"
     },
     {
       "segment_start": 30.0,
+      "segment_end": 39.0,
+      "timestamp": 39.0,
+      "question_type": null,
+      "question": "",
+      "answer": "",
+      "skipped": true,
+      "skip_reason": "",
+      "updated_at": "2026-04-27T03:34:13.326230"
+    },
+    {
+      "segment_start": 40.0,
+      "segment_end": 49.0,
+      "timestamp": 49.0,
+      "question_type": null,
+      "question": "",
+      "answer": "",
+      "skipped": true,
+      "skip_reason": "",
+      "updated_at": "2026-04-27T03:34:14.765488"
+    },
+    {
+      "segment_start": 50.0,
       "segment_end": 59.0,
       "timestamp": 59.0,
       "question_type": null,
@@ -21,10 +65,32 @@
       "answer": "",
       "skipped": true,
       "skip_reason": "",
-      "updated_at": "2026-04-26T02:18:00.815898"
+      "updated_at": "2026-04-27T03:34:16.311221"
     },
     {
       "segment_start": 60.0,
+      "segment_end": 69.0,
+      "timestamp": 69.0,
+      "question_type": null,
+      "question": "",
+      "answer": "",
+      "skipped": true,
+      "skip_reason": "",
+      "updated_at": "2026-04-27T03:34:17.665427"
+    },
+    {
+      "segment_start": 70.0,
+      "segment_end": 79.0,
+      "timestamp": 79.0,
+      "question_type": null,
+      "question": "",
+      "answer": "",
+      "skipped": true,
+      "skip_reason": "",
+      "updated_at": "2026-04-27T03:34:19.018751"
+    },
+    {
+      "segment_start": 80.0,
       "segment_end": 89.0,
       "timestamp": 89.0,
       "question_type": null,
@@ -32,10 +98,32 @@
       "answer": "",
       "skipped": true,
       "skip_reason": "",
-      "updated_at": "2026-04-26T02:18:02.017908"
+      "updated_at": "2026-04-27T03:34:20.328679"
     },
     {
       "segment_start": 90.0,
+      "segment_end": 99.0,
+      "timestamp": 99.0,
+      "question_type": null,
+      "question": "",
+      "answer": "",
+      "skipped": true,
+      "skip_reason": "",
+      "updated_at": "2026-04-27T03:34:21.905110"
+    },
+    {
+      "segment_start": 100.0,
+      "segment_end": 109.0,
+      "timestamp": 109.0,
+      "question_type": null,
+      "question": "",
+      "answer": "",
+      "skipped": true,
+      "skip_reason": "",
+      "updated_at": "2026-04-27T03:34:23.322612"
+    },
+    {
+      "segment_start": 110.0,
       "segment_end": 119.0,
       "timestamp": 119.0,
       "question_type": null,
@@ -43,10 +131,32 @@
       "answer": "",
       "skipped": true,
       "skip_reason": "",
-      "updated_at": "2026-04-26T02:18:03.319111"
+      "updated_at": "2026-04-27T03:34:25.730578"
     },
     {
       "segment_start": 120.0,
+      "segment_end": 129.0,
+      "timestamp": 129.0,
+      "question_type": null,
+      "question": "",
+      "answer": "",
+      "skipped": true,
+      "skip_reason": "",
+      "updated_at": "2026-04-27T03:34:27.530209"
+    },
+    {
+      "segment_start": 130.0,
+      "segment_end": 139.0,
+      "timestamp": 139.0,
+      "question_type": null,
+      "question": "",
+      "answer": "",
+      "skipped": true,
+      "skip_reason": "",
+      "updated_at": "2026-04-27T03:34:28.981362"
+    },
+    {
+      "segment_start": 140.0,
       "segment_end": 149.0,
       "timestamp": 149.0,
       "question_type": null,
@@ -54,10 +164,21 @@
       "answer": "",
       "skipped": true,
       "skip_reason": "",
-      "updated_at": "2026-04-26T02:18:04.443705"
+      "updated_at": "2026-04-27T03:34:47.472108"
     },
     {
       "segment_start": 150.0,
+      "segment_end": 159.0,
+      "timestamp": 159.0,
+      "question_type": null,
+      "question": "",
+      "answer": "",
+      "skipped": true,
+      "skip_reason": "",
+      "updated_at": "2026-04-27T03:34:49.139485"
+    },
+    {
+      "segment_start": 160.0,
       "segment_end": 161.0,
       "timestamp": 161.0,
       "question_type": null,
@@ -65,7 +186,7 @@
       "answer": "",
       "skipped": true,
       "skip_reason": "",
-      "updated_at": "2026-04-26T02:18:05.921223"
+      "updated_at": "2026-04-27T03:34:51.983961"
     }
   ]
 }
