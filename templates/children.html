@@ -1789,6 +1789,10 @@ function showLibrary() {
         document.getElementById('player-container').style.display = 'none';
         document.getElementById('video-grid').style.display = 'grid';
         document.getElementById('back-button').style.display = 'none';
+        const sBtn = document.getElementById('settings-btn-fixed');
+        const hBtn = document.getElementById('home-fixed-btn');
+        if (sBtn) sBtn.style.display = 'flex';
+        if (hBtn) hBtn.style.display = 'block';
         const switchBtn = document.getElementById('switch-companion-btn');
         if (switchBtn) switchBtn.style.display = '';
         // Re-show library companion greeter

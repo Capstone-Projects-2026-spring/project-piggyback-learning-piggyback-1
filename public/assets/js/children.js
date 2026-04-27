@@ -941,6 +941,10 @@
       videoGrid.style.display = "none";
       document.getElementById("player-container").style.display = "flex";
       backButton.style.display = "inline-flex";
+      const settingsBtn = document.getElementById("settings-btn-fixed");
+      const homeBtn = document.getElementById("home-fixed-btn");
+      if (settingsBtn) settingsBtn.style.display = "none";
+      if (homeBtn) homeBtn.style.display = "none";
       const switchBtn = document.getElementById('switch-companion-btn');
       if (switchBtn) switchBtn.style.display = 'none';
       window.scrollTo(0, 0);
@@ -1053,6 +1057,10 @@
           document.getElementById("player-container").style.display = "none";
           videoGrid.style.display = "grid";
           backButton.style.display = "none";
+          const sBtn = document.getElementById("settings-btn-fixed");
+          const hBtn = document.getElementById("home-fixed-btn");
+          if (sBtn) sBtn.style.display = "flex";
+          if (hBtn) hBtn.style.display = "block";
         });
     }
 
@@ -2081,6 +2089,10 @@
       const switchBtnBack = document.getElementById('switch-companion-btn');
       if (switchBtnBack) switchBtnBack.style.display = '';
       document.body.classList.remove("watching-video");
+      const sBtnBack = document.getElementById("settings-btn-fixed");
+      const hBtnBack = document.getElementById("home-fixed-btn");
+      if (sBtnBack) sBtnBack.style.display = "flex";
+      if (hBtnBack) hBtnBack.style.display = "block";
       hideEmbedFallback();
       hidePauseBlocker();
       currentVideoMeta = null;
