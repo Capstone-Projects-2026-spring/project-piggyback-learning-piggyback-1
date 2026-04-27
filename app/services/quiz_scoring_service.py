@@ -40,6 +40,7 @@ def save_quiz_result(child_id: str, video_id: str, score_data: dict, session_id:
         "total_retries": score_data.get("total_retries", 0),
         "avg_retries_per_question": score_data.get("avg_retries_per_question", 0.0),
         "watch_minutes": score_data.get("watch_minutes", 0),
+        "manual_pauses": score_data.get("manual_pauses", 0),
         "details": score_data.get("details", [])
     }
 
@@ -52,10 +53,11 @@ def save_quiz_result(child_id: str, video_id: str, score_data: dict, session_id:
         if existing_index is not None:
             existing = data["attempts"][existing_index]
             if score_data.get("checkpoint_only"):
-                # Only add watch time — preserve all quiz score fields
+                # Add watch time and update pause count
                 existing["watch_minutes"] = round(
                     existing.get("watch_minutes", 0) + score_data.get("watch_minutes", 0), 2
                 )
+                existing["manual_pauses"] = score_data.get("manual_pauses", existing.get("manual_pauses", 0))
                 data["attempts"][existing_index] = existing
             else:
                 # Full save: accumulate watch_minutes, replace other fields

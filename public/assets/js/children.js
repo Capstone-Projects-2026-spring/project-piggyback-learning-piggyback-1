@@ -487,7 +487,10 @@
         if (!activeQuestion) {
           showPauseBlocker();
           if (typeof window.triggerCompanionTalk === 'function') window.triggerCompanionTalk();
-          if (typeof quizScore !== 'undefined') quizScore.manualPauseCount = (quizScore.manualPauseCount || 0) + 1;
+          if (typeof quizScore !== 'undefined') {
+            quizScore.manualPauseCount = (quizScore.manualPauseCount || 0) + 1;
+            console.log('⏸ Manual pause counted:', quizScore.manualPauseCount);
+          }
         } else {
           hidePauseBlocker();
         }

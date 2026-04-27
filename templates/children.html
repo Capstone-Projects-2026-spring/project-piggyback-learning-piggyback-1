@@ -405,6 +405,28 @@
     <div class="profiles-grid" id="profiles-grid"></div>
   </div>
 
+
+  <!-- Fixed home button - below settings -->
+  <button id="home-fixed-btn" onclick="window.location.href='/'" style="
+    position: fixed;
+    top: 68px;
+    right: 16px;
+    z-index: 5999;
+    background: white;
+    border: none;
+    border-radius: 10px;
+    padding: 0;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(142,197,252,0.5);
+    display: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+    align-items: center;
+    justify-content: center;
+  ">🏠</button>
+
   <!-- Fixed settings button - always visible -->
   <button id="settings-btn-fixed" type="button" onclick="openSettings()" style="
     position: fixed;
@@ -834,6 +856,7 @@ function startQuizTracking(videoId, expectedQuestions = 2) {
     quizScore.watchStartTime = null;
     quizScore.watchAccumulatedMs = 0;
     quizScore.watchMinutes = 0;
+    quizScore.manualPauseCount = 0;
 
     quizScore.sessionId = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     // Score tracker hidden from users
@@ -1022,7 +1045,9 @@ async function flushWatchTime() {
     if (!quizScore.videoId) return;
     let totalMs = quizScore.watchAccumulatedMs || 0;
     if (quizScore.watchStartTime !== null) totalMs += Date.now() - quizScore.watchStartTime;
-    if (totalMs <= 0) return;
+    const pauseCount = quizScore.manualPauseCount || 0;
+    console.log('💾 flushWatchTime called — pauseCount:', pauseCount, 'totalMs:', totalMs);
+    if (totalMs <= 0 && pauseCount === 0) return;
 
     const minutes = parseFloat((totalMs / 1000 / 60).toFixed(2));
     const childId = getChildId();
@@ -1034,7 +1059,7 @@ async function flushWatchTime() {
                 child_id: childId,
                 video_id: quizScore.videoId,
                 session_id: quizScore.sessionId,
-                score_data: { watch_minutes: minutes, checkpoint_only: true }
+                score_data: { watch_minutes: minutes, manual_pauses: pauseCount, checkpoint_only: true }
             })
         });
         // Reset accumulator so next checkpoint only counts new time
@@ -1511,6 +1536,7 @@ function showCompanions() {
     // Hide profiles, show companion picker
     document.getElementById('screen-profiles').style.display = 'none';
     document.getElementById('settings-btn-fixed').style.display = 'flex';
+    document.getElementById('home-fixed-btn').style.display = 'block';
     const screen = document.getElementById('screen-companions');
     screen.style.display = 'flex';
 
