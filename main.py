@@ -93,9 +93,9 @@ def _seed_packaged_downloads() -> None:
     for video_id in PRELOAD_DOWNLOAD_IDS:
         source_dir = PACKAGED_DOWNLOADS_DIR / video_id
         target_dir = DOWNLOADS_DIR / video_id
-        if not source_dir.exists() or target_dir.exists():
+        if not source_dir.exists():
             continue
-        shutil.copytree(source_dir, target_dir)
+        shutil.copytree(source_dir, target_dir, dirs_exist_ok=True)
 
 def require_expert_session(request: Request) -> Dict[str,str]:
     role = request.session.get("role")
