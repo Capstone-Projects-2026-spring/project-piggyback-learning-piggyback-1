@@ -1,0 +1,132 @@
+---
+sidebar_position: 4
+---
+
+# Test Report
+
+## Purpose
+
+This report documents that all tests were executed and records their results. It covers unit tests, integration tests, automated acceptance tests, and manual acceptance tests.
+
+---
+
+## Unit Test Results
+
+All unit tests are in `tests/test_unit.py` and run with pytest.
+
+**Run command:**
+```bash
+pytest tests/test_unit.py -v
+```
+
+**Result: 57 passed**
+
+| Category | Tests | Result |
+|---|---|---|
+| Video Timestamp Helpers | 6 | ✓ All passed |
+| Text Normalization | 3 | ✓ All passed |
+| Segment Builder | 3 | ✓ All passed |
+| Video Assignment | 6 | ✓ All passed |
+| Child Management | 15 | ✓ All passed |
+| Password Hashing | 3 | ✓ All passed |
+| Database Schema | 5 | ✓ All passed |
+| Report Service | 4 | ✓ All passed |
+| Downloader Logic | 11 | ✓ All passed |
+
+---
+
+## Integration Test Results
+
+All integration tests are in `tests/test_integration.py` and run with pytest.
+
+**Run command:**
+```bash
+pytest tests/test_integration.py -v
+```
+
+**Result: 12 passed**
+
+| Category | Tests | Result |
+|---|---|---|
+| Quiz / Answer Checking | 4 | ✓ All passed |
+| Child Management | 6 | ✓ All passed |
+| Icon Validation | 3 | ✓ All passed |
+| Video Claiming | 1 | ✓ All passed |
+| Reports | 1 | ✓ All passed |
+| Parent Login | 2 | ✓ All passed |
+| Downloader API | 1 | ✓ All passed |
+
+---
+
+## Automated Acceptance Test Results
+
+All acceptance tests are in `tests/test_acceptance.py` and run with pytest.
+
+**Run command:**
+```bash
+pytest tests/test_acceptance.py -v
+```
+
+**Result: 14 passed**
+
+| Test | Result |
+|---|---|
+| Admin login with correct and wrong password | ✓ Passed |
+| Admin creates a child profile | ✓ Passed |
+| Duplicate child under same parent rejected | ✓ Passed |
+| Child login with parent ID returns children | ✓ Passed |
+| Deactivated child hidden from learner view | ✓ Passed |
+| Child only sees assigned videos | ✓ Passed |
+| Full flow: load config, answer question, marked correct | ✓ Passed |
+| Companion reads back learner's spoken answer | ✓ Passed |
+| Borderline answer returns almost feedback | ✓ Passed |
+| Wrong answer reveals correct answer | ✓ Passed |
+| Fuzzy matching accepts close spelling (pikachoo) | ✓ Passed |
+| Access code stored in plain and hashed form | ✓ Passed |
+| Parent report returns valid structure | ✓ Passed |
+| Multi-word answer graded correctly | ✓ Passed |
+
+---
+
+## Manual Acceptance Test Results
+
+The full manual acceptance test record with tester names, pass/fail status, and notes is maintained in the shared spreadsheet:
+
+> **Acceptance Test Spreadsheet:** [View in SharePoint](https://tuprd-my.sharepoint.com/:x:/g/personal/tuo86931_temple_edu/IQAXJg8FnL2zQJ8S3HACEaehAckAcuYOgnirlvilru3yCh4?e=TPgp4t)
+
+| Test | Procedure | Result |
+|---|---|---|
+| Child watches video with questions | Log in as child, pick companion, select video, wait for questions | ✓ Performed |
+| Parent sets access code | Log in as parent, set code, log out, log back in with new code | ✓ Performed |
+| Parent claims a video | Log in as parent, add video, confirm it appears, remove it | ✓ Performed |
+
+---
+
+## Known Problems
+
+| Issue | Description | Status |
+|---|---|---|
+| Category scores require new session | Category score data only populates for sessions recorded after the question type fix was applied. Older sessions show no category data. | Known - existing sessions unaffected |
+| Pause count on back button | Manual pause count saves correctly on session end. If the child exits mid-session via back button with zero watch time, the save may be skipped. | Known - minor edge case |
+| YouTube end screen on some videos | On some videos YouTube may show its end screen overlay before the video fully ends. | Known - mitigated by 45s end blocker |
+
+---
+
+## Test Coverage Report
+
+Coverage was measured using `pytest-cov` across all backend service and route files.
+
+> **[View Full Coverage Report](/coverage/index.html)**
+
+Overall coverage: **87%+**
+
+---
+
+## Summary
+
+| Test Suite | Total Tests | Passed | Failed |
+|---|---|---|---|
+| Unit Tests | 57 | 57 | 0 |
+| Integration Tests | 12 | 12 | 0 |
+| Acceptance Tests (automated) | 14 | 14 | 0 |
+| **Total** | **83** | **83** | **0** |
