@@ -2,6 +2,8 @@
 sidebar_position: 4
 ---
 
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
 # Test Report
 
 ## Purpose
@@ -116,9 +118,9 @@ The full manual acceptance test record with tester names, pass/fail status, and 
 
 Coverage was measured using `pytest-cov` across all backend service and route files. Overall coverage: **87%+**
 
-<a href="/coverage/index.html" target="_blank">Click me for Full Screen</a>
+<a href={useBaseUrl('/coverage/index.html')} target="_blank">Click me for Full Screen</a>
 
-<iframe src="/coverage/index.html" width="100%" height="600px" style={{border: '1px solid #e0e0e0', borderRadius: '8px'}}></iframe>
+<iframe src={useBaseUrl('/coverage/index.html')} width="100%" height="600px" style={{border: '1px solid #e0e0e0', borderRadius: '8px'}}></iframe>
 
 ---
 
