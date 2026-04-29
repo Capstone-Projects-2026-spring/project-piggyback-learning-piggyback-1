@@ -37,11 +37,8 @@ jobs:
             --cov-report=html:documentation/static/coverage \
             -q
 
-      - name: Commit coverage report
-        if: github.ref == 'refs/heads/main'
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add documentation/static/coverage/
-          git diff --staged --quiet || git commit -m "chore: update coverage report [skip ci]"
-          git push
+      - name: Upload coverage as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: documentation/static/coverage/
