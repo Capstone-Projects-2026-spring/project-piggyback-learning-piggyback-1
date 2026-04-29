@@ -15,7 +15,7 @@ pytest tests/test_unit.py -v
 
 ## Overview
 
-Unit tests verify individual functions and service layer logic in isolation. No real server is started. Database-touching tests use the test SQLite instance initialized by `init_db()`.
+Unit tests verify individual functions and service layer logic in isolation. No real server is started. Database-touching tests use the test SQLite instance initialized by `init_db()`. File I/O tests use `tmp_path` fixtures that are automatically cleaned up after each run.
 
 Test runtime files stay inside repo-local temporary folders and are cleaned after the run, so pytest should not leave random `tmp_*` project folders behind.
 
@@ -123,3 +123,26 @@ Test runtime files stay inside repo-local temporary folders and are cleaned afte
 | `test_apply_runtime_options_enables_remote_ejs_components` | downloader enables remote EJS components for YouTube JS challenges | YouTube JS challenge breaks the download silently |
 | `test_resolve_ffmpeg_path_uses_winget_link` | Windows Winget FFmpeg install can be discovered automatically | FFmpeg is not found and video processing fails on Windows |
 | `test_repair_invalid_mp4_replaces_file` | invalid HLS `.mp4` downloads are repaired into valid MP4 files | corrupted file is kept and video playback fails |
+
+## Quiz Scoring Service
+
+| Test | What it checks | Fails if |
+|---|---|---|
+| `test_save_quiz_result_creates_file` | saving a quiz result creates the JSON file | result is lost and never written to disk |
+| `test_save_quiz_result_appends_attempts` | two sessions for the same child both appear in history | second attempt overwrites the first |
+| `test_save_quiz_result_stores_manual_pauses` | manual pause count is saved with the attempt | pause count is always 0 in the report |
+| `test_get_child_scores_no_file` | returns failure when no score file exists | crashes instead of returning a clean error |
+| `test_save_quiz_result_checkpoint_only_updates_watch_time` | checkpoint save adds watch time and updates pause count without overwriting quiz scores | checkpoint overwrites correct/wrong counts mid-session |
+
+## Video Files
+
+| Test | What it checks | Fails if |
+|---|---|---|
+| `test_find_primary_video_file_finds_mp4` | `.mp4` file in a directory is found correctly | video does not appear in the library |
+| `test_find_primary_video_file_skips_audio_only` | audio-only `.m4a` file is not returned as a video | audio file is treated as a video and playback fails |
+| `test_find_primary_video_file_prefers_merged_over_fragment` | merged mp4 is preferred over fragmented download | fragment without audio is served instead of the full video |
+| `test_find_primary_video_file_empty_dir` | empty directory returns `None` | crashes instead of returning nothing |
+| `test_find_primary_video_file_nonexistent_dir` | nonexistent path returns `None` | crashes on missing directory |
+| `test_list_question_json_files_returns_files` | question JSON files are found and listed correctly | questions are not available for review or playback |
+| `test_list_question_json_files_empty` | directory with no questions returns empty list | crashes or returns garbage on a fresh install |
+| `test_list_question_json_files_no_dir` | missing downloads directory returns empty list | crashes on first run before any videos are downloaded |
