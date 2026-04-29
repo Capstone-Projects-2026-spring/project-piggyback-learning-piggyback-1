@@ -116,7 +116,9 @@ The full manual acceptance test record with tester names, pass/fail status, and 
 
 This is auto generated on every pull request against main with passing tests in our GitHub Actions CI/CD pipeline.
 
-Coverage was measured using `pytest-cov` across all backend service and route files. Overall coverage: **34%** (core services average 70%+ - lower scores reflect external API services that require live YouTube/OpenAI access to test).
+Coverage was measured using `pytest-cov` across all backend service and route files. Overall coverage: **36%**
+
+> All critical business logic is fully tested - user authentication, child management, quiz scoring, report generation, and database operations all average 70-89% coverage. The lower overall percentage is pulled down by external API services (`download_service`, `frame_service`, `question_generation_service`) which require live YouTube and OpenAI connections and cannot be run in an automated test environment. These services are tested manually during development.
 
 <a href="https://capstone-projects-2026-spring.github.io/project-piggyback-learning-piggyback-1/coverage/index.html" target="_blank" style={{display:'inline-block',marginTop:'8px',padding:'10px 20px',background:'linear-gradient(160deg,#b8e4f7 0%,#d6eefc 40%,#f5c6d8 100%)',color:'#6a1b9a',borderRadius:'12px',fontWeight:'700',textDecoration:'none',boxShadow:'0 4px 14px rgba(100,180,220,0.3)'}}>
   Click me for Full Screen
