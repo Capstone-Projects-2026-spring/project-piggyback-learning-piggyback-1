@@ -568,3 +568,119 @@ def test_repair_invalid_mp4_replaces_file(monkeypatch):
     finally:
         if tmp_path.exists():
             shutil.rmtree(tmp_path)
+
+
+# ── Quiz Scoring Service ──────────────────────────────────────────────────────
+
+from app.services.quiz_scoring_service import save_quiz_result, get_child_scores
+
+def test_save_quiz_result_creates_file(monkeypatch, tmp_path):
+    monkeypatch.setattr("app.services.quiz_scoring_service.get_downloads_dir", lambda: tmp_path)
+    result = save_quiz_result("123456", "vid1", {
+        "total": 3, "correct": 2, "wrong": 1, "percentage": 67,
+        "total_retries": 0, "avg_retries_per_question": 0.0,
+        "watch_minutes": 2.5, "manual_pauses": 1, "details": []
+    })
+    assert result["success"] is True
+    assert (tmp_path / "quiz_results" / "123456_results.json").exists()
+
+def test_save_quiz_result_appends_attempts(monkeypatch, tmp_path):
+    monkeypatch.setattr("app.services.quiz_scoring_service.get_downloads_dir", lambda: tmp_path)
+    score = {"total": 2, "correct": 1, "wrong": 1, "percentage": 50,
+             "total_retries": 0, "avg_retries_per_question": 0.0,
+             "watch_minutes": 1.0, "manual_pauses": 0, "details": []}
+    save_quiz_result("123456", "vid1", score)
+    save_quiz_result("123456", "vid2", score)
+    result = get_child_scores("123456")
+    assert result["total_attempts"] == 2
+
+def test_save_quiz_result_stores_manual_pauses(monkeypatch, tmp_path):
+    monkeypatch.setattr("app.services.quiz_scoring_service.get_downloads_dir", lambda: tmp_path)
+    save_quiz_result("111111", "vid1", {
+        "total": 1, "correct": 1, "wrong": 0, "percentage": 100,
+        "total_retries": 0, "avg_retries_per_question": 0.0,
+        "watch_minutes": 1.0, "manual_pauses": 3, "details": []
+    })
+    scores = get_child_scores("111111")
+    assert scores["attempts"][0]["manual_pauses"] == 3
+
+def test_get_child_scores_no_file(monkeypatch, tmp_path):
+    monkeypatch.setattr("app.services.quiz_scoring_service.get_downloads_dir", lambda: tmp_path)
+    result = get_child_scores("999999")
+    assert result["success"] is False
+
+def test_save_quiz_result_checkpoint_only_updates_watch_time(monkeypatch, tmp_path):
+    monkeypatch.setattr("app.services.quiz_scoring_service.get_downloads_dir", lambda: tmp_path)
+    session_id = "sess_abc"
+    save_quiz_result("222222", "vid1", {
+        "total": 2, "correct": 1, "wrong": 1, "percentage": 50,
+        "total_retries": 0, "avg_retries_per_question": 0.0,
+        "watch_minutes": 1.0, "manual_pauses": 2, "details": []
+    }, session_id=session_id)
+    save_quiz_result("222222", "vid1", {
+        "watch_minutes": 0.5, "manual_pauses": 1, "checkpoint_only": True
+    }, session_id=session_id)
+    scores = get_child_scores("222222")
+    attempt = scores["attempts"][0]
+    assert attempt["watch_minutes"] == 1.5
+    assert attempt["manual_pauses"] == 1
+
+
+# ── Video Files Service ───────────────────────────────────────────────────────
+
+from app.services.video_files import find_primary_video_file
+
+def test_find_primary_video_file_finds_mp4(tmp_path):
+    mp4 = tmp_path / "video.mp4"
+    mp4.write_bytes(b"fake")
+    result = find_primary_video_file(tmp_path)
+    assert result == mp4
+
+def test_find_primary_video_file_skips_audio_only(tmp_path):
+    (tmp_path / "video.f140.m4a").write_bytes(b"audio only")
+    result = find_primary_video_file(tmp_path)
+    assert result is None
+
+def test_find_primary_video_file_prefers_merged_over_fragment(tmp_path):
+    (tmp_path / "video.f136.mp4").write_bytes(b"fragment")
+    (tmp_path / "video.mp4").write_bytes(b"merged")
+    result = find_primary_video_file(tmp_path)
+    assert result.name == "video.mp4"
+
+def test_find_primary_video_file_empty_dir(tmp_path):
+    result = find_primary_video_file(tmp_path)
+    assert result is None
+
+def test_find_primary_video_file_webm(tmp_path):
+    webm = tmp_path / "video.webm"
+    webm.write_bytes(b"fake")
+    result = find_primary_video_file(tmp_path)
+    assert result == webm
+
+def test_find_primary_video_file_nonexistent_dir():
+    from pathlib import Path
+    result = find_primary_video_file(Path("/nonexistent/path/xyz"))
+    assert result is None
+
+from app.services.video_files import list_question_json_files
+
+def test_list_question_json_files_returns_files(monkeypatch, tmp_path):
+    vid_dir = tmp_path / "vid1"
+    q_dir = vid_dir / "questions"
+    q_dir.mkdir(parents=True)
+    (q_dir / "seg_0.json").write_text("{}", encoding="utf-8")
+    monkeypatch.setattr("app.services.video_files.DOWNLOADS_DIR", tmp_path)
+    files = list_question_json_files()
+    assert len(files) == 1
+    assert files[0]["video_id"] == "vid1"
+    assert files[0]["name"] == "seg_0.json"
+
+def test_list_question_json_files_empty(monkeypatch, tmp_path):
+    monkeypatch.setattr("app.services.video_files.DOWNLOADS_DIR", tmp_path)
+    files = list_question_json_files()
+    assert files == []
+
+def test_list_question_json_files_no_dir(monkeypatch, tmp_path):
+    monkeypatch.setattr("app.services.video_files.DOWNLOADS_DIR", tmp_path / "nonexistent")
+    files = list_question_json_files()
+    assert files == []

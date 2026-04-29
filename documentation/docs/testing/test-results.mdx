@@ -119,24 +119,24 @@ This is auto generated on every pull request against main with passing tests in 
 Coverage was measured using `pytest-cov` across all backend service and route files. Overall coverage: **34%** (core services average 70%+ - lower scores reflect external API services that require live YouTube/OpenAI access to test).
 
 <a href="https://capstone-projects-2026-spring.github.io/project-piggyback-learning-piggyback-1/coverage/index.html" target="_blank" style={{display:'inline-block',marginTop:'8px',padding:'10px 20px',background:'linear-gradient(160deg,#b8e4f7 0%,#d6eefc 40%,#f5c6d8 100%)',color:'#6a1b9a',borderRadius:'12px',fontWeight:'700',textDecoration:'none',boxShadow:'0 4px 14px rgba(100,180,220,0.3)'}}>
-  📊 Click me for Full Screen
+  Click me for Full Screen
 </a>
 
 <iframe src="https://capstone-projects-2026-spring.github.io/project-piggyback-learning-piggyback-1/coverage/index.html" width="100%" height="500px" style={{border:'1px solid #e0e0e0',borderRadius:'8px',marginTop:'12px'}}></iframe>
 
 | File | Coverage |
 |---|---|
+| `app/services/video_files.py` | 89% |
 | `app/services/sqlite_store.py` | 83% |
+| `app/services/quiz_scoring_service.py` | 78% |
 | `app/services/children_service.py` | 79% |
 | `app/services/expert_auth_service.py` | 60% |
 | `app/services/report_service.py` | 62% |
-| `app/services/video_files.py` | 49% |
-| `app/services/quiz_scoring_service.py` | 14% |
 | `app/services/download_service.py` | 41% |
 | `app/services/frame_service.py` | 11% |
 | `admin_routes.py` | 29% |
 | `video_quiz_routes.py` | 28% |
-| **Overall** | **34%** |
+| **Overall** | **36%** |
 
 > Note: Lower coverage on external-facing services (download, frame extraction, question generation) is expected since those involve real YouTube and AI API calls that cannot be run in automated tests.
 
