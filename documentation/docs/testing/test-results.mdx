@@ -118,9 +118,25 @@ The full manual acceptance test record with tester names, pass/fail status, and 
 
 Coverage was measured using `pytest-cov` across all backend service and route files. Overall coverage: **87%+**
 
-<a href={useBaseUrl('/coverage/index.html')} target="_blank">Click me for Full Screen</a>
+<a href={useBaseUrl('/coverage/index.html')} target="_blank" style={{display:'inline-block',marginTop:'8px',padding:'10px 20px',background:'linear-gradient(135deg,#6a1b9a,#e91e8c)',color:'white',borderRadius:'10px',fontWeight:'700',textDecoration:'none'}}>
+  📊 View Full Coverage Report
+</a>
 
-<iframe src={useBaseUrl('/coverage/index.html')} width="100%" height="600px" style={{border: '1px solid #e0e0e0', borderRadius: '8px'}}></iframe>
+| File | Coverage |
+|---|---|
+| `app/services/sqlite_store.py` | 83% |
+| `app/services/children_service.py` | 79% |
+| `app/services/expert_auth_service.py` | 60% |
+| `app/services/report_service.py` | 62% |
+| `app/services/video_files.py` | 49% |
+| `app/services/quiz_scoring_service.py` | 14% |
+| `app/services/download_service.py` | 41% |
+| `app/services/frame_service.py` | 11% |
+| `admin_routes.py` | 29% |
+| `video_quiz_routes.py` | 28% |
+| **Overall** | **34%** |
+
+> Note: Lower coverage on external-facing services (download, frame extraction, question generation) is expected since those involve real YouTube and AI API calls that cannot be run in automated tests.
 
 ---
 
@@ -132,3 +148,159 @@ Coverage was measured using `pytest-cov` across all backend service and route fi
 | Integration Tests | 12 | 12 | 0 |
 | Acceptance Tests (automated) | 14 | 14 | 0 |
 | **Total** | **83** | **83** | **0** |
+
+---
+
+# User's Manual
+
+## Purpose
+
+This manual describes how to use and maintain Piggyback Learning. It covers setup for admins, day-to-day use for parents and children, and troubleshooting guidance.
+
+---
+
+## Quick Start Guide
+
+**For admins:**
+1. Go to `/admin` and log in with the admin password
+2. Paste a YouTube URL and click Download
+3. Extract frames, then generate questions
+4. Create a parent account and give them their access code
+
+**For parents:**
+1. Go to the app URL and click **I am a Parent**
+2. Log in with your access code
+3. Create a child profile and set their interaction mode
+4. Review the AI-generated questions for any video
+
+**For children:**
+1. Open the app, enter the access code your parent gave you
+2. Select your profile and pick a companion
+3. Choose a video and answer questions by speaking out loud
+
+---
+
+## Installation
+
+Piggyback runs as a Python/FastAPI web application. Minimum requirements:
+
+- Python 3.12 (exactly)
+- FFmpeg installed and on system PATH
+- Node.js LTS (optional, improves YouTube download reliability)
+- At least one AI provider API key (OpenAI, Anthropic, or Gemini)
+
+**Local setup:**
+```bash
+git clone <repo-url>
+cd project-piggyback-learning-piggyback-1
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+cp .env.example .env      # fill in your API keys
+python -m uvicorn main:app --reload
+```
+
+Open `http://localhost:8000` in your browser.
+
+**Docker:**
+```bash
+docker build -t piggyback .
+docker run -p 8000:8000 --env-file .env piggyback
+```
+
+**Railway (deployed):**
+Push to main branch and Railway auto-deploys via the included `Dockerfile`.
+
+---
+
+## Configuration
+
+| Setting | Environment Variable | Description |
+|---|---|---|
+| Admin password | `ADMIN_PASSWORD` | Password to access `/admin` |
+| OpenAI key | `OPENAI_API_KEY` | For question generation and answer evaluation |
+| Anthropic key | `ANTHROPIC_API_KEY` | Alternative AI provider |
+| Gemini key | `GEMINI_API_KEY` | Alternative AI provider |
+| Hume AI key | `HUME_API_KEY` | Companion character voices |
+| Storage root | `APP_STORAGE_ROOT` | Where videos and data are stored (use Railway volume mount path) |
+| Session secret | `SESSION_SECRET` | Secret key for session cookies |
+
+---
+
+## Security
+
+- **Admin** logs in with a password set via `ADMIN_PASSWORD` environment variable. Never commit this to git.
+- **Parents** log in with a personal access code (max 5 characters) stored as a bcrypt hash in SQLite.
+- **Children** log in using their parent's access code - no separate password needed.
+- API keys are loaded from `.env` and never committed to git (covered by `.gitignore`).
+- No personally identifiable information (PII) is stored beyond display names.
+
+---
+
+## Database
+
+Piggyback uses SQLite. The database file is created automatically on first startup at `data/piggyback.db` (or at `$APP_STORAGE_ROOT/data/piggyback.db` in production).
+
+No manual database setup is required - `init_db()` runs on every startup and applies any pending schema migrations automatically.
+
+---
+
+## Application Functions
+
+### Admin Panel (`/admin`)
+- Download YouTube videos by URL
+- Extract frames from downloaded videos
+- Generate AI quiz questions per video segment
+- Create and manage parent accounts
+- View all children and their profiles
+
+### Parent Dashboard
+- Log in with personal access code
+- Create and manage child profiles (name, icon, interaction mode)
+- Review and edit AI-generated questions before children see them
+- Set or update child access codes
+- View progress reports per child
+
+### Child Interface (`/`)
+- Log in with parent access code
+- Select profile and companion character
+- Watch videos with interactive voice-based quiz questions
+- Receive real-time feedback from companion
+
+---
+
+## Backup and Recovery
+
+- **Database:** Back up `data/piggyback.db` regularly. On Railway, the volume at `/data` (or your configured path) contains this file.
+- **Videos and questions:** Back up the `downloads/` directory. This contains all downloaded videos, extracted frames, and generated questions.
+- **Recovery:** To restore, copy the backed-up `data/` and `downloads/` directories to the server and restart the app.
+
+---
+
+## Error Messages
+
+| Error | Cause | Action |
+|---|---|---|
+| `Invalid Login Code` | Wrong or expired access code | Check the code with your admin or parent |
+| `No questions generated` | OpenAI API key missing or invalid | Check `OPENAI_API_KEY` in environment variables |
+| `Video not found` | Video was not downloaded yet | Complete all 3 admin steps: Download → Extract Frames → Generate Questions |
+| `Microphone access denied` | Browser blocked microphone | Click the microphone icon in the browser address bar and allow access |
+| `Score could not be saved` | Storage issue on server | Check that the volume is mounted and `APP_STORAGE_ROOT` is set correctly |
+
+---
+
+## Troubleshooting
+
+| Problem | Solution |
+|---|---|
+| Voice answers not working | App must be on HTTPS. Allow microphone in browser when prompted. Chrome works best. |
+| Questions not appearing during video | Make sure all 3 admin steps were completed for that video |
+| Data wiped after redeploy on Railway | Attach a Railway volume and set `APP_STORAGE_ROOT` to the mount path |
+| YouTube download fails | Check that `OPENAI_API_KEY` or another provider key is valid. Try a different video URL. |
+| App won't start | Verify Python 3.12 is installed and FFmpeg is on PATH |
+
+---
+
+## Support
+
+For issues or questions contact the Piggyback Learning development team or open an issue on the [GitHub repository](https://github.com/Capstone-Projects-2026-spring/project-piggyback-learning-piggyback-1).
