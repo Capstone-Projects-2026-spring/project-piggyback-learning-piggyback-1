@@ -1,0 +1,44 @@
+name: Generate Coverage Report
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install FFmpeg
+        run: sudo apt-get install -y ffmpeg
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt pytest-cov
+
+      - name: Run tests and generate coverage
+        run: |
+          python -m pytest tests/ \
+            --cov=app \
+            --cov=admin_routes \
+            --cov=video_quiz_routes \
+            --cov-report=html:documentation/static/coverage \
+            -q
+
+      - name: Commit coverage report
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add documentation/static/coverage/
+          git diff --staged --quiet || git commit -m "chore: update coverage report [skip ci]"
+          git push
